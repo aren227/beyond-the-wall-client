@@ -1,0 +1,32 @@
+#include "texture.hpp"
+
+namespace aren {
+
+Texture::Texture() { }
+
+Texture::Texture(const char *path, int filter) : Texture(LoadImage(path), filter) {}
+
+Texture::Texture(::Image image, int filter) {
+    m_texture = LoadTextureFromImage(image);
+    SetTextureFilter(m_texture, filter);
+    UnloadImage(image);
+}
+
+Texture::~Texture() {
+    UnloadTexture(m_texture);
+}
+
+Texture::Texture(Texture &&other) noexcept : m_texture(other.m_texture) {
+    other.m_texture = {};
+}
+
+Texture &Texture::operator=(Texture &&other) noexcept {
+    if (this == &other) return *this;
+
+    UnloadTexture(m_texture);
+    m_texture = other.m_texture;
+    other.m_texture = {};
+    return *this;
+}
+
+} // namespace aren
