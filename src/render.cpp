@@ -1,5 +1,6 @@
 #include "render.hpp"
 #include "camera.hpp"
+#include "render_texture.hpp"
 #include "rlgl.h"
 
 namespace aren {
@@ -10,6 +11,7 @@ Color4b Render::s_backgroundColor = {50, 56, 68, 255};
 uint8_t Render::s_vignette = 16;
 
 static std::vector<Color4b> s_tintStack;
+static RenderTexture s_mainRt;
 
 static Color4b applyTint(Color4b color) {
     auto tintColor = s_tintStack.empty() ? Color4b(WHITE) : s_tintStack.back();
@@ -23,6 +25,8 @@ void Render::init() {
         FONT_ATLAS_SIZE, nullptr, 0);
 
     SetTextureFilter(s_defaultFont.texture, TEXTURE_FILTER_BILINEAR);
+
+    s_mainRt = RenderTexture(GetScreenWidth(), GetScreenHeight());
 }
 
 void Render::deinit() {
@@ -61,7 +65,7 @@ void Render::drawTextRotated(Vector2f origin, float size, float rotationDeg, Col
 }
 
 void Render::beginDraw() {
-    BeginDrawing();
+    BeginTextureMode(static_cast<::RenderTexture>(s_mainRt));
     ClearBackground(s_backgroundColor);
 }
 
@@ -71,6 +75,10 @@ void Render::endDraw() {
     float r = std::sqrt(float(sw * sw + sh * sh)) * 0.5f;
     DrawCircleGradient(sw / 2, sh / 2, r, {0, 0, 0, 0}, {0, 0, 0, s_vignette});
 
+    EndTextureMode();
+
+    BeginDrawing();
+    DrawTextureRec(s_mainRt.color(), Rect(0, 0, s_mainRt.width(), s_mainRt.height()), V2F_ZERO, WHITE);
     EndDrawing();
 }
 
