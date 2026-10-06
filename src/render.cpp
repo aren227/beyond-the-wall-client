@@ -7,7 +7,7 @@ namespace aren {
 ::Font Render::s_defaultFont = {};
 
 Color4b Render::s_backgroundColor = {50, 56, 68, 255};
-uint8_t Render::s_vignette = 48;
+uint8_t Render::s_vignette = 16;
 
 static std::vector<Color4b> s_tintStack;
 
