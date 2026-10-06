@@ -18,6 +18,8 @@ inline constexpr float TWO_PI  = PI * 2.0f;
 inline constexpr float DEG2RAD = PI / 180.0f;
 inline constexpr float RAD2DEG = 180.0f / PI;
 
+struct Vector2i;
+
 struct Vector2f {
     float x = 0.0f;
     float y = 0.0f;
@@ -48,6 +50,7 @@ struct Vector2f {
     inline constexpr float cross(Vector2f r) const { return x * r.y - y * r.x; }
     inline constexpr float lengthSqr()       const { return x * x + y * y; }
     inline float           length()          const { return std::sqrt(lengthSqr()); }
+    inline constexpr Vector2f scale(Vector2f r) const { return { x * r.x, y * r.y }; }
 
     inline Vector2f normalized() const {
         float len = length();
@@ -65,12 +68,61 @@ struct Vector2f {
     inline constexpr Vector2f reflected(Vector2f normal) const {
         return *this - normal * (2.0f * dot(normal));
     }
+
+    inline constexpr Vector2i round() const;
+    inline constexpr Vector2i floor() const;
+    inline constexpr Vector2i ceil() const;
 };
 
 static inline constexpr Vector2f V2f(float x, float y) { return Vector2f(x, y); }
 
 static constexpr Vector2f V2F_ZERO = V2f(0, 0);
 static constexpr Vector2f V2F_ONE  = V2f(1, 1);
+
+struct Vector2i {
+    int x = 0;
+    int y = 0;
+
+    inline constexpr Vector2i() = default;
+    inline constexpr Vector2i(int x_, int y_) : x(x_), y(y_) {}
+
+    inline constexpr Vector2i operator-() const { return {-x, -y}; }
+    inline constexpr Vector2i operator+(Vector2i r) const { return {x + r.x, y + r.y}; }
+    inline constexpr Vector2i operator-(Vector2i r) const { return {x - r.x, y - r.y}; }
+    inline constexpr Vector2i operator*(int s) const { return {x * s, y * s}; }
+
+    friend inline constexpr Vector2i operator*(int s, Vector2i v) { return v * s; }
+
+    inline Vector2i& operator+=(Vector2i r) { x += r.x; y += r.y; return *this; }
+    inline Vector2i& operator-=(Vector2i r) { x -= r.x; y -= r.y; return *this; }
+    inline Vector2i& operator*=(int s)    { x *= s;   y *= s;   return *this; }
+
+    inline constexpr bool operator==(Vector2i r) const { return x == r.x && y == r.y; }
+    inline constexpr bool operator!=(Vector2i r) const { return !(*this == r); }
+
+    // NOTE(aren): for std::map
+    inline constexpr bool operator<(Vector2f r) const { return (x == r.x) ? (y < r.y) : (x < r.x); }
+
+
+    constexpr inline Vector2f f() const { return V2f(x, y); }
+};
+
+static inline constexpr Vector2i V2i(int x, int y) { return Vector2i(x, y); }
+
+static constexpr Vector2i V2I_ZERO = V2i(0, 0);
+static constexpr Vector2i V2I_ONE  = V2i(1, 1);
+
+inline constexpr Vector2i Vector2f::round() const {
+    return V2i(std::round(x), std::round(y));
+}
+
+inline constexpr Vector2i Vector2f::floor() const {
+    return V2i(std::floor(x), std::floor(y));
+}
+
+inline constexpr Vector2i Vector2f::ceil() const {
+    return V2i(std::ceil(x), std::ceil(y));
+}
 
 struct Rect {
     float x = 0, y = 0, w = 0, h = 0;
@@ -100,6 +152,8 @@ struct Color4b {
 
     inline constexpr bool operator==(Color4b v) const { return r == v.r && g == v.g && b == v.b && a == v.a; }
     inline constexpr bool operator!=(Color4b v) const { return !(*this == v); }
+
+    inline constexpr uint32_t rgba32() const { return a | (uint32_t(b) << 8) | (uint32_t(g) << 16) | (uint32_t(r) << 24); }
 };
 
 struct Color4f {
@@ -120,3 +174,11 @@ struct Color4f {
 };
 
 } // namespace aren
+
+// hashing
+template <>
+struct std::hash<aren::Vector2i> {
+    std::size_t operator()(const aren::Vector2i &r) const noexcept {
+        return std::hash<int>()(r.x) | (std::hash<int>()(r.y) << 1);
+    }
+};

@@ -27,6 +27,10 @@ Vector2f Camera::screenToWorld(Vector2f screen) const {
     return GetScreenToWorld2D(screen, static_cast<Camera2D>(*this));
 }
 
+Vector2f Camera::viewportToWorld(Vector2f viewport) const {
+    return screenToWorld(V2f(GetScreenWidth(), GetScreenHeight()).scale(viewport));
+}
+
 Vector2f Camera::worldToScreen(Vector2f world) const {
     return GetWorldToScreen2D(world, static_cast<Camera2D>(*this));
 }
@@ -51,7 +55,7 @@ void Camera::zoomToFit(const Rect &bounds) {
 
 Camera::operator ::Camera2D() const {
     return {
-        .offset = m_shakeOffset,
+        .offset = m_offset + m_shakeOffset,
         .target = m_target,
         .rotation = m_rotation,
         .zoom = m_zoom,

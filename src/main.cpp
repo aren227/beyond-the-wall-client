@@ -9,6 +9,11 @@
 #include "settings.hpp"
 #include "storage.hpp"
 
+#if DEBUG
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
+#endif
+
 namespace aren {
 
 constexpr int DEFAULT_WINDOW_WIDTH  = 1280;
@@ -53,6 +58,10 @@ int main() {
     Storage::init();
     Settings::init();
     s_game.init();
+
+    // NOTE(aren): Set default ui styles
+    GuiSetFont(Render::defaultFont());
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 16);
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 0, 1);

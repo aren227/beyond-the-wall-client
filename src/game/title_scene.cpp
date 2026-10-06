@@ -1,4 +1,5 @@
 #include "title_scene.hpp"
+#include "editor_scene.hpp"
 #include "game.hpp"
 #include "../ui.hpp"
 #include "../render.hpp"
@@ -17,6 +18,11 @@ static void startGame() {
     Game::removeScene<TitleScene>();
 }
 
+static void startEditor() {
+    Game::removeScene<TitleScene>();
+    Game::addScene<EditorScene>();
+}
+
 TitleScene::TitleScene() : Scene(TYPE) {}
 
 void TitleScene::update(float dt) {
@@ -24,6 +30,8 @@ void TitleScene::update(float dt) {
     if (Input::keyPressed(KEY_ENTER) || Input::keyPressed(KEY_KP_ENTER)) {
         startGame();
     }
+
+    startEditor();
 }
 
 void TitleScene::render() {
@@ -38,6 +46,12 @@ void TitleScene::render() {
     float row = c.y - TITLE_BUTTON_GAP * 1.5f;
     if (UI::textButton(V2f(c.x, row), TITLE_BUTTON_SIZE, "Start")) {
         startGame();
+        return;
+    }
+    row += TITLE_BUTTON_GAP;
+
+    if (UI::textButton(V2f(c.x, row), TITLE_BUTTON_SIZE, "Editor")) {
+        startEditor();
         return;
     }
     row += TITLE_BUTTON_GAP;

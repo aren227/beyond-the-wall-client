@@ -5,6 +5,9 @@ namespace aren {
 class Camera;
 
 class Render {
+private:
+    static Font s_defaultFont;
+
 public:
     enum class TextAlignH {
         Left, Center, Right
@@ -34,8 +37,7 @@ public:
 
     static void drawTriangleGradient(Vector2f a, Color4b ca, Vector2f b, Color4b cb, Vector2f c, Color4b cc);
 
-private:
-    static Font s_defaultFont;
+    static const Font &defaultFont() { return s_defaultFont; }
 };
 
 } // namespace aren

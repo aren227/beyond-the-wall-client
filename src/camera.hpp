@@ -5,8 +5,11 @@ namespace aren {
 class Camera {
 public:
     Vector2f m_target = V2F_ZERO;
+    Vector2f m_offset = V2F_ZERO;
     float m_rotation = 0.0f;
     float m_zoom = 1.0f;
+
+    Camera() = default;
 
     void update(float dt);
 
@@ -15,6 +18,7 @@ public:
     explicit operator ::Camera2D() const;
 
     Vector2f screenToWorld(Vector2f screen) const;
+    Vector2f viewportToWorld(Vector2f viewport) const;
     Vector2f worldToScreen(Vector2f world) const;
 
     void moveToInside(const Rect &bounds);

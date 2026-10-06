@@ -20,6 +20,10 @@
 // raylib
 #include <raylib.h>
 
+#if DEBUG
+#include "raygui.h"
+#endif
+
 #if defined(__clang__) || defined(__GNUC__)
 extern "C" void TraceLog(int logLevel, const char *text, ...)
     __attribute__((format(printf, 2, 3)));
