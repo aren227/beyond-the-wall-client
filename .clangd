@@ -1,2 +1,6 @@
 CompileFlags:
   CompilationDatabase: build/standalone-debug
+
+# NOTE(aren): bs header always added while editing.
+Completion:
+  HeaderInsertion: Never
