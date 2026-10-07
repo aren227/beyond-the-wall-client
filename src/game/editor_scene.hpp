@@ -36,6 +36,7 @@ public:
 
     void update(float dt) override;
     void render() override;
+    void renderUI() override;
 
 private:
     Camera m_cam;

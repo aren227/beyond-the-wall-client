@@ -14,6 +14,7 @@ public:
     virtual ~Scene() = default;
     virtual void update(float dt) = 0;
     virtual void render() = 0;
+    virtual void renderUI() = 0;
 
     SceneType type() const { return m_type; }
 

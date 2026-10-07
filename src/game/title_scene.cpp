@@ -34,7 +34,9 @@ void TitleScene::update(float dt) {
     startEditor();
 }
 
-void TitleScene::render() {
+void TitleScene::render() {}
+
+void TitleScene::renderUI() {
     int sw = GetScreenWidth();
     int sh = GetScreenHeight();
     Vector2f c = V2f(sw * 0.5f, sh * 0.5f + TITLE_BLOCK_OFFSET_Y);

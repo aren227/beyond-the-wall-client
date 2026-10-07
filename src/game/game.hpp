@@ -13,6 +13,7 @@ public:
     void init();
     void update(float dt);
     void render();
+    void renderUI();
 
     bool shouldExit() const { return m_shouldExit; }
 

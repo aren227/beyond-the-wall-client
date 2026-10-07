@@ -11,6 +11,7 @@ public:
     TitleScene();
 
     void update(float dt) override;
+    void renderUI() override;
     void render() override;
 };
 

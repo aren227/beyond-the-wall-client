@@ -60,6 +60,27 @@ void Game::render() {
     }
 
     s_tempScenes.clear();
+}
+
+void Game::renderUI() {
+    // TODO(aren): Garbage code needs to fix
+    // TODO(aren): May require better handling..
+    static std::vector<std::shared_ptr<Scene>> s_tempScenes;
+    s_tempScenes.reserve(8);
+    for (const auto &it : m_scenes) {
+        s_tempScenes.push_back(it);
+    }
+
+    for (size_t i = 0; i < s_tempScenes.size(); i++) {
+        bool isTop = (i + 1 == s_tempScenes.size());
+        if (isTop) UI::beginInput();
+        Render::pushTint(isTop ? WHITE : Color{0, 0, 0, 0});
+        s_tempScenes[i]->renderUI();
+        Render::popTint();
+        if (isTop) UI::endInput();
+    }
+
+    s_tempScenes.clear();
 
 #ifdef DEBUG
     int fps = m_lastDt > 0.0f ? (int)std::round(1.0f / m_lastDt) : 0;

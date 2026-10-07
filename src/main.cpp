@@ -26,11 +26,13 @@ void UpdateDrawFrame() {
     Audio::update();
     s_game.update(dt);
 
-    Render::beginDraw();
-
+    Render::beginGameDraw();
     s_game.render();
+    Render::endGameDraw();
 
-    Render::endDraw();
+    Render::beginUIDraw();
+    s_game.renderUI();
+    Render::endUIDraw();
 }
 
 } // namespace aren

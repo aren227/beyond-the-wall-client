@@ -21,7 +21,9 @@ void SettingsScene::update(float dt) {
     }
 }
 
-void SettingsScene::render() {
+void SettingsScene::render() {}
+
+void SettingsScene::renderUI() {
     int sw = GetScreenWidth();
     int sh = GetScreenHeight();
     Vector2f c = V2f(sw * 0.5f, sh * 0.5f);

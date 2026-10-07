@@ -70,7 +70,9 @@ void EditorScene::render() {
     }
 
     Render::end2DCam();
+}
 
+void EditorScene::renderUI() {
     GuiPanel({0, 0, 200, 800}, "Brush List");
 
     float y = 40;
