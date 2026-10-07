@@ -23,6 +23,11 @@ static void startEditor() {
     Game::addScene<EditorScene>();
 }
 
+static void startSettings() {
+    Game::removeScene<TitleScene>();
+    Game::addScene<SettingsScene>();
+}
+
 TitleScene::TitleScene() : Scene(TYPE) {}
 
 void TitleScene::update(float dt) {
@@ -59,7 +64,7 @@ void TitleScene::renderUI() {
     row += TITLE_BUTTON_GAP;
 
     if (UI::textButton(V2f(c.x, row), TITLE_BUTTON_SIZE, "Settings")) {
-        Game::addScene<SettingsScene>();
+        startSettings();
         return;
     }
     row += TITLE_BUTTON_GAP;

@@ -10,7 +10,6 @@ namespace aren {
 Color4b Render::s_backgroundColor = {50, 56, 68, 255};
 uint8_t Render::s_vignette = 16;
 
-static std::vector<Color4b> s_tintStack;
 static RenderTexture s_mainRt;
 
 constexpr int BLOOM_PASSES = 5;
@@ -24,11 +23,6 @@ static struct BloomPass {
 } s_bloomPass;
 
 static ::Shader s_tonemappingShader;
-
-static Color4b applyTint(Color4b color) {
-    auto tintColor = s_tintStack.empty() ? Color4b(WHITE) : s_tintStack.back();
-    return Color4b(Color4f(tintColor) * Color4f(color));
-}
 
 void Render::init() {
     constexpr int FONT_ATLAS_SIZE = 96;
@@ -83,7 +77,7 @@ void Render::drawText(Vector2f origin, float size, Color4b color, const char *te
 
     // TODO(aren): shadow
 
-    DrawTextEx(s_defaultFont, text, origin, size, 1.0f, applyTint(color));
+    DrawTextEx(s_defaultFont, text, origin, size, 1.0f, color);
 }
 
 void Render::drawTextRotated(Vector2f origin, float size, float rotationDeg, Color4b color, const char *text, TextAlignH alignH, TextAlignV alignV) {
@@ -97,7 +91,7 @@ void Render::drawTextRotated(Vector2f origin, float size, float rotationDeg, Col
 
     // TODO(aren): shadow
 
-    DrawTextPro(s_defaultFont, text, origin, pivot, rotationDeg, size, 1.0f, applyTint(color));
+    DrawTextPro(s_defaultFont, text, origin, pivot, rotationDeg, size, 1.0f, color);
 }
 
 void Render::beginGameDraw() {
@@ -202,21 +196,8 @@ void Render::endUIDraw() {
     EndDrawing();
 }
 
-void Render::pushTint(Color4b color) {
-    auto next = applyTint(color);
-    s_tintStack.push_back(next);
-}
-
-void Render::popTint() {
-    ASSERT(s_tintStack.size() > 0);
-    s_tintStack.pop_back();
-}
-
 void Render::drawTriangleGradient(Vector2f a, Color4b ca, Vector2f b, Color4b cb, Vector2f c, Color4b cc) {
     rlBegin(RL_TRIANGLES);
-    ca = applyTint(ca);
-    cb = applyTint(cb);
-    cc = applyTint(cc);
     rlColor4ub(ca.r, ca.g, ca.b, ca.a); rlVertex2f(a.x, a.y);
     rlColor4ub(cb.r, cb.g, cb.b, cb.a); rlVertex2f(b.x, b.y);
     rlColor4ub(cc.r, cc.g, cc.b, cc.a); rlVertex2f(c.x, c.y);

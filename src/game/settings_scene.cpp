@@ -1,4 +1,5 @@
 #include "settings_scene.hpp"
+#include "title_scene.hpp"
 #include "game.hpp"
 #include "../settings.hpp"
 #include "../render.hpp"
@@ -66,6 +67,7 @@ void SettingsScene::renderUI() {
     row += SETTINGS_ROW_GAP * 0.5f;
     if (UI::textButton(V2f(c.x, row), SETTINGS_BUTTON_SIZE, "Back")) {
         Game::removeScene<SettingsScene>();
+        Game::addScene<TitleScene>();
     }
 }
 
