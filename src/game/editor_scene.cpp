@@ -47,12 +47,16 @@ void EditorScene::render() {
     int l = std::ceil(tl.x);
     int r = std::floor(br.x);
 
-    for (int i = t; i <= b; i++) {
-        DrawLineV(V2f(tl.x, i), V2f(br.x, i), (i == 0) ? RED : GRAY);
+    if (m_drawWireframe) {
+        for (int i = t; i <= b; i++) {
+            DrawLineV(V2f(tl.x, i), V2f(br.x, i), (i == 0) ? RED : DARKGRAY);
+        }
+        for (int i = l; i <= r; i++) {
+            DrawLineV(V2f(i, tl.y), V2f(i, br.y), (i == 0) ? GREEN : DARKGRAY);
+        }
     }
-    for (int i = l; i <= r; i++) {
-        DrawLineV(V2f(i, tl.y), V2f(i, br.y), (i == 0) ? GREEN : GRAY);
-    }
+
+    if (Input::keyPressed(KEY_Q)) m_drawWireframe = !m_drawWireframe;
 
     auto mouse = m_cam.screenToWorld(Input::mousePosition()).floor();
     DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
@@ -66,7 +70,27 @@ void EditorScene::render() {
 
     // draw tiles
     for (const auto &[k, v] : m_blocks) {
-        DrawRectangleV(k.f(), V2F_ONE, {255, 255, 255, 255});
+        constexpr float thickness = 0.2f;
+        std::array<Vector2f, 4> points = {
+            V2f(0, 0),
+            V2f(1, 0),
+            V2f(1, 1),
+            V2f(0, 1),
+        };
+        std::array<Vector2i, 4> adj = {
+            V2i(0, -1),
+            V2i(1, 0),
+            V2i(0, 1),
+            V2i(-1, 0),
+        };
+        for (int i = 0; i < 4; i++) {
+            if (m_blocks.count(k + adj[i]) > 0) continue;
+            auto a = points[i];
+            auto b = points[(i+1)%4];
+            a += (b-a).perp() * thickness * 0.5f;
+            b += (b-a).perp() * thickness * 0.5f;
+            DrawLineEx(k.f() + a, k.f() + b, thickness, WHITE);
+        }
     }
 
     Render::end2DCam();

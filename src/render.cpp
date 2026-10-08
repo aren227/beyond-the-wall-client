@@ -17,7 +17,8 @@ static struct BloomPass {
     std::array<RenderTexture, BLOOM_PASSES> rts;
     ::Shader downsampleShader;
     ::Shader upsampleShader;
-    float intensity = 0.5f;
+    float mix = 0.7f;
+    float intensity = 0.1f;
     int downsampleShaderTextureSizeLoc;
     int upsampleShaderTextureSizeLoc;
 } s_bloomPass;
@@ -35,15 +36,15 @@ void Render::init() {
     // TODO(aren): Properly handle high dpi
     auto framebufferSize = V2f(GetScreenWidth(), GetScreenHeight()).scale(V2F_ONE).floor();
 
-    s_mainRt = RenderTexture(framebufferSize.x, framebufferSize.y);
+    s_mainRt = RenderTexture(framebufferSize.x, framebufferSize.y, true);
 
     // bloom
     auto bloomFramebufferSize = framebufferSize;
     for (int i = 0; i < BLOOM_PASSES; i++) {
-        bloomFramebufferSize.x /= 2;
-        bloomFramebufferSize.y /= 2;
+        bloomFramebufferSize.x = (bloomFramebufferSize.x + 1) / 2;
+        bloomFramebufferSize.y = (bloomFramebufferSize.y + 1) / 2;
 
-        s_bloomPass.rts[i] = RenderTexture(bloomFramebufferSize.x, bloomFramebufferSize.y);
+        s_bloomPass.rts[i] = RenderTexture(bloomFramebufferSize.x, bloomFramebufferSize.y, true);
         SetTextureFilter(s_bloomPass.rts[i].color(), TEXTURE_FILTER_BILINEAR);
         SetTextureWrap(s_bloomPass.rts[i].color(), TEXTURE_WRAP_CLAMP);
     }
@@ -129,7 +130,8 @@ void Render::endGameDraw() {
 
             BeginTextureMode(static_cast<::RenderTexture>(*nextRT));
             BeginShaderMode(s_bloomPass.downsampleShader);
-            DrawTexturePro(prevRT->color(), Rect(0, 0, prevRT->width(), prevRT->height()), Rect(0, 0, nextRT->width(), nextRT->height()), V2F_ZERO, 0, WHITE);
+            ClearBackground(BLACK);
+            DrawTexturePro(prevRT->color(), Rect(0, 0, prevRT->width(), -prevRT->height()), Rect(0, 0, nextRT->width(), nextRT->height()), V2F_ZERO, 0, WHITE);
             // DrawTextureRec(prevRT->color(), Rect(0, 0, prevRT->width(), -prevRT->height()), V2F_ZERO, WHITE);
             EndShaderMode();
             EndTextureMode();
@@ -147,8 +149,10 @@ void Render::endGameDraw() {
 
             BeginTextureMode(static_cast<::RenderTexture>(*nextRT));
             BeginShaderMode(s_bloomPass.upsampleShader);
-            DrawTexturePro(prevRT->color(), Rect(0, 0, prevRT->width(), prevRT->height()), Rect(0, 0, nextRT->width(), nextRT->height()), V2F_ZERO, 0, WHITE);
+            BeginBlendMode(BLEND_ADDITIVE);
+            DrawTexturePro(prevRT->color(), Rect(0, 0, prevRT->width(), -prevRT->height()), Rect(0, 0, nextRT->width(), nextRT->height()), V2F_ZERO, 0, Color4f(1, 1, 1, s_bloomPass.mix));
             // DrawTextureRec(prevRT->color(), Rect(0, 0, prevRT->width(), -prevRT->height()), V2F_ZERO, WHITE);
+            EndBlendMode();
             EndShaderMode();
             EndTextureMode();
             prevRT = nextRT;
@@ -161,7 +165,7 @@ void Render::endGameDraw() {
             Rect(0, 0, prevRT->width(), -prevRT->height()),
             Rect(0, 0, s_mainRt.width(), s_mainRt.height()),
             V2F_ZERO, 0,
-            Color4f(1, 1, 1, 0.5f)
+            Color4f(1, 1, 1, s_bloomPass.intensity)
         );
         EndBlendMode();
         EndTextureMode();

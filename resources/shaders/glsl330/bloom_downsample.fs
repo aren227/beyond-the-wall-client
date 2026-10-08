@@ -16,13 +16,11 @@ void main()
 {
     vec4 sum = vec4(0);
 
-    vec4 source = texture(texture0, fragTexCoord);
-
     for (int x = -1; x <= 1; x++) {
         for (int y = -1; y <= 1; y++) {
             sum += texture(texture0, fragTexCoord + textureSize.zw * vec2(x, y));
         }
     }
 
-    finalColor = sum / 9.0;
+    finalColor = sum / 9.0 * colDiffuse * fragColor;
 }

@@ -15,10 +15,10 @@ RenderTexture2D LoadRenderTextureHDRSupport(int width, int height, bool hdr)
         rlEnableFramebuffer(target.id);
 
         // Create color texture (default to RGBA)
-        target.texture.id = rlLoadTexture(NULL, width, height, hdr ? PIXELFORMAT_UNCOMPRESSED_R32G32B32A32 : PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
+        target.texture.id = rlLoadTexture(NULL, width, height, hdr ? PIXELFORMAT_UNCOMPRESSED_R32G32B32 : PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 1);
         target.texture.width = width;
         target.texture.height = height;
-        target.texture.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+        target.texture.format = hdr ? PIXELFORMAT_UNCOMPRESSED_R32G32B32 : PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
         target.texture.mipmaps = 1;
 
         // Create depth renderbuffer/texture

@@ -42,6 +42,7 @@ private:
     Camera m_cam;
     int m_brushIndex = 0;
     std::unordered_map<Vector2i, EditorBlock> m_blocks;
+    bool m_drawWireframe = true;
 };
 
 } // namespace aren
