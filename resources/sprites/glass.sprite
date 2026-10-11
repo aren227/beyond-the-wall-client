@@ -1,0 +1,14 @@
+layers 2
+
+layer 0
+    filename glass01
+    tag -1
+    render 0
+exit
+
+layer 1
+    filename glass02
+    tag -1
+    render 1
+    border 2 2 2 2
+exit

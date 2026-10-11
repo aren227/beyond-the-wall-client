@@ -7,6 +7,7 @@ enum class SceneType {
     Settings,
     World,
     Editor,
+    SpriteEditor,
 };
 
 class Scene {

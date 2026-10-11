@@ -1,5 +1,7 @@
 #include "editor_scene.hpp"
 #include "../render.hpp"
+#include "game.hpp"
+#include "sprite_editor_scene.hpp"
 
 namespace aren {
 
@@ -100,6 +102,12 @@ void EditorScene::renderUI() {
     GuiPanel({0, 0, 200, 800}, "Brush List");
 
     float y = 40;
+    if (GuiButton({10, y, 180, 30}, "Goto Sprite Editor")) {
+        Game::removeScene<EditorScene>();
+        Game::addScene<SpriteEditorScene>();
+    }
+    y += 40;
+
     for (int i = 0; i < int(EditorBrush::__MAX__); i++) {
         int prev = GuiGetStyle(BUTTON, BASE_COLOR_NORMAL);
         if (i == m_brushIndex) {
