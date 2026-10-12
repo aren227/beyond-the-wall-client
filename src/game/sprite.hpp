@@ -13,8 +13,10 @@ public:
         Method method = Method::Tiled;
 
         union {
-            int border[4];
-        } patched;
+            struct {
+                int border[4];
+            } patched;
+        } params;
     };
 public:
     Texture m_texture;
@@ -26,6 +28,14 @@ class Sprite {
 public:
     std::string m_name;
     std::vector<Layer> m_layers;
+
+public:
+    Sprite() = default;
+    void render(Rect rect, float scaler);
+    void renderCorner(Vector2f center, int tag, int rotation, float scaler);
+    void renderEdge(Vector2f center, Vector2f dirlen, int rotation, float scaler);
+
+    static bool load(const std::string &name, Sprite &sprite);
 };
 
 } // namespace aren

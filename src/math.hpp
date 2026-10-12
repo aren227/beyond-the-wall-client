@@ -51,6 +51,8 @@ struct Vector2f {
     inline constexpr float lengthSqr()       const { return x * x + y * y; }
     inline float           length()          const { return std::sqrt(lengthSqr()); }
     inline constexpr Vector2f scale(Vector2f r) const { return { x * r.x, y * r.y }; }
+    inline constexpr Vector2f min(Vector2f r) const { return { std::min(x, r.x), std::min(y, r.y) }; }
+    inline constexpr Vector2f max(Vector2f r) const { return { std::max(x, r.x), std::max(y, r.y) }; }
 
     inline Vector2f normalized() const {
         float len = length();
@@ -101,10 +103,11 @@ struct Vector2i {
     inline constexpr bool operator!=(Vector2i r) const { return !(*this == r); }
 
     // NOTE(aren): for std::map
-    inline constexpr bool operator<(Vector2f r) const { return (x == r.x) ? (y < r.y) : (x < r.x); }
-
+    inline constexpr bool operator<(Vector2i r) const { return (x == r.x) ? (y < r.y) : (x < r.x); }
 
     constexpr inline Vector2f f() const { return V2f(x, y); }
+    inline constexpr Vector2i min(Vector2i r) const { return { std::min(x, r.x), std::min(y, r.y) }; }
+    inline constexpr Vector2i max(Vector2i r) const { return { std::max(x, r.x), std::max(y, r.y) }; }
 };
 
 static inline constexpr Vector2i V2i(int x, int y) { return Vector2i(x, y); }

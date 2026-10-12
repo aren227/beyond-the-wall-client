@@ -16,8 +16,6 @@ public:
     void renderUI() override;
 
     void refreshAssets();
-    bool loadSprite(const std::string &path, Sprite &sprite);
-    void saveSprite(const std::string &path, const Sprite &sprite);
 
 private:
     std::vector<Sprite> m_sprites;

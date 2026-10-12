@@ -5,6 +5,138 @@
 
 namespace aren {
 
+struct EdgePlugDef {
+    Vector2i dir;
+    Vector2i normal;
+};
+
+struct EdgePlug {
+    Vector2i pos;
+    Vector2i dir;
+    Vector2i normal;
+};
+
+struct CornerTileDef {
+    bool pattern[2][2];
+    std::string spriteName;
+    int tag;
+    int rotation;
+    std::vector<EdgePlugDef> edgePlugs;
+};
+
+std::vector<CornerTileDef> CORNER_PATTERNS = {
+    {
+        // NOTE(aren): Assum cw rotation
+        // 1
+        {
+            .pattern = {{ 1, 0 }, { 0, 0 }},
+            .spriteName = "wall_corner01",
+            .tag = 0,
+            .rotation = 0,
+            .edgePlugs = {
+                { { -1, 0 }, { 0, 1 } },
+                { { 0, -1 }, { 1, 0 } },
+            },
+        },
+        {
+            .pattern = {{ 0, 0 }, { 1, 0 }},
+            .spriteName = "wall_corner01",
+            .tag = 0,
+            .rotation = -90,
+            .edgePlugs = {
+                { { -1, 0 }, { 0, -1 } },
+                { { 0, 1 }, { 1, 0 } },
+            },
+        },
+        {
+            .pattern = {{ 0, 0 }, { 0, 1 }},
+            .spriteName = "wall_corner01",
+            .tag = 0,
+            .rotation = -180,
+            .edgePlugs = {
+                { { 1, 0 }, { 0, -1 } },
+                { { 0, 1 }, { -1, 0 } },
+            },
+        },
+        {
+            .pattern = {{ 0, 1 }, { 0, 0 }},
+            .spriteName = "wall_corner01",
+            .tag = 0,
+            .rotation = -270,
+            .edgePlugs = {
+                { { 1, 0 }, { 0, 1 } },
+                { { 0, -1 }, { -1, 0 } },
+            },
+        },
+        // 2
+        {
+            .pattern = {{ 1, 0 }, { 0, 1 }},
+            .spriteName = "wall_corner01",
+            .tag = 1,
+            .rotation = 0,
+            .edgePlugs = {
+                { { 1, 0 }, { 0, -1 } },
+                { { -1, 0 }, { 0, 1 } },
+                { { 0, 1 }, { -1, 0 } },
+                { { 0, -1 }, { 1, 0 } },
+            },
+        },
+        {
+            .pattern = {{ 0, 1 }, { 1, 0 }},
+            .spriteName = "wall_corner01",
+            .tag = 1,
+            .rotation = -90,
+            .edgePlugs = {
+                { { 1, 0 }, { 0, 1 } },
+                { { -1, 0 }, { 0, -1 } },
+                { { 0, 1 }, { 1, 0 } },
+                { { 0, -1 }, { -1, 0 } },
+            },
+        },
+        // 3
+        {
+            .pattern = {{ 1, 1 }, { 0, 1 }},
+            .spriteName = "wall_corner01",
+            .tag = 2,
+            .rotation = 0,
+            .edgePlugs = {
+                { { -1, 0 }, { 0, 1 } },
+                { { 0, 1 }, { -1, 0 } },
+            },
+        },
+        {
+            .pattern = {{ 1, 1 }, { 1, 0 }},
+            .spriteName = "wall_corner01",
+            .tag = 2,
+            .rotation = -90,
+            .edgePlugs = {
+                { { 1, 0 }, { 0, 1 } },
+                { { 0, 1 }, { 1, 0 } },
+            },
+        },
+        {
+            .pattern = {{ 1, 0 }, { 1, 1 }},
+            .spriteName = "wall_corner01",
+            .tag = 2,
+            .rotation = -180,
+            .edgePlugs = {
+                { { 1, 0 }, { 0, -1 } },
+                { { 0, -1 }, { 1, 0 } },
+            },
+        },
+        {
+            .pattern = {{ 0, 1 }, { 1, 1 }},
+            .spriteName = "wall_corner01",
+            .tag = 2,
+            .rotation = -270,
+            .edgePlugs = {
+                { { -1, 0 }, { 0, -1 } },
+                { { 0, -1 }, { -1, 0 } },
+            },
+        },
+    }
+};
+
 static const char *getBrushName(EditorBrush type) {
     switch (type) {
         case EditorBrush::Wall: return "Wall";
@@ -17,6 +149,15 @@ static const char *getBrushName(EditorBrush type) {
 
 EditorScene::EditorScene() : Scene(TYPE) {
     m_cam.m_zoom = GetScreenHeight() / 10.0f;
+    if (Sprite::load("brick", m_brickSprite) == false) {
+        ASSERT(false);
+    }
+    if (Sprite::load("wall_corner", m_cornerSprite) == false) {
+        ASSERT(false);
+    }
+    if (Sprite::load("wall_edge", m_edgeSprite) == false) {
+        ASSERT(false);
+    }
 }
 
 void EditorScene::update(float dt) {
@@ -39,6 +180,17 @@ void EditorScene::render() {
         m_cam.m_target -= Input::mouseDelta() / m_cam.m_zoom;
     }
 
+    Vector2i minPos = V2I_ZERO;
+    Vector2i maxPos = V2I_ZERO;
+    if (m_blocks.size() > 0) {
+        maxPos = minPos = m_blocks.begin()->first;
+
+        for (const auto &[k, _] : m_blocks) {
+            maxPos = maxPos.max(k);
+            minPos = minPos.min(k);
+        }
+    }
+
     Render::begin2DCam(m_cam);
 
     auto tl = m_cam.viewportToWorld(V2F_ZERO);
@@ -58,6 +210,15 @@ void EditorScene::render() {
         }
     }
 
+    // bounds
+    {
+        auto m = minPos, M = maxPos + V2I_ONE;
+        DrawLineV(V2f(m.x, m.y), V2f(M.x, m.y), BLUE);
+        DrawLineV(V2f(M.x, m.y), V2f(M.x, M.y), BLUE);
+        DrawLineV(V2f(M.x, M.y), V2f(m.x, M.y), BLUE);
+        DrawLineV(V2f(m.x, M.y), V2f(m.x, m.y), BLUE);
+    }
+
     if (Input::keyPressed(KEY_Q)) m_drawWireframe = !m_drawWireframe;
 
     auto mouse = m_cam.screenToWorld(Input::mousePosition()).floor();
@@ -70,32 +231,98 @@ void EditorScene::render() {
         m_blocks.erase(mouse);
     }
 
+    Render::end2DCam();
+
+    constexpr int PIXEL_SCALER = 3;
+
     // draw tiles
     for (const auto &[k, v] : m_blocks) {
-        constexpr float thickness = 0.2f;
-        std::array<Vector2f, 4> points = {
-            V2f(0, 0),
-            V2f(1, 0),
-            V2f(1, 1),
-            V2f(0, 1),
-        };
-        std::array<Vector2i, 4> adj = {
-            V2i(0, -1),
-            V2i(1, 0),
-            V2i(0, 1),
-            V2i(-1, 0),
-        };
-        for (int i = 0; i < 4; i++) {
-            if (m_blocks.count(k + adj[i]) > 0) continue;
-            auto a = points[i];
-            auto b = points[(i+1)%4];
-            a += (b-a).perp() * thickness * 0.5f;
-            b += (b-a).perp() * thickness * 0.5f;
-            DrawLineEx(k.f() + a, k.f() + b, thickness, WHITE);
+        if (v.m_type == EditorBlockType::Wall) {
+            auto a = m_cam.worldToScreen(k.f());
+            auto b = m_cam.worldToScreen((k + V2I_ONE).f());
+
+            m_brickSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), PIXEL_SCALER);
         }
     }
 
-    Render::end2DCam();
+    static std::vector<EdgePlug> s_horizontalPlugs;
+    static std::vector<EdgePlug> s_verticalPLugs;
+    static std::vector<EdgePlug> s_plugs;
+
+    s_horizontalPlugs.clear();
+    s_verticalPLugs.clear();
+    s_plugs.clear();
+
+    // draw corners
+    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
+        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
+            bool v00 = getBlock(V2i(x, y)).m_type == EditorBlockType::Wall;
+            bool v01 = getBlock(V2i(x + 1, y)).m_type == EditorBlockType::Wall;
+            bool v10 = getBlock(V2i(x, y + 1)).m_type == EditorBlockType::Wall;
+            bool v11 = getBlock(V2i(x + 1, y + 1)).m_type == EditorBlockType::Wall;
+
+            for (const auto &jt : CORNER_PATTERNS) {
+                if (jt.pattern[0][0] == v00 && jt.pattern[0][1] == v01
+                    && jt.pattern[1][0] == v10 && jt.pattern[1][1] == v11) {
+                    auto center = V2i(x + 1, y + 1);
+                    auto a = m_cam.worldToScreen(center.f());
+                    m_cornerSprite.renderCorner(a, jt.tag, jt.rotation, PIXEL_SCALER);
+
+                    for (const auto &kt : jt.edgePlugs) {
+                        auto &plugs = (kt.dir.x == 1 || kt.dir.x == -1) ? s_horizontalPlugs : s_verticalPLugs;
+                        plugs.push_back({
+                            .pos = center,
+                            .dir = kt.dir,
+                            .normal = kt.normal,
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    std::sort(s_horizontalPlugs.begin(), s_horizontalPlugs.end(), [](const EdgePlug &a, const EdgePlug &b) {
+        return (a.pos == b.pos) ? (a.dir < b.dir) : ((a.pos.y == b.pos.y) ? (a.pos.x < b.pos.x) : (a.pos.y < b.pos.y));
+    });
+    std::sort(s_verticalPLugs.begin(), s_verticalPLugs.end(), [](const EdgePlug &a, const EdgePlug &b) {
+        return (a.pos == b.pos) ? (a.dir < b.dir) : ((a.pos.x == b.pos.x) ? (a.pos.y < b.pos.y) : (a.pos.x < b.pos.x));
+    });
+
+    // NOTE(aren): Must be paired
+    ASSERT(s_horizontalPlugs.size() % 2 == 0);
+    ASSERT(s_verticalPLugs.size() % 2 == 0);
+
+    // NOTE(aren): Merge to use same codes
+    for (const auto &it : s_horizontalPlugs) {
+        s_plugs.push_back(it);
+    }
+    for (const auto &it : s_verticalPLugs) {
+        s_plugs.push_back(it);
+    }
+
+    for (int i = 0; i < s_plugs.size(); i += 2) {
+        auto start = s_plugs[i];
+        bool isHorizontal = (start.dir.y == 0);
+        auto dirlen = (s_plugs[i+1].pos - start.pos).f();
+
+        auto centerW = m_cam.worldToScreen(start.pos.f() + dirlen * 0.5f);
+        auto dirlenW = m_cam.worldToScreen(dirlen) - m_cam.worldToScreen(V2F_ZERO);
+        // TODO(aren): Hardcoded border width(?)
+        dirlenW = V2F_ZERO.max(dirlenW - V2F_ONE * 5 * PIXEL_SCALER);
+
+        // NOTE(aren): for numerical stability
+        (isHorizontal ? dirlenW.y : dirlenW.x) = 0;
+
+        int rot = 0;
+        if (start.normal == V2i(0, 1)) rot = 0;
+        else if (start.normal == V2i(-1, 0)) rot = 90;
+        else if (start.normal == V2i(0, -1)) rot = 180;
+        else if (start.normal == V2i(1, 0)) rot = 270;
+        else ASSERT(false);
+
+        m_edgeSprite.renderEdge(centerW, dirlenW, rot, PIXEL_SCALER);
+    }
+
 }
 
 void EditorScene::renderUI() {
@@ -131,6 +358,16 @@ void EditorScene::renderUI() {
     if (Input::keyPressed(KEY_ONE)) {
         m_brushIndex = 0;
     }
+}
+
+EditorBlock &EditorScene::getBlock(const Vector2i &pos) {
+    static EditorBlock s_dummyBlock;
+    if (m_blocks.contains(pos)) {
+        return m_blocks[pos];
+    }
+
+    s_dummyBlock.m_type = EditorBlockType::Empty;
+    return s_dummyBlock;
 }
 
 }

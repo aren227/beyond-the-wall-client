@@ -2,6 +2,7 @@
 
 #include "scene.hpp"
 #include "../camera.hpp"
+#include "sprite.hpp"
 
 namespace aren {
 
@@ -14,7 +15,8 @@ enum class EditorBrush {
 };
 
 enum class EditorBlockType {
-    Wall = 0,
+    Empty = 0,
+    Wall,
     Barrier,
     Glass,
     Sand,
@@ -22,7 +24,7 @@ enum class EditorBlockType {
 
 class EditorBlock {
 public:
-    EditorBlockType m_type;
+    EditorBlockType m_type = EditorBlockType::Empty;
 
     explicit EditorBlock() = default;
     EditorBlock(EditorBlockType type) : m_type(type) {}
@@ -39,10 +41,17 @@ public:
     void renderUI() override;
 
 private:
+    EditorBlock &getBlock(const Vector2i &pos);
+
+private:
     Camera m_cam;
     int m_brushIndex = 0;
     std::unordered_map<Vector2i, EditorBlock> m_blocks;
     bool m_drawWireframe = true;
+
+    Sprite m_brickSprite;
+    Sprite m_cornerSprite;
+    Sprite m_edgeSprite;
 };
 
 } // namespace aren
