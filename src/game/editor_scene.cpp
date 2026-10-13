@@ -180,18 +180,19 @@ void EditorScene::render() {
         m_cam.m_target -= Input::mouseDelta() / m_cam.m_zoom;
     }
 
-    Vector2i minPos = V2I_ZERO;
-    Vector2i maxPos = V2I_ZERO;
-    if (m_blocks.size() > 0) {
-        maxPos = minPos = m_blocks.begin()->first;
-
-        for (const auto &[k, _] : m_blocks) {
-            maxPos = maxPos.max(k);
-            minPos = minPos.min(k);
-        }
-    }
-
     Render::begin2DCam(m_cam);
+
+    if (Input::keyPressed(KEY_Q)) m_drawWireframe = !m_drawWireframe;
+
+    auto mouse = m_cam.screenToWorld(Input::mousePosition()).floor();
+    DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
+
+    if (Input::mouseButtonDown(0)) {
+        m_blocks[mouse] = EditorBlock(EditorBlockType::Wall);
+    }
+    if (Input::mouseButtonDown(1)) {
+        m_blocks.erase(mouse);
+    }
 
     auto tl = m_cam.viewportToWorld(V2F_ZERO);
     auto br = m_cam.viewportToWorld(V2F_ONE);
@@ -210,6 +211,17 @@ void EditorScene::render() {
         }
     }
 
+    Vector2i minPos = V2I_ZERO;
+    Vector2i maxPos = V2I_ZERO;
+    if (m_blocks.size() > 0) {
+        maxPos = minPos = m_blocks.begin()->first;
+
+        for (const auto &[k, _] : m_blocks) {
+            maxPos = maxPos.max(k);
+            minPos = minPos.min(k);
+        }
+    }
+
     // bounds
     {
         auto m = minPos, M = maxPos + V2I_ONE;
@@ -217,18 +229,6 @@ void EditorScene::render() {
         DrawLineV(V2f(M.x, m.y), V2f(M.x, M.y), BLUE);
         DrawLineV(V2f(M.x, M.y), V2f(m.x, M.y), BLUE);
         DrawLineV(V2f(m.x, M.y), V2f(m.x, m.y), BLUE);
-    }
-
-    if (Input::keyPressed(KEY_Q)) m_drawWireframe = !m_drawWireframe;
-
-    auto mouse = m_cam.screenToWorld(Input::mousePosition()).floor();
-    DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
-
-    if (Input::mouseButtonDown(0)) {
-        m_blocks[mouse] = EditorBlock(EditorBlockType::Wall);
-    }
-    if (Input::mouseButtonDown(1)) {
-        m_blocks.erase(mouse);
     }
 
     Render::end2DCam();
