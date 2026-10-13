@@ -14,7 +14,7 @@ static std::string getSpritePath(const std::string &name) {
     return SPRITE_BASE + "/" + name + ".sprite";
 }
 
-void Sprite::render(Rect rect, float scaler) {
+void Sprite::render(Rect rect, int tag, float scaler) {
     auto rectK = rect;
 
     rect.x /= scaler;
@@ -23,6 +23,10 @@ void Sprite::render(Rect rect, float scaler) {
     rect.h /= scaler;
 
     for (const auto &layer : m_layers) {
+        if (layer.m_tag != tag) {
+            continue;
+        }
+
         switch (layer.m_render.method) {
             case Layer::Render::Method::Tiled:
             {

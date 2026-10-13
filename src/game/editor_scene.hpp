@@ -50,7 +50,6 @@ private:
     bool m_drawWireframe = true;
 
     Sprite m_brickSprite;
-    Sprite m_edgeSprite;
 };
 
 } // namespace aren

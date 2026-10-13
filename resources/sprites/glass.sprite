@@ -1,14 +1,31 @@
-layers 2
+layers 5
 
 layer 0
     filename glass01
-    tag -1
+    tag 0
     render 0
 exit
 
 layer 1
-    filename glass02
-    tag -1
-    render 1
-    border 2 2 2 2
+    filename edge02_corner01
+    tag 1
+    render 0
+exit
+
+layer 2
+    filename edge02_corner01
+    tag 2
+    render 0
+exit
+
+layer 3
+    filename edge02_corner03
+    tag 3
+    render 0
+exit
+
+layer 4
+    filename edge02_edge01
+    tag 4
+    render 0
 exit

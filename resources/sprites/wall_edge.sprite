@@ -1,7 +1,0 @@
-layers 1
-
-layer 0
-    filename wall_edge01_02
-    tag -1
-    render 0
-exit

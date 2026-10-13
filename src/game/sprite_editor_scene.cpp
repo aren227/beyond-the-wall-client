@@ -55,7 +55,7 @@ void SpriteEditorScene::update(float dt) {
 
 void SpriteEditorScene::render() {
     if (m_selectedSpriteIndex >= 0 && m_selectedSpriteIndex < m_sprites.size()) {
-        m_sprites[m_selectedSpriteIndex].render(m_renderRect, 2);
+        m_sprites[m_selectedSpriteIndex].render(m_renderRect, -1, 2);
     }
 }
 

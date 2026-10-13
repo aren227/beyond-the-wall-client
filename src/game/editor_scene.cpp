@@ -7,7 +7,6 @@ namespace aren {
 
 struct VertexDef {
     std::array<bool, 4> pattern;
-    std::string spriteName;
     int tag;
     int half; // in pixels
     int rotate;
@@ -16,22 +15,19 @@ struct VertexDef {
 static const std::vector<VertexDef> VERTEX_DEFS = {
     {
         .pattern = { 1, 0, 0, 0 },
-        .spriteName = "edge01",
-        .tag = 0,
-        .half = 5,
-        .rotate = 0,
-    },
-    {
-        .pattern = { 1, 0, 0, 1 },
-        .spriteName = "edge01",
         .tag = 1,
         .half = 5,
         .rotate = 0,
     },
     {
-        .pattern = { 0, 1, 1, 1 },
-        .spriteName = "edge01",
+        .pattern = { 1, 0, 0, 1 },
         .tag = 2,
+        .half = 5,
+        .rotate = 0,
+    },
+    {
+        .pattern = { 0, 1, 1, 1 },
+        .tag = 3,
         .half = 1,
         .rotate = 0,
     },
@@ -39,7 +35,8 @@ static const std::vector<VertexDef> VERTEX_DEFS = {
 
 static std::vector<VertexDef> s_vertexDefFull;
 
-static const int EDGE_TAG = 3;
+static const int SURFACE_TAG = 0;
+static const int EDGE_TAG = 4;
 
 static void rotatePattern(std::array<bool, 4> &pattern, int rotate) {
     // NOTE(aren): rotate clockwise
@@ -65,9 +62,6 @@ static const char *getBrushName(EditorBrush type) {
 EditorScene::EditorScene() : Scene(TYPE) {
     m_cam.m_zoom = GetScreenHeight() / 10.0f;
     if (Sprite::load("brick", m_brickSprite) == false) {
-        ASSERT(false);
-    }
-    if (Sprite::load("edge01", m_edgeSprite) == false) {
         ASSERT(false);
     }
 
@@ -164,7 +158,7 @@ void EditorScene::render() {
             auto a = m_cam.worldToScreen(k.f());
             auto b = m_cam.worldToScreen((k + V2I_ONE).f());
 
-            m_brickSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), PIXEL_SCALER);
+            m_brickSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, PIXEL_SCALER);
         }
     }
 
@@ -186,7 +180,7 @@ void EditorScene::render() {
                     s_vertexHalfs[center] = it.half;
 
                     auto a = m_cam.worldToScreen(center.f());
-                    m_edgeSprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
+                    m_brickSprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
                 }
             }
         }
@@ -216,7 +210,7 @@ void EditorScene::render() {
                 auto aSS = m_cam.worldToScreen(a);
                 auto bSS = m_cam.worldToScreen(b);
 
-                m_edgeSprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
+                m_brickSprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
             }
 
             // horizontal
@@ -230,7 +224,7 @@ void EditorScene::render() {
                 auto aSS = m_cam.worldToScreen(a);
                 auto bSS = m_cam.worldToScreen(b);
 
-                m_edgeSprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
+                m_brickSprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
             }
         }
     }

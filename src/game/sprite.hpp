@@ -31,7 +31,7 @@ public:
 
 public:
     Sprite() = default;
-    void render(Rect rect, float scaler);
+    void render(Rect rect, int tag, float scaler);
     void renderCorner(Vector2f center, int tag, int rotation, float scaler);
     void renderEdge(Vector2f center, Vector2f dirlen, int tag, int rotation, float scaler);
 
