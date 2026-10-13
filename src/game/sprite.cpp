@@ -93,11 +93,13 @@ void Sprite::renderCorner(Vector2f center, int tag, int rotation, float scaler) 
 
 }
 
-void Sprite::renderEdge(Vector2f center, Vector2f dirlen, int rotation, float scaler) {
+void Sprite::renderEdge(Vector2f center, Vector2f dirlen, int tag, int rotation, float scaler) {
     const Texture *tex = nullptr;
     for (const auto &it : m_layers) {
-        tex = &it.m_texture;
-        break;
+        if (it.m_tag == tag) {
+            tex = &it.m_texture;
+            break;
+        }
     }
 
     if (tex) {

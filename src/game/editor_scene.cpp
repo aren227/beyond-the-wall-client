@@ -5,137 +5,52 @@
 
 namespace aren {
 
-struct EdgePlugDef {
-    Vector2i dir;
-    Vector2i normal;
-};
-
-struct EdgePlug {
-    Vector2i pos;
-    Vector2i dir;
-    Vector2i normal;
-};
-
-struct CornerTileDef {
-    bool pattern[2][2];
+struct VertexDef {
+    std::array<bool, 4> pattern;
     std::string spriteName;
     int tag;
-    int rotation;
-    std::vector<EdgePlugDef> edgePlugs;
+    int half; // in pixels
+    int rotate;
 };
 
-std::vector<CornerTileDef> CORNER_PATTERNS = {
+static const std::vector<VertexDef> VERTEX_DEFS = {
     {
-        // NOTE(aren): Assum cw rotation
-        // 1
-        {
-            .pattern = {{ 1, 0 }, { 0, 0 }},
-            .spriteName = "wall_corner01",
-            .tag = 0,
-            .rotation = 0,
-            .edgePlugs = {
-                { { -1, 0 }, { 0, 1 } },
-                { { 0, -1 }, { 1, 0 } },
-            },
-        },
-        {
-            .pattern = {{ 0, 0 }, { 1, 0 }},
-            .spriteName = "wall_corner01",
-            .tag = 0,
-            .rotation = -90,
-            .edgePlugs = {
-                { { -1, 0 }, { 0, -1 } },
-                { { 0, 1 }, { 1, 0 } },
-            },
-        },
-        {
-            .pattern = {{ 0, 0 }, { 0, 1 }},
-            .spriteName = "wall_corner01",
-            .tag = 0,
-            .rotation = -180,
-            .edgePlugs = {
-                { { 1, 0 }, { 0, -1 } },
-                { { 0, 1 }, { -1, 0 } },
-            },
-        },
-        {
-            .pattern = {{ 0, 1 }, { 0, 0 }},
-            .spriteName = "wall_corner01",
-            .tag = 0,
-            .rotation = -270,
-            .edgePlugs = {
-                { { 1, 0 }, { 0, 1 } },
-                { { 0, -1 }, { -1, 0 } },
-            },
-        },
-        // 2
-        {
-            .pattern = {{ 1, 0 }, { 0, 1 }},
-            .spriteName = "wall_corner01",
-            .tag = 1,
-            .rotation = 0,
-            .edgePlugs = {
-                { { 1, 0 }, { 0, -1 } },
-                { { -1, 0 }, { 0, 1 } },
-                { { 0, 1 }, { -1, 0 } },
-                { { 0, -1 }, { 1, 0 } },
-            },
-        },
-        {
-            .pattern = {{ 0, 1 }, { 1, 0 }},
-            .spriteName = "wall_corner01",
-            .tag = 1,
-            .rotation = -90,
-            .edgePlugs = {
-                { { 1, 0 }, { 0, 1 } },
-                { { -1, 0 }, { 0, -1 } },
-                { { 0, 1 }, { 1, 0 } },
-                { { 0, -1 }, { -1, 0 } },
-            },
-        },
-        // 3
-        {
-            .pattern = {{ 1, 1 }, { 0, 1 }},
-            .spriteName = "wall_corner01",
-            .tag = 2,
-            .rotation = 0,
-            .edgePlugs = {
-                { { -1, 0 }, { 0, 1 } },
-                { { 0, 1 }, { -1, 0 } },
-            },
-        },
-        {
-            .pattern = {{ 1, 1 }, { 1, 0 }},
-            .spriteName = "wall_corner01",
-            .tag = 2,
-            .rotation = -90,
-            .edgePlugs = {
-                { { 1, 0 }, { 0, 1 } },
-                { { 0, 1 }, { 1, 0 } },
-            },
-        },
-        {
-            .pattern = {{ 1, 0 }, { 1, 1 }},
-            .spriteName = "wall_corner01",
-            .tag = 2,
-            .rotation = -180,
-            .edgePlugs = {
-                { { 1, 0 }, { 0, -1 } },
-                { { 0, -1 }, { 1, 0 } },
-            },
-        },
-        {
-            .pattern = {{ 0, 1 }, { 1, 1 }},
-            .spriteName = "wall_corner01",
-            .tag = 2,
-            .rotation = -270,
-            .edgePlugs = {
-                { { -1, 0 }, { 0, -1 } },
-                { { 0, -1 }, { -1, 0 } },
-            },
-        },
-    }
+        .pattern = { 1, 0, 0, 0 },
+        .spriteName = "edge01",
+        .tag = 0,
+        .half = 5,
+        .rotate = 0,
+    },
+    {
+        .pattern = { 1, 0, 0, 1 },
+        .spriteName = "edge01",
+        .tag = 1,
+        .half = 5,
+        .rotate = 0,
+    },
+    {
+        .pattern = { 0, 1, 1, 1 },
+        .spriteName = "edge01",
+        .tag = 2,
+        .half = 1,
+        .rotate = 0,
+    },
 };
+
+static std::vector<VertexDef> s_vertexDefFull;
+
+static const int EDGE_TAG = 3;
+
+static void rotatePattern(std::array<bool, 4> &pattern, int rotate) {
+    // NOTE(aren): rotate clockwise
+    for (int i = 0; i < rotate; i++) {
+        auto tmp = pattern;
+        pattern[0] = tmp[2];
+        pattern[1] = tmp[0];
+        pattern[2] = tmp[3];
+        pattern[3] = tmp[1];
+    }
+}
 
 static const char *getBrushName(EditorBrush type) {
     switch (type) {
@@ -152,11 +67,19 @@ EditorScene::EditorScene() : Scene(TYPE) {
     if (Sprite::load("brick", m_brickSprite) == false) {
         ASSERT(false);
     }
-    if (Sprite::load("wall_corner", m_cornerSprite) == false) {
+    if (Sprite::load("edge01", m_edgeSprite) == false) {
         ASSERT(false);
     }
-    if (Sprite::load("wall_edge", m_edgeSprite) == false) {
-        ASSERT(false);
+
+    if (s_vertexDefFull.empty()) {
+        for (const auto &it : VERTEX_DEFS) {
+            for (int i = 0; i < 4; i++) {
+                auto copy = it;
+                rotatePattern(copy.pattern, i);
+                copy.rotate = i;
+                s_vertexDefFull.push_back(copy);
+            }
+        }
     }
 }
 
@@ -245,82 +168,71 @@ void EditorScene::render() {
         }
     }
 
-    static std::vector<EdgePlug> s_horizontalPlugs;
-    static std::vector<EdgePlug> s_verticalPLugs;
-    static std::vector<EdgePlug> s_plugs;
+    static std::unordered_map<Vector2i, int> s_vertexHalfs;
+    s_vertexHalfs.clear();
 
-    s_horizontalPlugs.clear();
-    s_verticalPLugs.clear();
-    s_plugs.clear();
-
-    // draw corners
     for (int x = minPos.x - 1; x <= maxPos.x; x++) {
         for (int y = minPos.y - 1; y <= maxPos.y; y++) {
-            bool v00 = getBlock(V2i(x, y)).m_type == EditorBlockType::Wall;
-            bool v01 = getBlock(V2i(x + 1, y)).m_type == EditorBlockType::Wall;
-            bool v10 = getBlock(V2i(x, y + 1)).m_type == EditorBlockType::Wall;
-            bool v11 = getBlock(V2i(x + 1, y + 1)).m_type == EditorBlockType::Wall;
+            std::array<bool, 4> currPattern = {
+                getBlock(V2i(x, y)).m_type == EditorBlockType::Wall,
+                getBlock(V2i(x + 1, y)).m_type == EditorBlockType::Wall,
+                getBlock(V2i(x, y + 1)).m_type == EditorBlockType::Wall,
+                getBlock(V2i(x + 1, y + 1)).m_type == EditorBlockType::Wall,
+            };
 
-            for (const auto &jt : CORNER_PATTERNS) {
-                if (jt.pattern[0][0] == v00 && jt.pattern[0][1] == v01
-                    && jt.pattern[1][0] == v10 && jt.pattern[1][1] == v11) {
+            for (const auto &it : s_vertexDefFull) {
+                if (it.pattern == currPattern) {
                     auto center = V2i(x + 1, y + 1);
-                    auto a = m_cam.worldToScreen(center.f());
-                    m_cornerSprite.renderCorner(a, jt.tag, jt.rotation, PIXEL_SCALER);
+                    s_vertexHalfs[center] = it.half;
 
-                    for (const auto &kt : jt.edgePlugs) {
-                        auto &plugs = (kt.dir.x == 1 || kt.dir.x == -1) ? s_horizontalPlugs : s_verticalPLugs;
-                        plugs.push_back({
-                            .pos = center,
-                            .dir = kt.dir,
-                            .normal = kt.normal,
-                        });
-                    }
+                    auto a = m_cam.worldToScreen(center.f());
+                    m_edgeSprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
                 }
             }
         }
     }
 
-    std::sort(s_horizontalPlugs.begin(), s_horizontalPlugs.end(), [](const EdgePlug &a, const EdgePlug &b) {
-        return (a.pos == b.pos) ? (a.dir < b.dir) : ((a.pos.y == b.pos.y) ? (a.pos.x < b.pos.x) : (a.pos.y < b.pos.y));
-    });
-    std::sort(s_verticalPLugs.begin(), s_verticalPLugs.end(), [](const EdgePlug &a, const EdgePlug &b) {
-        return (a.pos == b.pos) ? (a.dir < b.dir) : ((a.pos.x == b.pos.x) ? (a.pos.y < b.pos.y) : (a.pos.x < b.pos.x));
-    });
+    const float worldToScreenScale = m_cam.worldToScreen(V2f(1, 0)).x - m_cam.worldToScreen(V2f(0, 0)).x;
 
-    // NOTE(aren): Must be paired
-    ASSERT(s_horizontalPlugs.size() % 2 == 0);
-    ASSERT(s_verticalPLugs.size() % 2 == 0);
+    const auto getVertexHalfWS = [&](const Vector2i &at) {
+        if (s_vertexHalfs.contains(at)) {
+            float screenSpace = s_vertexHalfs[at] * PIXEL_SCALER;
+            return screenSpace / worldToScreenScale;
+        }
+        return 0.0f;
+    };
 
-    // NOTE(aren): Merge to use same codes
-    for (const auto &it : s_horizontalPlugs) {
-        s_plugs.push_back(it);
-    }
-    for (const auto &it : s_verticalPLugs) {
-        s_plugs.push_back(it);
-    }
+    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
+        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
+            // vertical
+            bool p = getBlock(V2i(x, y)).m_type == EditorBlockType::Wall;
+            bool q = getBlock(V2i(x + 1, y)).m_type == EditorBlockType::Wall;
+            if (p ^ q) {
+                auto a = V2f(x + 1, y);
+                auto b = V2f(x + 1, y + 1);
+                a += V2f(0, 1) * getVertexHalfWS(V2i(x + 1, y));
+                b -= V2f(0, 1) * getVertexHalfWS(V2i(x + 1, y + 1));
 
-    for (int i = 0; i < s_plugs.size(); i += 2) {
-        auto start = s_plugs[i];
-        bool isHorizontal = (start.dir.y == 0);
-        auto dirlen = (s_plugs[i+1].pos - start.pos).f();
+                auto aSS = m_cam.worldToScreen(a);
+                auto bSS = m_cam.worldToScreen(b);
 
-        auto centerW = m_cam.worldToScreen(start.pos.f() + dirlen * 0.5f);
-        auto dirlenW = m_cam.worldToScreen(dirlen) - m_cam.worldToScreen(V2F_ZERO);
-        // TODO(aren): Hardcoded border width(?)
-        dirlenW = V2F_ZERO.max(dirlenW - V2F_ONE * 5 * PIXEL_SCALER);
+                m_edgeSprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
+            }
 
-        // NOTE(aren): for numerical stability
-        (isHorizontal ? dirlenW.y : dirlenW.x) = 0;
+            // horizontal
+            q = getBlock(V2i(x, y + 1)).m_type == EditorBlockType::Wall;
+            if (p ^ q) {
+                auto a = V2f(x, y + 1);
+                auto b = V2f(x + 1, y + 1);
+                a += V2f(1, 0) * getVertexHalfWS(V2i(x, y + 1));
+                b -= V2f(1, 0) * getVertexHalfWS(V2i(x + 1, y + 1));
 
-        int rot = 0;
-        if (start.normal == V2i(0, 1)) rot = 0;
-        else if (start.normal == V2i(-1, 0)) rot = 90;
-        else if (start.normal == V2i(0, -1)) rot = 180;
-        else if (start.normal == V2i(1, 0)) rot = 270;
-        else ASSERT(false);
+                auto aSS = m_cam.worldToScreen(a);
+                auto bSS = m_cam.worldToScreen(b);
 
-        m_edgeSprite.renderEdge(centerW, dirlenW, rot, PIXEL_SCALER);
+                m_edgeSprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
+            }
+        }
     }
 
 }

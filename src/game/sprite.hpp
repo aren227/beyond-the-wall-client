@@ -33,7 +33,7 @@ public:
     Sprite() = default;
     void render(Rect rect, float scaler);
     void renderCorner(Vector2f center, int tag, int rotation, float scaler);
-    void renderEdge(Vector2f center, Vector2f dirlen, int rotation, float scaler);
+    void renderEdge(Vector2f center, Vector2f dirlen, int tag, int rotation, float scaler);
 
     static bool load(const std::string &name, Sprite &sprite);
 };
