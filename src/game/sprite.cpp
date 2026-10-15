@@ -14,7 +14,7 @@ static std::string getSpritePath(const std::string &name) {
     return SPRITE_BASE + "/" + name + ".sprite";
 }
 
-void Sprite::render(Rect rect, int tag, float scaler) {
+void Sprite::render(Rect rect, int tag, float scaler) const {
     auto rectK = rect;
 
     rect.x /= scaler;
@@ -72,7 +72,7 @@ void Sprite::render(Rect rect, int tag, float scaler) {
     }
 }
 
-void Sprite::renderCorner(Vector2f center, int tag, int rotation, float scaler) {
+void Sprite::renderCorner(Vector2f center, int tag, int rotation, float scaler) const {
     const Texture *tex = nullptr;
     for (const auto &it : m_layers) {
         if (it.m_tag == tag) {
@@ -97,7 +97,7 @@ void Sprite::renderCorner(Vector2f center, int tag, int rotation, float scaler) 
 
 }
 
-void Sprite::renderEdge(Vector2f center, Vector2f dirlen, int tag, int rotation, float scaler) {
+void Sprite::renderEdge(Vector2f center, Vector2f dirlen, int tag, int rotation, float scaler) const {
     const Texture *tex = nullptr;
     for (const auto &it : m_layers) {
         if (it.m_tag == tag) {
@@ -140,7 +140,10 @@ bool Sprite::load(const std::string &name, Sprite &sprite) {
             sprite.m_layers.resize(layerCount);
         } else if (tok == "layer") {
             int layerNum; is >> layerNum;
-            if (layerNum >= sprite.m_layers.size()) return false;
+            if (layerNum >= sprite.m_layers.size()) {
+                ASSERTF(false, "Unexpected layer number: %d", layerNum);
+                return false;
+            }
             auto &layer = sprite.m_layers[layerNum];
 
             while (is >> tok) {

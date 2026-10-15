@@ -59,9 +59,29 @@ static const char *getBrushName(EditorBrush type) {
     }
 }
 
+static EditorBlockType getBrushBlockType(EditorBrush type) {
+    switch (type) {
+        case EditorBrush::Wall: return EditorBlockType::Wall;
+        case EditorBrush::Barrier: return EditorBlockType::Barrier;
+        case EditorBrush::Glass: return EditorBlockType::Glass;
+        case EditorBrush::Sand: return EditorBlockType::Sand;
+        default: return EditorBlockType::Empty;
+    }
+}
+
 EditorScene::EditorScene() : Scene(TYPE) {
     m_cam.m_zoom = GetScreenHeight() / 10.0f;
-    if (Sprite::load("brick", m_brickSprite) == false) {
+
+    if (Sprite::load("brick", m_sprites[EditorBlockType::Wall]) == false) {
+        ASSERT(false);
+    }
+    if (Sprite::load("glass", m_sprites[EditorBlockType::Glass]) == false) {
+        ASSERT(false);
+    }
+    if (Sprite::load("barrier", m_sprites[EditorBlockType::Barrier]) == false) {
+        ASSERT(false);
+    }
+    if (Sprite::load("sand", m_sprites[EditorBlockType::Sand]) == false) {
         ASSERT(false);
     }
 
@@ -79,6 +99,105 @@ EditorScene::EditorScene() : Scene(TYPE) {
 
 void EditorScene::update(float dt) {
     m_cam.update(dt);
+}
+
+void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, EditorBlockType type) {
+    constexpr int PIXEL_SCALER = 3;
+
+    if (m_sprites.count(type) == 0) {
+        return;
+    }
+
+    const auto &sprite = m_sprites[type];
+
+    // draw tiles
+    for (const auto &[k, v] : m_blocks) {
+        if (v.m_type == type) {
+            auto a = m_cam.worldToScreen(k.f());
+            auto b = m_cam.worldToScreen((k + V2I_ONE).f());
+
+            sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, PIXEL_SCALER);
+        }
+    }
+
+    const auto getBlock = [&](const Vector2i &pos) -> EditorBlockType {
+        if (pos.x < minPos.x || pos.x > maxPos.x || pos.y < minPos.y || pos.y > maxPos.y) {
+            return EditorBlockType::Barrier;
+        }
+
+        if (m_blocks.contains(pos)) {
+            return m_blocks[pos].m_type;
+        }
+
+        return EditorBlockType::Empty;
+    };
+
+    static std::unordered_map<Vector2i, int> s_vertexHalfs;
+    s_vertexHalfs.clear();
+
+    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
+        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
+            std::array<bool, 4> currPattern = {
+                getBlock(V2i(x, y)) == type,
+                getBlock(V2i(x + 1, y)) == type,
+                getBlock(V2i(x, y + 1)) == type,
+                getBlock(V2i(x + 1, y + 1)) == type,
+            };
+
+            for (const auto &it : s_vertexDefFull) {
+                if (it.pattern == currPattern) {
+                    auto center = V2i(x + 1, y + 1);
+                    s_vertexHalfs[center] = it.half;
+
+                    auto a = m_cam.worldToScreen(center.f());
+                    sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
+                }
+            }
+        }
+    }
+
+    const float worldToScreenScale = m_cam.worldToScreen(V2f(1, 0)).x - m_cam.worldToScreen(V2f(0, 0)).x;
+
+    const auto getVertexHalfWS = [&](const Vector2i &at) {
+        if (s_vertexHalfs.contains(at)) {
+            float screenSpace = s_vertexHalfs[at] * PIXEL_SCALER;
+            return screenSpace / worldToScreenScale;
+        }
+        return 0.0f;
+    };
+
+    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
+        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
+            // vertical
+            bool p = getBlock(V2i(x, y)) == type;
+            bool q = getBlock(V2i(x + 1, y)) == type;
+            if (p ^ q) {
+                auto a = V2f(x + 1, y);
+                auto b = V2f(x + 1, y + 1);
+                a += V2f(0, 1) * getVertexHalfWS(V2i(x + 1, y));
+                b -= V2f(0, 1) * getVertexHalfWS(V2i(x + 1, y + 1));
+
+                auto aSS = m_cam.worldToScreen(a);
+                auto bSS = m_cam.worldToScreen(b);
+
+                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
+            }
+
+            // horizontal
+            q = getBlock(V2i(x, y + 1)) == type;
+            if (p ^ q) {
+                auto a = V2f(x, y + 1);
+                auto b = V2f(x + 1, y + 1);
+                a += V2f(1, 0) * getVertexHalfWS(V2i(x, y + 1));
+                b -= V2f(1, 0) * getVertexHalfWS(V2i(x + 1, y + 1));
+
+                auto aSS = m_cam.worldToScreen(a);
+                auto bSS = m_cam.worldToScreen(b);
+
+                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
+            }
+        }
+    }
 }
 
 void EditorScene::render() {
@@ -105,7 +224,10 @@ void EditorScene::render() {
     DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
 
     if (Input::mouseButtonDown(0)) {
-        m_blocks[mouse] = EditorBlock(EditorBlockType::Wall);
+        auto blockType = getBrushBlockType(static_cast<EditorBrush>(m_brushIndex));
+        if (blockType != EditorBlockType::Empty) {
+            m_blocks[mouse] = EditorBlock(blockType);
+        }
     }
     if (Input::mouseButtonDown(1)) {
         m_blocks.erase(mouse);
@@ -150,83 +272,8 @@ void EditorScene::render() {
 
     Render::end2DCam();
 
-    constexpr int PIXEL_SCALER = 3;
-
-    // draw tiles
-    for (const auto &[k, v] : m_blocks) {
-        if (v.m_type == EditorBlockType::Wall) {
-            auto a = m_cam.worldToScreen(k.f());
-            auto b = m_cam.worldToScreen((k + V2I_ONE).f());
-
-            m_brickSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, PIXEL_SCALER);
-        }
-    }
-
-    static std::unordered_map<Vector2i, int> s_vertexHalfs;
-    s_vertexHalfs.clear();
-
-    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
-        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
-            std::array<bool, 4> currPattern = {
-                getBlock(V2i(x, y)).m_type == EditorBlockType::Wall,
-                getBlock(V2i(x + 1, y)).m_type == EditorBlockType::Wall,
-                getBlock(V2i(x, y + 1)).m_type == EditorBlockType::Wall,
-                getBlock(V2i(x + 1, y + 1)).m_type == EditorBlockType::Wall,
-            };
-
-            for (const auto &it : s_vertexDefFull) {
-                if (it.pattern == currPattern) {
-                    auto center = V2i(x + 1, y + 1);
-                    s_vertexHalfs[center] = it.half;
-
-                    auto a = m_cam.worldToScreen(center.f());
-                    m_brickSprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
-                }
-            }
-        }
-    }
-
-    const float worldToScreenScale = m_cam.worldToScreen(V2f(1, 0)).x - m_cam.worldToScreen(V2f(0, 0)).x;
-
-    const auto getVertexHalfWS = [&](const Vector2i &at) {
-        if (s_vertexHalfs.contains(at)) {
-            float screenSpace = s_vertexHalfs[at] * PIXEL_SCALER;
-            return screenSpace / worldToScreenScale;
-        }
-        return 0.0f;
-    };
-
-    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
-        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
-            // vertical
-            bool p = getBlock(V2i(x, y)).m_type == EditorBlockType::Wall;
-            bool q = getBlock(V2i(x + 1, y)).m_type == EditorBlockType::Wall;
-            if (p ^ q) {
-                auto a = V2f(x + 1, y);
-                auto b = V2f(x + 1, y + 1);
-                a += V2f(0, 1) * getVertexHalfWS(V2i(x + 1, y));
-                b -= V2f(0, 1) * getVertexHalfWS(V2i(x + 1, y + 1));
-
-                auto aSS = m_cam.worldToScreen(a);
-                auto bSS = m_cam.worldToScreen(b);
-
-                m_brickSprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
-            }
-
-            // horizontal
-            q = getBlock(V2i(x, y + 1)).m_type == EditorBlockType::Wall;
-            if (p ^ q) {
-                auto a = V2f(x, y + 1);
-                auto b = V2f(x + 1, y + 1);
-                a += V2f(1, 0) * getVertexHalfWS(V2i(x, y + 1));
-                b -= V2f(1, 0) * getVertexHalfWS(V2i(x + 1, y + 1));
-
-                auto aSS = m_cam.worldToScreen(a);
-                auto bSS = m_cam.worldToScreen(b);
-
-                m_brickSprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
-            }
-        }
+    for (const auto &[k, _] : m_sprites) {
+        renderBlockType(minPos, maxPos, k);
     }
 
 }
@@ -264,16 +311,6 @@ void EditorScene::renderUI() {
     if (Input::keyPressed(KEY_ONE)) {
         m_brushIndex = 0;
     }
-}
-
-EditorBlock &EditorScene::getBlock(const Vector2i &pos) {
-    static EditorBlock s_dummyBlock;
-    if (m_blocks.contains(pos)) {
-        return m_blocks[pos];
-    }
-
-    s_dummyBlock.m_type = EditorBlockType::Empty;
-    return s_dummyBlock;
 }
 
 }

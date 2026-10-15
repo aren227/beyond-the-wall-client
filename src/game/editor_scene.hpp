@@ -41,7 +41,7 @@ public:
     void renderUI() override;
 
 private:
-    EditorBlock &getBlock(const Vector2i &pos);
+    void renderBlockType(Vector2i minPos, Vector2i maxPos, EditorBlockType type);
 
 private:
     Camera m_cam;
@@ -49,7 +49,7 @@ private:
     std::unordered_map<Vector2i, EditorBlock> m_blocks;
     bool m_drawWireframe = true;
 
-    Sprite m_brickSprite;
+    std::unordered_map<EditorBlockType, Sprite> m_sprites;
 };
 
 } // namespace aren
