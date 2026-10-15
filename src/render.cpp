@@ -23,6 +23,7 @@ static struct BloomPass {
     int upsampleShaderTextureSizeLoc;
 } s_bloomPass;
 
+static ::Shader s_gammaToLinearShader;
 static ::Shader s_tonemappingShader;
 
 void Render::init() {
@@ -56,6 +57,11 @@ void Render::init() {
     s_bloomPass.upsampleShader = LoadShader(NULL, TextFormat("resources/shaders/glsl%i/bloom_upsample.fs", GLSL_VERSION));
 
     s_bloomPass.upsampleShaderTextureSizeLoc = GetShaderLocation(s_bloomPass.upsampleShader, "textureSize");
+
+    s_gammaToLinearShader = LoadShader(
+        TextFormat("resources/shaders/glsl%i/gamma_to_linear.vs", GLSL_VERSION),
+        TextFormat("resources/shaders/glsl%i/gamma_to_linear.fs", GLSL_VERSION)
+    );
 
     s_tonemappingShader = LoadShader(NULL, TextFormat("resources/shaders/glsl%i/tonemapping.fs", GLSL_VERSION));
 }
@@ -102,7 +108,10 @@ void Render::beginGameDraw() {
     // rlPushMatrix();
     // rlTranslatef(0.0f, GetScreenHeight(), 0.0f);
 
+    // TODO(aren): Not in linear space
     ClearBackground(s_backgroundColor);
+
+    BeginShaderMode(s_gammaToLinearShader);
 }
 
 void Render::endGameDraw() {
@@ -112,6 +121,8 @@ void Render::endGameDraw() {
     // int sh = GetScreenHeight();
     // float r = std::sqrt(float(sw * sw + sh * sh)) * 0.5f;
     // DrawCircleGradient(sw / 2, sh / 2, r, {0, 0, 0, 0}, {0, 0, 0, s_vignette});
+
+    EndShaderMode();
 
     EndTextureMode();
 
