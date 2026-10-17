@@ -51,6 +51,7 @@ private:
 
     std::unordered_map<EditorBlockType, Sprite> m_sprites;
     Sprite m_decoSprite;
+    Sprite m_playerSprite;
 };
 
 } // namespace aren

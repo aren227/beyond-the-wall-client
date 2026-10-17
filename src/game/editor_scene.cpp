@@ -86,6 +86,10 @@ EditorScene::EditorScene() : Scene(TYPE) {
         ASSERT(false);
     }
 
+    if (Sprite::load("player", m_playerSprite) == false) {
+        ASSERT(false);
+    }
+
     if (s_vertexDefFull.empty()) {
         const auto rotatePattern = [](std::array<bool, 4> &pattern) {
             // NOTE(aren): rotate clockwise
@@ -156,7 +160,7 @@ void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, int category
                 auto b = m_cam.worldToScreen((v + V2I_ONE).f());
 
                 const auto &sprite = m_sprites[getBlock(v)];
-                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, PIXEL_SCALER);
+                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER);
             }
         }
     }
@@ -327,10 +331,20 @@ void EditorScene::render() {
                     auto b = m_cam.worldToScreen(vf + V2F_ONE);
 
                     std::uniform_int_distribution<int> rdi(0, 4);
-                    m_decoSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 2);
+                    m_decoSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 0, 2);
                 }
             }
         }
+    }
+
+    // TODO(aren): We need a world space sprite render method!!
+    {
+        auto a = m_cam.worldToScreen(V2f(0, 0));
+        auto b = m_cam.worldToScreen(V2f(1, 1));
+        // TODO(aren): inconsistent pixel density
+        float scaler = (b.x - a.x) / 16.0f;
+        m_playerSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), 0, 0, scaler);
+        m_playerSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), 1, 0, scaler);
     }
 }
 
