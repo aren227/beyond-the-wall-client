@@ -1,0 +1,13 @@
+layers 2
+
+layer 0
+    filename player01_base
+    tag 0
+    render 0
+exit
+
+layer 1
+    filename player01_top
+    tag 1
+    render 0
+exit

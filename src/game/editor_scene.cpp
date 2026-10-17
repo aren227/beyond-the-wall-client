@@ -2,6 +2,7 @@
 #include "../render.hpp"
 #include "game.hpp"
 #include "sprite_editor_scene.hpp"
+#include <random>
 
 namespace aren {
 
@@ -78,6 +79,10 @@ EditorScene::EditorScene() : Scene(TYPE) {
         ASSERT(false);
     }
     if (Sprite::load("sand", m_sprites[EditorBlockType::Sand]) == false) {
+        ASSERT(false);
+    }
+
+    if (Sprite::load("deco01", m_decoSprite) == false) {
         ASSERT(false);
     }
 
@@ -306,6 +311,26 @@ void EditorScene::render() {
     // TODO(aren): hardcoded
     for (int i = 0; i < 4; i++) {
         renderBlockType(minPos, maxPos, i);
+    }
+
+    std::minstd_rand gen(minPos.x * minPos.y * maxPos.x * maxPos.y);
+
+    for (int x = minPos.x; x <= maxPos.x; x++) {
+        for (int y = minPos.y; y <= maxPos.y; y++) {
+            if (m_blocks.contains(V2i(x, y)) == false) {
+                std::uniform_real_distribution<float> rd(0.0f, 1.0f);
+                float v = rd(gen);
+                if (v < 0.2f) {
+                    auto offset = V2f(rd(gen) * 0.4f - 0.2f, rd(gen) * 0.4f - 0.2f);
+                    auto vf = V2i(x, y).f() + offset;
+                    auto a = m_cam.worldToScreen(vf);
+                    auto b = m_cam.worldToScreen(vf + V2F_ONE);
+
+                    std::uniform_int_distribution<int> rdi(0, 4);
+                    m_decoSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 2);
+                }
+            }
+        }
     }
 }
 

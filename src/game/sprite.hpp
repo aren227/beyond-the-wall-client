@@ -8,6 +8,7 @@ public:
         enum Method {
             Tiled = 0,
             Patched,
+            NoRepeat,
         };
 
         Method method = Method::Tiled;

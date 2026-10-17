@@ -50,6 +50,7 @@ private:
     bool m_drawWireframe = true;
 
     std::unordered_map<EditorBlockType, Sprite> m_sprites;
+    Sprite m_decoSprite;
 };
 
 } // namespace aren

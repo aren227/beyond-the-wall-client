@@ -63,6 +63,21 @@ void Sprite::render(Rect rect, int tag, float scaler) const {
 
                 break;
             }
+            case Layer::Render::Method::NoRepeat:
+            {
+                float sw = std::min(rect.w, float(layer.m_texture.width()));
+                float sh = std::min(rect.h, float(layer.m_texture.height()));
+                float sx = (layer.m_texture.width() - sw) * 0.5f;
+                float sy = (layer.m_texture.height() - sh) * 0.5f;
+
+                float dw = sw * scaler;
+                float dh = sh * scaler;
+                float dx = (rect.w * scaler - dw) * 0.5f + rect.x * scaler;
+                float dy = (rect.h * scaler - dh) * 0.5f + rect.y * scaler;
+
+                DrawTexturePro(::Texture2D(layer.m_texture), Rect(sx, sy, sw, sh), Rect(dx, dy, dw, dh), V2F_ZERO, 0, WHITE);
+                break;
+            }
             default:
             {
                 ASSERT(false);

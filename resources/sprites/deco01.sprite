@@ -1,0 +1,31 @@
+layers 5
+
+layer 0
+    filename deco01_grass01
+    tag 0
+    render 2
+exit
+
+layer 1
+    filename deco01_grass02
+    tag 1
+    render 2
+exit
+
+layer 2
+    filename deco01_grass03
+    tag 2
+    render 2
+exit
+
+layer 3
+    filename deco01_stone01
+    tag 3
+    render 2
+exit
+
+layer 4
+    filename deco01_stone02
+    tag 4
+    render 2
+exit
