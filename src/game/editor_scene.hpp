@@ -41,7 +41,7 @@ public:
     void renderUI() override;
 
 private:
-    void renderBlockType(Vector2i minPos, Vector2i maxPos, EditorBlockType type);
+    void renderBlockType(Vector2i minPos, Vector2i maxPos, int category);
 
 private:
     Camera m_cam;

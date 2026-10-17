@@ -10,6 +10,7 @@ struct VertexDef {
     int tag;
     int half; // in pixels
     int rotate;
+    int mainX, mainY;
 };
 
 static const std::vector<VertexDef> VERTEX_DEFS = {
@@ -18,18 +19,24 @@ static const std::vector<VertexDef> VERTEX_DEFS = {
         .tag = 1,
         .half = 5,
         .rotate = 0,
+        .mainX = 0,
+        .mainY = 0,
     },
     {
         .pattern = { 1, 0, 0, 1 },
         .tag = 2,
         .half = 5,
         .rotate = 0,
+        .mainX = 0,
+        .mainY = 0,
     },
     {
         .pattern = { 0, 1, 1, 1 },
         .tag = 3,
         .half = 1,
         .rotate = 0,
+        .mainX = 1,
+        .mainY = 1,
     },
 };
 
@@ -37,17 +44,6 @@ static std::vector<VertexDef> s_vertexDefFull;
 
 static const int SURFACE_TAG = 0;
 static const int EDGE_TAG = 4;
-
-static void rotatePattern(std::array<bool, 4> &pattern, int rotate) {
-    // NOTE(aren): rotate clockwise
-    for (int i = 0; i < rotate; i++) {
-        auto tmp = pattern;
-        pattern[0] = tmp[2];
-        pattern[1] = tmp[0];
-        pattern[2] = tmp[3];
-        pattern[3] = tmp[1];
-    }
-}
 
 static const char *getBrushName(EditorBrush type) {
     switch (type) {
@@ -86,12 +82,26 @@ EditorScene::EditorScene() : Scene(TYPE) {
     }
 
     if (s_vertexDefFull.empty()) {
+        const auto rotatePattern = [](std::array<bool, 4> &pattern) {
+            // NOTE(aren): rotate clockwise
+            auto tmp = pattern;
+            pattern[0] = tmp[2];
+            pattern[1] = tmp[0];
+            pattern[2] = tmp[3];
+            pattern[3] = tmp[1];
+        };
+
         for (const auto &it : VERTEX_DEFS) {
+            auto copy = it;
             for (int i = 0; i < 4; i++) {
-                auto copy = it;
-                rotatePattern(copy.pattern, i);
-                copy.rotate = i;
                 s_vertexDefFull.push_back(copy);
+
+                rotatePattern(copy.pattern);
+                copy.rotate++;
+
+                int tmp = copy.mainX;
+                copy.mainX = 1 - copy.mainY;
+                copy.mainY = tmp;
             }
         }
     }
@@ -101,24 +111,8 @@ void EditorScene::update(float dt) {
     m_cam.update(dt);
 }
 
-void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, EditorBlockType type) {
-    constexpr int PIXEL_SCALER = 3;
-
-    if (m_sprites.count(type) == 0) {
-        return;
-    }
-
-    const auto &sprite = m_sprites[type];
-
-    // draw tiles
-    for (const auto &[k, v] : m_blocks) {
-        if (v.m_type == type) {
-            auto a = m_cam.worldToScreen(k.f());
-            auto b = m_cam.worldToScreen((k + V2I_ONE).f());
-
-            sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, PIXEL_SCALER);
-        }
-    }
+void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, int category) {
+    constexpr int PIXEL_SCALER = 2;
 
     const auto getBlock = [&](const Vector2i &pos) -> EditorBlockType {
         if (pos.x < minPos.x || pos.x > maxPos.x || pos.y < minPos.y || pos.y > maxPos.y) {
@@ -132,22 +126,55 @@ void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, EditorBlockT
         return EditorBlockType::Empty;
     };
 
+    const auto getCategory = [&](const Vector2i &pos) -> int {
+        switch (getBlock(pos)) {
+            case EditorBlockType::Empty:
+                return 0;
+            case EditorBlockType::Barrier:
+            case EditorBlockType::Wall:
+                return 1;
+            case EditorBlockType::Glass:
+                return 2;
+            case EditorBlockType::Sand:
+                return 3;
+            default:
+                return 0;
+        }
+    };
+
+    // draw tiles
+    for (int x = minPos.x; x <= maxPos.x; x++) {
+        for (int y = minPos.y; y <= maxPos.y; y++) {
+            auto v = V2i(x, y);
+            if (getCategory(v) == category) {
+                auto a = m_cam.worldToScreen(v.f());
+                auto b = m_cam.worldToScreen((v + V2I_ONE).f());
+
+                const auto &sprite = m_sprites[getBlock(v)];
+                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, PIXEL_SCALER);
+            }
+        }
+    }
+
     static std::unordered_map<Vector2i, int> s_vertexHalfs;
     s_vertexHalfs.clear();
 
     for (int x = minPos.x - 1; x <= maxPos.x; x++) {
         for (int y = minPos.y - 1; y <= maxPos.y; y++) {
             std::array<bool, 4> currPattern = {
-                getBlock(V2i(x, y)) == type,
-                getBlock(V2i(x + 1, y)) == type,
-                getBlock(V2i(x, y + 1)) == type,
-                getBlock(V2i(x + 1, y + 1)) == type,
+                getCategory(V2i(x, y)) == category,
+                getCategory(V2i(x + 1, y)) == category,
+                getCategory(V2i(x, y + 1)) == category,
+                getCategory(V2i(x + 1, y + 1)) == category,
             };
 
             for (const auto &it : s_vertexDefFull) {
                 if (it.pattern == currPattern) {
                     auto center = V2i(x + 1, y + 1);
                     s_vertexHalfs[center] = it.half;
+
+                    auto main = V2i(x + it.mainX, y + it.mainY);
+                    const auto &sprite = m_sprites[getBlock(main)];
 
                     auto a = m_cam.worldToScreen(center.f());
                     sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
@@ -169,8 +196,8 @@ void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, EditorBlockT
     for (int x = minPos.x - 1; x <= maxPos.x; x++) {
         for (int y = minPos.y - 1; y <= maxPos.y; y++) {
             // vertical
-            bool p = getBlock(V2i(x, y)) == type;
-            bool q = getBlock(V2i(x + 1, y)) == type;
+            bool p = getCategory(V2i(x, y)) == category;
+            bool q = getCategory(V2i(x + 1, y)) == category;
             if (p ^ q) {
                 auto a = V2f(x + 1, y);
                 auto b = V2f(x + 1, y + 1);
@@ -180,11 +207,13 @@ void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, EditorBlockT
                 auto aSS = m_cam.worldToScreen(a);
                 auto bSS = m_cam.worldToScreen(b);
 
+                const auto &sprite = m_sprites[p ? getBlock(V2i(x, y)) : getBlock(V2i(x + 1, y))];
+
                 sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
             }
 
             // horizontal
-            q = getBlock(V2i(x, y + 1)) == type;
+            q = getCategory(V2i(x, y + 1)) == category;
             if (p ^ q) {
                 auto a = V2f(x, y + 1);
                 auto b = V2f(x + 1, y + 1);
@@ -193,6 +222,8 @@ void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, EditorBlockT
 
                 auto aSS = m_cam.worldToScreen(a);
                 auto bSS = m_cam.worldToScreen(b);
+
+                const auto &sprite = m_sprites[p ? getBlock(V2i(x, y)) : getBlock(V2i(x, y + 1))];
 
                 sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
             }
@@ -272,10 +303,10 @@ void EditorScene::render() {
 
     Render::end2DCam();
 
-    for (const auto &[k, _] : m_sprites) {
-        renderBlockType(minPos, maxPos, k);
+    // TODO(aren): hardcoded
+    for (int i = 0; i < 4; i++) {
+        renderBlockType(minPos, maxPos, i);
     }
-
 }
 
 void EditorScene::renderUI() {
