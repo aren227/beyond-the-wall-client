@@ -2,49 +2,10 @@
 #include "../render.hpp"
 #include "game.hpp"
 #include "sprite_editor_scene.hpp"
-#include <random>
 
 namespace aren {
 
-struct VertexDef {
-    std::array<bool, 4> pattern;
-    int tag;
-    int half; // in pixels
-    int rotate;
-    int mainX, mainY;
-};
-
-static const std::vector<VertexDef> VERTEX_DEFS = {
-    {
-        .pattern = { 1, 0, 0, 0 },
-        .tag = 1,
-        .half = 5,
-        .rotate = 0,
-        .mainX = 0,
-        .mainY = 0,
-    },
-    {
-        .pattern = { 1, 0, 0, 1 },
-        .tag = 2,
-        .half = 5,
-        .rotate = 0,
-        .mainX = 0,
-        .mainY = 0,
-    },
-    {
-        .pattern = { 0, 1, 1, 1 },
-        .tag = 3,
-        .half = 1,
-        .rotate = 0,
-        .mainX = 1,
-        .mainY = 1,
-    },
-};
-
-static std::vector<VertexDef> s_vertexDefFull;
-
-static const int SURFACE_TAG = 0;
-static const int EDGE_TAG = 4;
+static constexpr int PIXEL_SCALER = 2;
 
 static const char *getBrushName(EditorBrush type) {
     switch (type) {
@@ -56,188 +17,23 @@ static const char *getBrushName(EditorBrush type) {
     }
 }
 
-static EditorBlockType getBrushBlockType(EditorBrush type) {
+static TileType getTileTypeFromBrush(EditorBrush type) {
     switch (type) {
-        case EditorBrush::Wall: return EditorBlockType::Wall;
-        case EditorBrush::Barrier: return EditorBlockType::Barrier;
-        case EditorBrush::Glass: return EditorBlockType::Glass;
-        case EditorBrush::Sand: return EditorBlockType::Sand;
-        default: return EditorBlockType::Empty;
+        case EditorBrush::Wall: return TileType::Wall;
+        case EditorBrush::Barrier: return TileType::Barrier;
+        case EditorBrush::Glass: return TileType::Glass;
+        case EditorBrush::Sand: return TileType::Sand;
+        default: return TileType::Empty;
     }
 }
 
 EditorScene::EditorScene() : Scene(TYPE) {
     m_cam.m_zoom = GetScreenHeight() / 10.0f;
-
-    if (Sprite::load("brick", m_sprites[EditorBlockType::Wall]) == false) {
-        ASSERT(false);
-    }
-    if (Sprite::load("glass", m_sprites[EditorBlockType::Glass]) == false) {
-        ASSERT(false);
-    }
-    if (Sprite::load("barrier", m_sprites[EditorBlockType::Barrier]) == false) {
-        ASSERT(false);
-    }
-    if (Sprite::load("sand", m_sprites[EditorBlockType::Sand]) == false) {
-        ASSERT(false);
-    }
-
-    if (Sprite::load("deco01", m_decoSprite) == false) {
-        ASSERT(false);
-    }
-
-    if (Sprite::load("player", m_playerSprite) == false) {
-        ASSERT(false);
-    }
-
-    if (s_vertexDefFull.empty()) {
-        const auto rotatePattern = [](std::array<bool, 4> &pattern) {
-            // NOTE(aren): rotate clockwise
-            auto tmp = pattern;
-            pattern[0] = tmp[2];
-            pattern[1] = tmp[0];
-            pattern[2] = tmp[3];
-            pattern[3] = tmp[1];
-        };
-
-        for (const auto &it : VERTEX_DEFS) {
-            auto copy = it;
-            for (int i = 0; i < 4; i++) {
-                s_vertexDefFull.push_back(copy);
-
-                rotatePattern(copy.pattern);
-                copy.rotate++;
-
-                int tmp = copy.mainX;
-                copy.mainX = 1 - copy.mainY;
-                copy.mainY = tmp;
-            }
-        }
-    }
+    m_spriteSet.load();
 }
 
 void EditorScene::update(float dt) {
     m_cam.update(dt);
-}
-
-void EditorScene::renderBlockType(Vector2i minPos, Vector2i maxPos, int category) {
-    constexpr int PIXEL_SCALER = 2;
-
-    const auto getBlock = [&](const Vector2i &pos) -> EditorBlockType {
-        if (pos.x < minPos.x || pos.x > maxPos.x || pos.y < minPos.y || pos.y > maxPos.y) {
-            return EditorBlockType::Barrier;
-        }
-
-        if (m_blocks.contains(pos)) {
-            return m_blocks[pos].m_type;
-        }
-
-        return EditorBlockType::Empty;
-    };
-
-    const auto getCategory = [&](const Vector2i &pos) -> int {
-        switch (getBlock(pos)) {
-            case EditorBlockType::Empty:
-                return 0;
-            case EditorBlockType::Barrier:
-            case EditorBlockType::Wall:
-                return 1;
-            case EditorBlockType::Glass:
-                return 2;
-            case EditorBlockType::Sand:
-                return 3;
-            default:
-                return 0;
-        }
-    };
-
-    // draw tiles
-    for (int x = minPos.x; x <= maxPos.x; x++) {
-        for (int y = minPos.y; y <= maxPos.y; y++) {
-            auto v = V2i(x, y);
-            if (getCategory(v) == category) {
-                auto a = m_cam.worldToScreen(v.f());
-                auto b = m_cam.worldToScreen((v + V2I_ONE).f());
-
-                const auto &sprite = m_sprites[getBlock(v)];
-                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER);
-            }
-        }
-    }
-
-    static std::unordered_map<Vector2i, int> s_vertexHalfs;
-    s_vertexHalfs.clear();
-
-    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
-        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
-            std::array<bool, 4> currPattern = {
-                getCategory(V2i(x, y)) == category,
-                getCategory(V2i(x + 1, y)) == category,
-                getCategory(V2i(x, y + 1)) == category,
-                getCategory(V2i(x + 1, y + 1)) == category,
-            };
-
-            for (const auto &it : s_vertexDefFull) {
-                if (it.pattern == currPattern) {
-                    auto center = V2i(x + 1, y + 1);
-                    s_vertexHalfs[center] = it.half;
-
-                    auto main = V2i(x + it.mainX, y + it.mainY);
-                    const auto &sprite = m_sprites[getBlock(main)];
-
-                    auto a = m_cam.worldToScreen(center.f());
-                    sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
-                }
-            }
-        }
-    }
-
-    const float worldToScreenScale = m_cam.worldToScreen(V2f(1, 0)).x - m_cam.worldToScreen(V2f(0, 0)).x;
-
-    const auto getVertexHalfWS = [&](const Vector2i &at) {
-        if (s_vertexHalfs.contains(at)) {
-            float screenSpace = s_vertexHalfs[at] * PIXEL_SCALER;
-            return screenSpace / worldToScreenScale;
-        }
-        return 0.0f;
-    };
-
-    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
-        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
-            // vertical
-            bool p = getCategory(V2i(x, y)) == category;
-            bool q = getCategory(V2i(x + 1, y)) == category;
-            if (p ^ q) {
-                auto a = V2f(x + 1, y);
-                auto b = V2f(x + 1, y + 1);
-                a += V2f(0, 1) * getVertexHalfWS(V2i(x + 1, y));
-                b -= V2f(0, 1) * getVertexHalfWS(V2i(x + 1, y + 1));
-
-                auto aSS = m_cam.worldToScreen(a);
-                auto bSS = m_cam.worldToScreen(b);
-
-                const auto &sprite = m_sprites[p ? getBlock(V2i(x, y)) : getBlock(V2i(x + 1, y))];
-
-                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
-            }
-
-            // horizontal
-            q = getCategory(V2i(x, y + 1)) == category;
-            if (p ^ q) {
-                auto a = V2f(x, y + 1);
-                auto b = V2f(x + 1, y + 1);
-                a += V2f(1, 0) * getVertexHalfWS(V2i(x, y + 1));
-                b -= V2f(1, 0) * getVertexHalfWS(V2i(x + 1, y + 1));
-
-                auto aSS = m_cam.worldToScreen(a);
-                auto bSS = m_cam.worldToScreen(b);
-
-                const auto &sprite = m_sprites[p ? getBlock(V2i(x, y)) : getBlock(V2i(x, y + 1))];
-
-                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
-            }
-        }
-    }
 }
 
 void EditorScene::render() {
@@ -264,13 +60,13 @@ void EditorScene::render() {
     DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
 
     if (Input::mouseButtonDown(0)) {
-        auto blockType = getBrushBlockType(static_cast<EditorBrush>(m_brushIndex));
-        if (blockType != EditorBlockType::Empty) {
-            m_blocks[mouse] = EditorBlock(blockType);
+        auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
+        if (tileType != TileType::Empty) {
+            m_world.at(mouse) = Tile(tileType);
         }
     }
     if (Input::mouseButtonDown(1)) {
-        m_blocks.erase(mouse);
+        m_world.erase(mouse);
     }
 
     auto tl = m_cam.viewportToWorld(V2F_ZERO);
@@ -290,19 +86,10 @@ void EditorScene::render() {
         }
     }
 
-    Vector2i minPos = V2I_ZERO;
-    Vector2i maxPos = V2I_ZERO;
-    if (m_blocks.size() > 0) {
-        maxPos = minPos = m_blocks.begin()->first;
-
-        for (const auto &[k, _] : m_blocks) {
-            maxPos = maxPos.max(k);
-            minPos = minPos.min(k);
-        }
-    }
-
     // bounds
     {
+        Vector2i minPos, maxPos;
+        m_world.bounds(minPos, maxPos);
         auto m = minPos, M = maxPos + V2I_ONE;
         DrawLineV(V2f(m.x, m.y), V2f(M.x, m.y), BLUE);
         DrawLineV(V2f(M.x, m.y), V2f(M.x, M.y), BLUE);
@@ -314,38 +101,48 @@ void EditorScene::render() {
 
     // TODO(aren): hardcoded
     for (int i = 0; i < 4; i++) {
-        renderBlockType(minPos, maxPos, i);
+        m_world.renderTiles(m_cam, m_spriteSet, i);
     }
 
-    std::minstd_rand gen(minPos.x * minPos.y * maxPos.x * maxPos.y);
+    m_world.renderDecos(m_cam, m_spriteSet);
 
-    for (int x = minPos.x; x <= maxPos.x; x++) {
-        for (int y = minPos.y; y <= maxPos.y; y++) {
-            if (m_blocks.contains(V2i(x, y)) == false) {
-                std::uniform_real_distribution<float> rd(0.0f, 1.0f);
-                float v = rd(gen);
-                if (v < 0.2f) {
-                    auto offset = V2f(rd(gen) * 0.4f - 0.2f, rd(gen) * 0.4f - 0.2f);
-                    auto vf = V2i(x, y).f() + offset;
-                    auto a = m_cam.worldToScreen(vf);
-                    auto b = m_cam.worldToScreen(vf + V2F_ONE);
-
-                    std::uniform_int_distribution<int> rdi(0, 4);
-                    m_decoSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 0, 2);
-                }
-            }
-        }
-    }
-
+    Render::begin2DCam(m_cam);
     // TODO(aren): We need a world space sprite render method!!
     {
-        auto a = m_cam.worldToScreen(V2f(0, 0));
-        auto b = m_cam.worldToScreen(V2f(1, 1));
-        // TODO(aren): inconsistent pixel density
-        float scaler = (b.x - a.x) / 16.0f;
-        m_playerSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), 0, 0, scaler);
-        m_playerSprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), 1, 0, scaler);
+        const float worldToScreenScale = m_cam.worldToScreen(V2f(1, 0)).x - m_cam.worldToScreen(V2f(0, 0)).x;
+
+        float thickness = PIXEL_SCALER / worldToScreenScale;
+
+        auto playerPos = V2F_ONE * 0.5f;
+
+        const auto drawRect = [&](const Vector2f &center, const Vector2f &half) {
+            DrawRectangleV(center - half, half * 2, WHITE);
+            DrawRectangleV(center - half + V2F_ONE * thickness, half * 2 - V2F_ONE * thickness * 2, BLACK);
+        };
+
+        auto footPoses = {
+            V2f(-0.25f, -0.25f),
+            V2f(-0.25f, 0.25f),
+            V2f(0.25f, -0.25f),
+            V2f(0.25f, 0.25f),
+        };
+        const float footRadius = 0.1f;
+        for (const auto &it : footPoses) {
+            drawRect(playerPos + it, V2f(1.1f, 1.0f) * footRadius);
+        }
+
+        drawRect(playerPos, V2F_ONE * 0.25f);
+
+        float rot = Input::mousePosition().x;
+
+        const float playerRadius = 0.22f;
+        DrawCircleSector(playerPos, playerRadius, rot, 360+rot, 6, WHITE);
+        DrawCircleSector(playerPos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
+
+        // DrawCircleV(playerPos, playerRadius, WHITE);
+        // DrawCircleV(playerPos, playerRadius - thickness, BLACK);
     }
+    Render::end2DCam();
 }
 
 void EditorScene::renderUI() {

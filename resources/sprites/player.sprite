@@ -1,13 +1,37 @@
-layers 2
+layers 6
 
 layer 0
-    filename player01_base
+    filename player01_bottom01
     tag 0
     render 2
 exit
 
 layer 1
-    filename player01_top
+    filename player01_bottom02
     tag 1
+    render 2
+exit
+
+layer 2
+    filename player01_bottom03
+    tag 2
+    render 2
+exit
+
+layer 3
+    filename player01_bottom04
+    tag 3
+    render 2
+exit
+
+layer 4
+    filename player01_base
+    tag 4
+    render 2
+exit
+
+layer 5
+    filename player01_top
+    tag 5
     render 2
 exit

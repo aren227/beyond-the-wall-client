@@ -2,7 +2,8 @@
 
 #include "scene.hpp"
 #include "../camera.hpp"
-#include "sprite.hpp"
+#include "world.hpp"
+#include "sprite_set.hpp"
 
 namespace aren {
 
@@ -12,22 +13,6 @@ enum class EditorBrush {
     Glass,
     Sand,
     __MAX__,
-};
-
-enum class EditorBlockType {
-    Empty = 0,
-    Wall,
-    Barrier,
-    Glass,
-    Sand,
-};
-
-class EditorBlock {
-public:
-    EditorBlockType m_type = EditorBlockType::Empty;
-
-    explicit EditorBlock() = default;
-    EditorBlock(EditorBlockType type) : m_type(type) {}
 };
 
 class EditorScene : public Scene {
@@ -41,17 +26,12 @@ public:
     void renderUI() override;
 
 private:
-    void renderBlockType(Vector2i minPos, Vector2i maxPos, int category);
-
-private:
     Camera m_cam;
-    int m_brushIndex = 0;
-    std::unordered_map<Vector2i, EditorBlock> m_blocks;
-    bool m_drawWireframe = true;
+    World m_world;
+    SpriteSet m_spriteSet;
 
-    std::unordered_map<EditorBlockType, Sprite> m_sprites;
-    Sprite m_decoSprite;
-    Sprite m_playerSprite;
+    int m_brushIndex = 0;
+    bool m_drawWireframe = true;
 };
 
 } // namespace aren
