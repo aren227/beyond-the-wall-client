@@ -2,10 +2,9 @@
 #include "../render.hpp"
 #include "game.hpp"
 #include "sprite_editor_scene.hpp"
+#include "ingame_scene.hpp"
 
 namespace aren {
-
-static constexpr int PIXEL_SCALER = 2;
 
 static const char *getBrushName(EditorBrush type) {
     switch (type) {
@@ -39,35 +38,7 @@ void EditorScene::update(float dt) {
 void EditorScene::render() {
     ClearBackground(BLACK);
 
-    float sw = GetScreenWidth();
-    float sh = GetScreenHeight();
-
-    float zoomMin = sh / 10.0f;
-    float zoomMax = sh / 40.0f;
-
-    m_cam.m_zoom = std::clamp(m_cam.m_zoom + Input::mouseWheel(), zoomMax, zoomMin);
-    m_cam.m_offset = V2f(sw, sh) * 0.5f;
-
-    if (Input::mouseButtonDown(2)) {
-        m_cam.m_target -= Input::mouseDelta() / m_cam.m_zoom;
-    }
-
     Render::begin2DCam(m_cam);
-
-    if (Input::keyPressed(KEY_Q)) m_drawWireframe = !m_drawWireframe;
-
-    auto mouse = m_cam.screenToWorld(Input::mousePosition()).floor();
-    DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
-
-    if (Input::mouseButtonDown(0)) {
-        auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
-        if (tileType != TileType::Empty) {
-            m_world.at(mouse) = Tile(tileType);
-        }
-    }
-    if (Input::mouseButtonDown(1)) {
-        m_world.erase(mouse);
-    }
 
     auto tl = m_cam.viewportToWorld(V2F_ZERO);
     auto br = m_cam.viewportToWorld(V2F_ONE);
@@ -100,52 +71,52 @@ void EditorScene::render() {
     Render::end2DCam();
 
     // TODO(aren): hardcoded
+    // TODO(aren): We need a world space sprite render method!!
     for (int i = 0; i < 4; i++) {
         m_world.renderTiles(m_cam, m_spriteSet, i);
     }
 
-    m_world.renderDecos(m_cam, m_spriteSet);
+    m_world.renderDecos(m_cam, m_spriteSet);;
 
-    Render::begin2DCam(m_cam);
-    // TODO(aren): We need a world space sprite render method!!
-    {
-        const float worldToScreenScale = m_cam.worldToScreen(V2f(1, 0)).x - m_cam.worldToScreen(V2f(0, 0)).x;
-
-        float thickness = PIXEL_SCALER / worldToScreenScale;
-
-        auto playerPos = V2F_ONE * 0.5f;
-
-        const auto drawRect = [&](const Vector2f &center, const Vector2f &half) {
-            DrawRectangleV(center - half, half * 2, WHITE);
-            DrawRectangleV(center - half + V2F_ONE * thickness, half * 2 - V2F_ONE * thickness * 2, BLACK);
-        };
-
-        auto footPoses = {
-            V2f(-0.25f, -0.25f),
-            V2f(-0.25f, 0.25f),
-            V2f(0.25f, -0.25f),
-            V2f(0.25f, 0.25f),
-        };
-        const float footRadius = 0.1f;
-        for (const auto &it : footPoses) {
-            drawRect(playerPos + it, V2f(1.1f, 1.0f) * footRadius);
-        }
-
-        drawRect(playerPos, V2F_ONE * 0.25f);
-
-        float rot = Input::mousePosition().x;
-
-        const float playerRadius = 0.22f;
-        DrawCircleSector(playerPos, playerRadius, rot, 360+rot, 6, WHITE);
-        DrawCircleSector(playerPos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
-
-        // DrawCircleV(playerPos, playerRadius, WHITE);
-        // DrawCircleV(playerPos, playerRadius - thickness, BLACK);
-    }
-    Render::end2DCam();
+    m_world.renderMisc(m_cam);
 }
 
 void EditorScene::renderUI() {
+
+    // camera control
+    {
+        const float sw = GetScreenWidth();
+        const float sh = GetScreenHeight();
+
+        const float zoomMin = sh / 10.0f;
+        const float zoomMax = sh / 40.0f;
+
+        m_cam.m_zoom = std::clamp(m_cam.m_zoom + Input::mouseWheel(), zoomMax, zoomMin);
+        m_cam.m_offset = V2f(sw, sh) * 0.5f;
+
+        if (Input::mouseButtonDown(2)) {
+            m_cam.m_target -= Input::mouseDelta() / m_cam.m_zoom;
+        }
+    }
+
+    if (Input::keyPressed(KEY_Q)) m_drawWireframe = !m_drawWireframe;
+
+    // tile placement
+    {
+        auto mouse = m_cam.screenToWorld(Input::mousePosition()).floor();
+        DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
+
+        if (Input::mouseButtonDown(0)) {
+            auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
+            if (tileType != TileType::Empty) {
+                m_world.at(mouse) = Tile(tileType);
+            }
+        }
+        if (Input::mouseButtonDown(1)) {
+            m_world.erase(mouse);
+        }
+    }
+
     GuiPanel({0, 0, 200, 800}, "Brush List");
 
     float y = 40;
@@ -177,6 +148,10 @@ void EditorScene::renderUI() {
 
     if (Input::keyPressed(KEY_ONE)) {
         m_brushIndex = 0;
+    }
+
+    if (Input::keyPressed(KEY_F5)) {
+        Game::addScene<IngameScene>(m_world);
     }
 }
 

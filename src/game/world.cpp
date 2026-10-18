@@ -74,6 +74,10 @@ World::World() {
     }
 }
 
+void World::update(float dt) {
+    m_player.update(dt);
+}
+
 void World::bounds(Vector2i &min, Vector2i &max) {
     min = max = V2I_ZERO;
     if (m_tiles.size() > 0) {
@@ -230,6 +234,10 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
             }
         }
     }
+}
+
+void World::renderMisc(const Camera &cam) {
+    m_player.render(cam);
 }
 
 } // namespace aren

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tile.hpp"
+#include "player.hpp"
 
 namespace aren {
 
@@ -10,6 +11,8 @@ class SpriteSet;
 class World {
 public:
     World();
+
+    void update(float dt);
 
     void bounds(Vector2i &min, Vector2i &max);
 
@@ -21,8 +24,10 @@ public:
 
     void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category);
     void renderDecos(const Camera &cam, const SpriteSet &spriteSet);
+    void renderMisc(const Camera &cam);
 
 private:
+    Player m_player;
     std::unordered_map<Vector2i, Tile> m_tiles;
 };
 
