@@ -59,9 +59,7 @@ void EditorScene::render() {
 
     // bounds
     {
-        Vector2i minPos, maxPos;
-        m_world.bounds(minPos, maxPos);
-        auto m = minPos, M = maxPos + V2I_ONE;
+        auto m = m_world.m_min, M = m_world.m_max + V2I_ONE;
         DrawLineV(V2f(m.x, m.y), V2f(M.x, m.y), BLUE);
         DrawLineV(V2f(M.x, m.y), V2f(M.x, M.y), BLUE);
         DrawLineV(V2f(M.x, M.y), V2f(m.x, M.y), BLUE);
@@ -115,6 +113,8 @@ void EditorScene::renderUI() {
         if (Input::mouseButtonDown(1)) {
             m_world.erase(mouse);
         }
+
+        m_world.updateBounds();
     }
 
     GuiPanel({0, 0, 200, 800}, "Brush List");

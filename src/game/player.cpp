@@ -1,4 +1,5 @@
 #include "player.hpp"
+#include "world.hpp"
 #include "../camera.hpp"
 #include "../render.hpp"
 
@@ -22,7 +23,7 @@ static Vector2f moveTorwards(const Vector2f &from, const Vector2f &to, float dis
     return from + dir.normalized() * dist;
 }
 
-void Player::update(float dt) {
+void Player::update(const Camera &cam, const World &world, float dt) {
     Vector2f input = V2F_ZERO;
 
     if (Input::keyDown(KEY_W)) input += V2f(0, -1);
@@ -34,7 +35,119 @@ void Player::update(float dt) {
     Vector2f velocityNext = moveTorwards(m_velocity, velocityTarget, ((input == V2F_ZERO) ? m_brakeRate : m_accelRate) * dt);
 
     m_velocity = velocityNext;
-    m_pos += m_velocity * dt;
+
+    auto delta = m_velocity * dt;
+    delta = world.moveRect(Rect(m_pos.x - 0.25f, m_pos.y - 0.25f, 0.5f, 0.5f), delta);
+    m_pos += delta;
+
+    auto camPos = cam.screenToWorld(Input::mousePosition());
+    m_dir = (camPos - m_pos).normalized();
+
+    // beam update
+    const auto traversal = [&](const Vector2f &pos, const Vector2f &dir, const Vector2i &min, const Vector2i &max, std::vector<Vector2i> &res) {
+        auto cell = pos.floor();
+
+        Vector2i step;
+        step.x = dir.x > 0 ? 1 : (dir.x < 0 ? -1 : 0);
+        step.y = dir.y > 0 ? 1 : (dir.y < 0 ? -1 : 0);
+
+        Vector2f tDelta, tMin;
+        tDelta = V2f(1.0f / std::abs(dir.x), 1.0f / std::abs(dir.y));
+
+        tMin.x =  dir.x > 0 ? ((cell.x+1 - pos.x) / dir.x)
+                : dir.x < 0 ? ((pos.x - cell.x) / -dir.x)
+                : 1.0f/0.0f;
+        tMin.y =  dir.y > 0 ? ((cell.y+1 - pos.y) / dir.y)
+                : dir.y < 0 ? ((pos.y - cell.y) / -dir.y)
+                : 1.0f/0.0f;
+
+        do {
+            res.push_back(cell);
+
+            bool x = tMin.x < tMin.y;
+            (x ? cell.x : cell.y) += (x ? step.x : step.y);
+            (x ? tMin.x : tMin.y) += (x ? tDelta.x : tDelta.y);
+
+        } while (cell.x >= min.x && cell.x <= max.x && cell.y >= min.y && cell.y <= max.y);
+    };
+
+    const auto segmentIntersect = [&](const Vector2i &a, const Vector2i &b, const Vector2f &pos, const Vector2f &dir, float &t) -> bool {
+        ASSERT(a.x == b.x || a.y == b.y);
+        if (a.x == b.x && dir.x != 0) {
+            t = (a.x - pos.x) / dir.x;
+            float y = pos.y + dir.y * t;
+            if (t >= 0 && std::min(a.y, b.y) <= y && y <= std::max(a.y, b.y)) {
+                return true;
+            }
+        }
+        if (a.y == b.y && dir.y != 0) {
+            t = (a.y - pos.y) / dir.y;
+            float x = pos.x + dir.x * t;
+            if (t >= 0 && std::min(a.x, b.x) <= x && x <= std::max(a.x, b.x)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const auto cellIntersect = [&](const Vector2i &cell, const Vector2f &pos, const Vector2f &dir, float &t, Vector2f &normal) -> bool {
+        if (dir.x < 0) {
+            if (segmentIntersect(cell + V2i(1, 0), cell + V2i(1, 1), pos, dir, t)) {
+                normal = V2f(1, 0);
+                return true;
+            }
+        }
+        if (dir.x > 0) {
+            if (segmentIntersect(cell + V2i(0, 0), cell + V2i(0, 1), pos, dir, t)) {
+                normal = V2f(-1, 0);
+                return true;
+            }
+        }
+        if (dir.y < 0) {
+            if (segmentIntersect(cell + V2i(0, 1), cell + V2i(1, 1), pos, dir, t)) {
+                normal = V2f(0, 1);
+                return true;
+            }
+        }
+        if (dir.y > 0) {
+            if (segmentIntersect(cell + V2i(0, 0), cell + V2i(1, 0), pos, dir, t)) {
+                normal = V2f(0, -1);
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // beam raycast
+    {
+        Vector2f start = m_pos, dir = m_dir;
+
+        m_beam.m_start = start;
+        m_beam.m_points.clear();
+        m_beam.m_points.push_back(start);
+
+        for (int i = 0; i <= m_bounces; i++) {
+            static std::vector<Vector2i> s_visit;
+            s_visit.clear();
+
+            traversal(start, dir, world.m_min - V2I_ONE, world.m_max + V2I_ONE, s_visit);
+            for (const auto &it : s_visit) {
+                if (world.getTileType(it) != TileType::Empty) {
+                    float t;
+                    Vector2f normal;
+                    if (cellIntersect(it, start, dir, t, normal)) {
+                        auto next = start + dir * std::max(t - 0.01f, 0.0f);
+                        m_beam.m_points.push_back(next);
+
+                        start = next;
+                        dir = dir.reflected(normal);
+
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void Player::render(const Camera &cam) {
@@ -62,14 +175,22 @@ void Player::render(const Camera &cam) {
 
     drawRect(m_pos, V2F_ONE * 0.25f);
 
-    float rot = Input::mousePosition().x;
+    float rot = std::atan2(m_dir.y, m_dir.x) * RAD2DEG;
 
     const float playerRadius = 0.22f;
     DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, WHITE);
     DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
 
-    // DrawCircleV(playerPos, playerRadius, WHITE);
-    // DrawCircleV(playerPos, playerRadius - thickness, BLACK);
+    // NOTE(aren): Trick to render hdr color
+    if (m_beam.m_points.size() > 1) {
+        BeginBlendMode(BLEND_ADDITIVE);
+        for (int i = 0; i + 1 < m_beam.m_points.size(); i++) {
+            for (int j = 0; j < 5; j++) {
+                DrawLineEx(m_beam.m_points[i], m_beam.m_points[i+1], 0.1f, WHITE);
+            }
+        }
+        EndBlendMode();
+    }
 
     Render::end2DCam();
 }

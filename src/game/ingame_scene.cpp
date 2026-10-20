@@ -4,12 +4,12 @@
 namespace aren {
 
 IngameScene::IngameScene(const World &world) : Scene(TYPE) {
-    m_world = world;
+    m_world.tiles() = world.tiles();
     m_spriteSet.load();
 }
 
 void IngameScene::update(float dt) {
-    m_world.update(dt);
+    m_world.update(m_cam, dt);
 }
 
 void IngameScene::render() {
@@ -17,8 +17,8 @@ void IngameScene::render() {
 
     // camera
     {
-        Vector2i min, max;
-        m_world.bounds(min, max);
+        auto min = m_world.m_min;
+        auto max = m_world.m_max;
 
         max += V2I_ONE;
 

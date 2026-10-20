@@ -74,40 +74,39 @@ World::World() {
     }
 }
 
-void World::update(float dt) {
-    m_player.update(dt);
+void World::update(const Camera &cam, float dt) {
+    updateBounds();
+
+    m_player.update(cam, *this, dt);
 }
 
-void World::bounds(Vector2i &min, Vector2i &max) {
-    min = max = V2I_ZERO;
+void World::updateBounds() {
+    m_min = m_max = V2I_ZERO;
     if (m_tiles.size() > 0) {
-        min = max = m_tiles.begin()->first;
+        m_min = m_max = m_tiles.begin()->first;
 
         for (const auto &[k, _] : m_tiles) {
-            max = max.max(k);
-            min = min.min(k);
+            m_max = m_max.max(k);
+            m_min = m_min.min(k);
         }
     }
 }
 
+TileType World::getTileType(const Vector2i &pos) const {
+    if (pos.x < m_min.x || pos.x > m_max.x || pos.y < m_min.y || pos.y > m_max.y) {
+        return TileType::Barrier;
+    }
+
+    if (m_tiles.contains(pos)) {
+        return m_tiles.at(pos).m_type;
+    }
+
+    return TileType::Empty;
+}
+
 void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category) {
-    Vector2i minPos, maxPos;
-    bounds(minPos, maxPos);
-
-    const auto getBlock = [&](const Vector2i &pos) -> TileType {
-        if (pos.x < minPos.x || pos.x > maxPos.x || pos.y < minPos.y || pos.y > maxPos.y) {
-            return TileType::Barrier;
-        }
-
-        if (m_tiles.contains(pos)) {
-            return m_tiles.at(pos).m_type;
-        }
-
-        return TileType::Empty;
-    };
-
     const auto getCategory = [&](const Vector2i &pos) -> int {
-        switch (getBlock(pos)) {
+        switch (getTileType(pos)) {
             case TileType::Empty:
                 return 0;
             case TileType::Barrier:
@@ -123,14 +122,14 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
     };
 
     // draw tiles
-    for (int x = minPos.x; x <= maxPos.x; x++) {
-        for (int y = minPos.y; y <= maxPos.y; y++) {
+    for (int x = m_min.x; x <= m_max.x; x++) {
+        for (int y = m_min.y; y <= m_max.y; y++) {
             auto v = V2i(x, y);
             if (getCategory(v) == category) {
                 auto a = cam.worldToScreen(v.f());
                 auto b = cam.worldToScreen((v + V2I_ONE).f());
 
-                const auto &sprite = spriteSet.tile(getBlock(v));
+                const auto &sprite = spriteSet.tile(getTileType(v));
                 sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER);
             }
         }
@@ -139,8 +138,8 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
     static std::unordered_map<Vector2i, int> s_vertexHalfs;
     s_vertexHalfs.clear();
 
-    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
-        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
+    for (int x = m_min.x - 1; x <= m_max.x; x++) {
+        for (int y = m_min.y - 1; y <= m_max.y; y++) {
             std::array<bool, 4> currPattern = {
                 getCategory(V2i(x, y)) == category,
                 getCategory(V2i(x + 1, y)) == category,
@@ -154,7 +153,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                     s_vertexHalfs[center] = it.half;
 
                     auto main = V2i(x + it.mainX, y + it.mainY);
-                    const auto &sprite = spriteSet.tile(getBlock(main));
+                    const auto &sprite = spriteSet.tile(getTileType(main));
 
                     auto a = cam.worldToScreen(center.f());
                     sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
@@ -173,8 +172,8 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
         return 0.0f;
     };
 
-    for (int x = minPos.x - 1; x <= maxPos.x; x++) {
-        for (int y = minPos.y - 1; y <= maxPos.y; y++) {
+    for (int x = m_min.x - 1; x <= m_max.x; x++) {
+        for (int y = m_min.y - 1; y <= m_max.y; y++) {
             // vertical
             bool p = getCategory(V2i(x, y)) == category;
             bool q = getCategory(V2i(x + 1, y)) == category;
@@ -187,7 +186,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 auto aSS = cam.worldToScreen(a);
                 auto bSS = cam.worldToScreen(b);
 
-                const auto &sprite = spriteSet.tile(p ? getBlock(V2i(x, y)) : getBlock(V2i(x + 1, y)));
+                const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x + 1, y)));
 
                 sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
             }
@@ -203,7 +202,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 auto aSS = cam.worldToScreen(a);
                 auto bSS = cam.worldToScreen(b);
 
-                const auto &sprite = spriteSet.tile(p ? getBlock(V2i(x, y)) : getBlock(V2i(x, y + 1)));
+                const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x, y + 1)));
 
                 sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
             }
@@ -212,13 +211,10 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
 }
 
 void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
-    Vector2i minPos, maxPos;
-    bounds(minPos, maxPos);
+    std::minstd_rand gen(m_min.x * m_min.y * m_max.x * m_max.y);
 
-    std::minstd_rand gen(minPos.x * minPos.y * maxPos.x * maxPos.y);
-
-    for (int x = minPos.x; x <= maxPos.x; x++) {
-        for (int y = minPos.y; y <= maxPos.y; y++) {
+    for (int x = m_min.x; x <= m_max.x; x++) {
+        for (int y = m_min.y; y <= m_max.y; y++) {
             if (m_tiles.contains(V2i(x, y)) == false) {
                 std::uniform_real_distribution<float> rd(0.0f, 1.0f);
                 float v = rd(gen);
@@ -238,6 +234,66 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
 
 void World::renderMisc(const Camera &cam) {
     m_player.render(cam);
+}
+
+Vector2f World::moveRect(const Rect &rect, const Vector2f &delta) const {
+    if (delta.lengthSqr() < 1e-6) {
+        return V2F_ZERO;
+    }
+
+    Vector2f res = V2F_ZERO;
+
+    float minX = rect.x;
+    float maxX = rect.x + rect.w;
+    float minY = rect.y;
+    float maxY = rect.y + rect.h;
+
+    // NOTE(aren): move x axis first.
+    float targetMinX = minX + std::min(delta.x, 0.0f);
+    float targetMaxX = maxX + std::max(delta.x, 0.0f);
+
+    int minXi = std::floor(targetMinX);
+    int maxXi = std::floor(targetMaxX);
+    int minYi = std::floor(minY);
+    int maxYi = std::floor(maxY);
+
+    constexpr float MARGIN = 0.01f;
+
+    for (int x = minXi; x <= maxXi; x++) {
+        for (int y = minYi; y <= maxYi; y++) {
+            if (getTileType(V2i(x, y)) != TileType::Empty) {
+                if (delta.x > 0) targetMaxX = std::min(targetMaxX, x - MARGIN);
+                else targetMinX = std::max(targetMinX, x + 1 + MARGIN);
+            }
+        }
+    }
+
+    res.x = (delta.x > 0) ? targetMaxX - maxX : targetMinX - minX;
+
+    minX += res.x;
+    maxX += res.x;
+
+    // NOTE(aren): move y axis.
+    float targetMinY = minY + std::min(delta.y, 0.0f);
+    float targetMaxY = maxY + std::max(delta.y, 0.0f);
+
+    minXi = std::floor(minX);
+    maxXi = std::floor(maxX);
+    minYi = std::floor(targetMinY);
+    maxYi = std::floor(targetMaxY);
+
+    for (int x = minXi; x <= maxXi; x++) {
+        for (int y = minYi; y <= maxYi; y++) {
+            if (getTileType(V2i(x, y)) != TileType::Empty) {
+                if (delta.y > 0) targetMaxY = std::min(targetMaxY, y - MARGIN);
+                else targetMinY = std::max(targetMinY, y + 1 + MARGIN);
+            }
+        }
+    }
+
+    res.y = (delta.y > 0) ? (targetMaxY - maxY) : (targetMinY - minY);
+
+    return res;
 }
 
 } // namespace aren
