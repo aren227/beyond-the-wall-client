@@ -24,7 +24,7 @@ public:
 
     void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category);
     void renderDecos(const Camera &cam, const SpriteSet &spriteSet);
-    void renderMisc(const Camera &cam);
+    void renderMisc(const Camera &cam, const SpriteSet &spriteSet);
 
     Vector2f moveRect(const Rect &rect, const Vector2f &delta) const;
 
@@ -39,6 +39,7 @@ public:
     Vector2i m_min = V2I_ZERO, m_max = V2I_ZERO;
 
 private:
+    float m_time = 0;
     Player m_player;
     std::unordered_map<Vector2i, Tile> m_tiles;
 };

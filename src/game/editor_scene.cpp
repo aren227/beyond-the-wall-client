@@ -3,6 +3,7 @@
 #include "game.hpp"
 #include "sprite_editor_scene.hpp"
 #include "ingame_scene.hpp"
+#include "transition_scene.hpp"
 
 namespace aren {
 
@@ -103,7 +104,7 @@ void EditorScene::render() {
 
     m_world.renderDecos(m_cam, m_spriteSet);;
 
-    m_world.renderMisc(m_cam);
+    m_world.renderMisc(m_cam, m_spriteSet);
 }
 
 void EditorScene::renderUI() {
@@ -140,11 +141,7 @@ void EditorScene::renderUI() {
             auto beamColor = getBeamColorFromBrush(static_cast<EditorBrush>(m_brushIndex));
             if (m_world.contains(mouse)) {
                 auto &tile = m_world.at(mouse);
-                if (tile.m_beamProp.color == BeamColor::White) {
-                    tile.m_beamProp.color = beamColor;
-                } else {
-                    tile.m_beamProp.color = BeamColor(int(tile.m_beamProp.color) | int(beamColor));
-                }
+                tile.m_color = beamColor;
             }
         }
         if (Input::mouseButtonDown(1)) {
@@ -189,6 +186,7 @@ void EditorScene::renderUI() {
 
     if (Input::keyPressed(KEY_F5)) {
         Game::addScene<IngameScene>(m_world);
+        Game::addScene<TransitionScene>(true);
     }
 }
 

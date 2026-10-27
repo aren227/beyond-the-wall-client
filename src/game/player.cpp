@@ -135,18 +135,21 @@ void Player::update(const Camera &cam, const World &world, float dt) {
 
             for (const auto &it : s_visit) {
                 if (world.getTileType(it) != TileType::Empty) {
-                    float t;
-                    Vector2f normal;
-                    if (cellIntersect(it, segment.start, segment.dir, t, normal)) {
-                        segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
+                    const auto &tile = world.getTile(it);
+                    if (tile.isTransparent() == false) {
+                        float t;
+                        Vector2f normal;
+                        if (cellIntersect(it, segment.start, segment.dir, t, normal)) {
+                            segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
 
-                        m_beam.segments.push_back(segment);
+                            m_beam.segments.push_back(segment);
 
-                        segment.start = segment.end;
-                        segment.dir = segment.dir.reflected(normal);
-                        segment.prop = segment.prop.merge(world.getTile(it).m_beamProp);
+                            segment.start = segment.end;
+                            segment.dir = segment.dir.reflected(normal);
+                            segment.prop = segment.prop.merge(world.getTile(it).beamProp());
 
-                        break;
+                            break;
+                        }
                     }
                 }
             }

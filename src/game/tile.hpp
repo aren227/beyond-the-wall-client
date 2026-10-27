@@ -16,10 +16,16 @@ enum class TileType {
 class Tile {
 public:
     TileType m_type = TileType::Empty;
-    BeamProp m_beamProp;
+    BeamColor m_color = BeamColor::White;
 
+public:
     explicit Tile() = default;
     Tile(TileType type) : m_type(type) {}
+
+    BeamProp beamProp() const;
+
+    BeamColor beamColor() const;
+    bool isTransparent() const;
 };
 
 } // namespace aren

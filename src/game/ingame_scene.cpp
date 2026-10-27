@@ -42,7 +42,7 @@ void IngameScene::render() {
 
     m_world.renderDecos(m_cam, m_spriteSet);
 
-    m_world.renderMisc(m_cam);
+    m_world.renderMisc(m_cam, m_spriteSet);
 }
 
 void IngameScene::renderUI() {

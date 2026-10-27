@@ -19,6 +19,33 @@ void SpriteSet::load() {
     if (Sprite::load("deco01", deco) == false) {
         ASSERT(false);
     }
+
+    constexpr std::array<std::array<int, 4>, 4> DITHER_MATRIX = {{
+        {0, 8, 2, 10},
+        {12, 4, 14, 6},
+        {3, 11, 1, 9},
+        {15, 7, 13, 5},
+    }};
+
+    // XXX(aren): Bake all dithering levels into textures (to avoid using shaders)
+    for (int i = 0; i <= 16; i++) {
+        Image image = GenImageColor(4, 4, {0, 0, 0, 0});
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 4; x++) {
+                if (DITHER_MATRIX[y][x] >= 16-i) {
+                    ImageDrawPixel(&image, x, y, WHITE);
+                }
+            }
+        }
+
+        dither.m_name = "Dither";
+
+        Layer layer;
+        layer.m_texture = Texture(image);
+        layer.m_tag = i;
+
+        dither.m_layers.push_back(std::move(layer));
+    }
 }
 
 } // namespace aren

@@ -9,6 +9,7 @@ enum class SceneType {
     Editor,
     SpriteEditor,
     Ingame,
+    TransitionScene,
 };
 
 class Scene {

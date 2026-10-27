@@ -75,6 +75,8 @@ World::World() {
 }
 
 void World::update(const Camera &cam, float dt) {
+    m_time += dt;
+
     updateBounds();
 
     m_player.update(cam, *this, dt);
@@ -96,10 +98,7 @@ const Tile &World::getTile(const Vector2i &pos) const {
     static Tile s_tile;
 
     if (pos.x < m_min.x || pos.x > m_max.x || pos.y < m_min.y || pos.y > m_max.y) {
-        s_tile = Tile();
-        s_tile.m_type = TileType::Barrier;
-        s_tile.m_beamProp.color = BeamColor::Black;
-
+        s_tile = Tile(TileType::Barrier);
         return s_tile;
     }
 
@@ -107,8 +106,7 @@ const Tile &World::getTile(const Vector2i &pos) const {
         return m_tiles.at(pos);
     }
 
-    s_tile = Tile();
-    s_tile.m_type = TileType::Empty;
+    s_tile = Tile(TileType::Empty);
     return s_tile;
 }
 
@@ -117,7 +115,7 @@ TileType World::getTileType(const Vector2i &pos) const {
 }
 
 Color4f World::getColor(const Vector2i &pos) const {
-    auto color = getColorForBeam(getTile(pos).m_beamProp.color);
+    auto color = getColorForBeam(getTile(pos).beamColor());
     if (color == C4F_BLACK) {
         // XXX(aren): black has dedicated sprite..
         return C4F_WHITE;
@@ -257,7 +255,7 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
     }
 }
 
-void World::renderMisc(const Camera &cam) {
+void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     m_player.render(cam);
 }
 
