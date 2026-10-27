@@ -29,6 +29,10 @@ public:
     Vector2f moveRect(const Rect &rect, const Vector2f &delta) const;
 
     TileType getTileType(const Vector2i &pos) const;
+    const Tile &getTile(const Vector2i &pos) const;
+
+private:
+    Color4f getColor(const Vector2i &pos) const;
 
 public:
     // XXX(aren): lazy

@@ -144,6 +144,8 @@ struct Rect {
     inline constexpr Rect extends(float v) { return {x - v, y - v, w + v * 2, h + v * 2}; }
 };
 
+struct Color4f;
+
 struct Color4b {
     uint8_t r = 0, g = 0, b = 0, a = 0;
 
@@ -157,6 +159,8 @@ struct Color4b {
     inline constexpr bool operator!=(Color4b v) const { return !(*this == v); }
 
     inline constexpr uint32_t rgba32() const { return a | (uint32_t(b) << 8) | (uint32_t(g) << 16) | (uint32_t(r) << 24); }
+
+    inline constexpr Color4f f() const;
 };
 
 struct Color4f {
@@ -172,9 +176,14 @@ struct Color4f {
     inline constexpr Color4f operator*(float s) const { return {r * s, g * s, b * s, a * s}; }
     inline constexpr Color4f operator/(float s) const { return {r / s, g / s, b / s, a / s}; }
 
-    inline constexpr bool operator==(Color4b v) const { return r == v.r && g == v.g && b == v.b && a == v.a; }
-    inline constexpr bool operator!=(Color4b v) const { return !(*this == v); }
+    inline constexpr bool operator==(Color4f v) const { return r == v.r && g == v.g && b == v.b && a == v.a; }
+    inline constexpr bool operator!=(Color4f v) const { return !(*this == v); }
 };
+
+static constexpr Color4f C4F_WHITE = Color4f(1, 1, 1, 1);
+static constexpr Color4f C4F_BLACK = Color4f(0, 0, 0, 1);
+
+inline constexpr Color4f Color4b::f() const { return Color4f(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f); }
 
 } // namespace aren
 

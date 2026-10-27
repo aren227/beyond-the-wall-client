@@ -92,16 +92,37 @@ void World::updateBounds() {
     }
 }
 
-TileType World::getTileType(const Vector2i &pos) const {
+const Tile &World::getTile(const Vector2i &pos) const {
+    static Tile s_tile;
+
     if (pos.x < m_min.x || pos.x > m_max.x || pos.y < m_min.y || pos.y > m_max.y) {
-        return TileType::Barrier;
+        s_tile = Tile();
+        s_tile.m_type = TileType::Barrier;
+        s_tile.m_beamProp.color = BeamColor::Black;
+
+        return s_tile;
     }
 
     if (m_tiles.contains(pos)) {
-        return m_tiles.at(pos).m_type;
+        return m_tiles.at(pos);
     }
 
-    return TileType::Empty;
+    s_tile = Tile();
+    s_tile.m_type = TileType::Empty;
+    return s_tile;
+}
+
+TileType World::getTileType(const Vector2i &pos) const {
+    return getTile(pos).m_type;
+}
+
+Color4f World::getColor(const Vector2i &pos) const {
+    auto color = getColorForBeam(getTile(pos).m_beamProp.color);
+    if (color == C4F_BLACK) {
+        // XXX(aren): black has dedicated sprite..
+        return C4F_WHITE;
+    }
+    return color;
 }
 
 void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category) {
@@ -130,7 +151,8 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 auto b = cam.worldToScreen((v + V2I_ONE).f());
 
                 const auto &sprite = spriteSet.tile(getTileType(v));
-                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER);
+                const Color4f color = getColor(v);
+                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER, color);
             }
         }
     }
@@ -154,9 +176,10 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
 
                     auto main = V2i(x + it.mainX, y + it.mainY);
                     const auto &sprite = spriteSet.tile(getTileType(main));
+                    const auto color = getColor(main);
 
                     auto a = cam.worldToScreen(center.f());
-                    sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER);
+                    sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER, color);
                 }
             }
         }
@@ -187,8 +210,9 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 auto bSS = cam.worldToScreen(b);
 
                 const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x + 1, y)));
+                const auto color = getColor(p ? V2i(x, y) : V2i(x + 1, y));
 
-                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER);
+                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER, color);
             }
 
             // horizontal
@@ -203,8 +227,9 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 auto bSS = cam.worldToScreen(b);
 
                 const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x, y + 1)));
+                const auto color = getColor(p ? V2i(x, y) : V2i(x, y + 1));
 
-                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER);
+                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER, color);
             }
         }
     }
@@ -225,7 +250,7 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
                     auto b = cam.worldToScreen(vf + V2F_ONE);
 
                     std::uniform_int_distribution<int> rdi(0, 4);
-                    spriteSet.deco.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 0, PIXEL_SCALER);
+                    spriteSet.deco.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 0, PIXEL_SCALER, WHITE);
                 }
             }
         }

@@ -7,14 +7,6 @@
 
 namespace aren {
 
-enum class EditorBrush {
-    Wall = 0,
-    Barrier,
-    Glass,
-    Sand,
-    __MAX__,
-};
-
 class EditorScene : public Scene {
 public:
     static constexpr SceneType TYPE = SceneType::Editor;

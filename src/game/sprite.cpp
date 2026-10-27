@@ -14,7 +14,7 @@ static std::string getSpritePath(const std::string &name) {
     return SPRITE_BASE + "/" + name + ".sprite";
 }
 
-void Sprite::render(Rect rect, int tag, float rotation, float scaler) const {
+void Sprite::render(Rect rect, int tag, float rotation, float scaler, const Color4f &color) const {
     auto rectK = rect;
 
     rect.x /= scaler;
@@ -30,7 +30,7 @@ void Sprite::render(Rect rect, int tag, float rotation, float scaler) const {
         switch (layer.m_render.method) {
             case Layer::Render::Method::Tiled:
             {
-                DrawTexturePro(::Texture2D(layer.m_texture), rect, rectK, V2F_ZERO, 0, WHITE);
+                DrawTexturePro(::Texture2D(layer.m_texture), rect, rectK, V2F_ZERO, 0, color);
                 break;
             }
             case Layer::Render::Method::Patched:
@@ -57,7 +57,7 @@ void Sprite::render(Rect rect, int tag, float rotation, float scaler) const {
                             xs_d[i+1] - xs_d[i],
                             ys_d[j+1] - ys_d[j]
                         );
-                        DrawTexturePro(::Texture2D(layer.m_texture), rectS, rectD, V2F_ZERO, 0, WHITE);
+                        DrawTexturePro(::Texture2D(layer.m_texture), rectS, rectD, V2F_ZERO, 0, color);
                     }
                 }
 
@@ -75,7 +75,7 @@ void Sprite::render(Rect rect, int tag, float rotation, float scaler) const {
                 float dx = (rect.w * scaler - dw) * 0.5f + rect.x * scaler;
                 float dy = (rect.h * scaler - dh) * 0.5f + rect.y * scaler;
 
-                DrawTexturePro(::Texture2D(layer.m_texture), Rect(sx, sy, sw, sh), Rect(dx + dw * 0.5f, dy + dh * 0.5f, dw, dh), V2f(dw * 0.5f, dh * 0.5f), rotation, WHITE);
+                DrawTexturePro(::Texture2D(layer.m_texture), Rect(sx, sy, sw, sh), Rect(dx + dw * 0.5f, dy + dh * 0.5f, dw, dh), V2f(dw * 0.5f, dh * 0.5f), rotation, color);
                 break;
             }
             default:
@@ -87,7 +87,7 @@ void Sprite::render(Rect rect, int tag, float rotation, float scaler) const {
     }
 }
 
-void Sprite::renderCorner(Vector2f center, int tag, float rotation, float scaler) const {
+void Sprite::renderCorner(Vector2f center, int tag, float rotation, float scaler, const Color4f &color) const {
     const Texture *tex = nullptr;
     for (const auto &it : m_layers) {
         if (it.m_tag == tag) {
@@ -104,15 +104,15 @@ void Sprite::renderCorner(Vector2f center, int tag, float rotation, float scaler
             center.x,
             center.y,
             w * scaler,
-            h * scaler
+        h * scaler
         );
 
-        DrawTexturePro(::Texture2D(*tex), rectS, rectD, V2f(w, h) * scaler * 0.5f, rotation, WHITE);
+        DrawTexturePro(::Texture2D(*tex), rectS, rectD, V2f(w, h) * scaler * 0.5f, rotation, color);
     }
 
 }
 
-void Sprite::renderEdge(Vector2f center, Vector2f dirlen, int tag, float rotation, float scaler) const {
+void Sprite::renderEdge(Vector2f center, Vector2f dirlen, int tag, float rotation, float scaler, const Color4f &color) const {
     const Texture *tex = nullptr;
     for (const auto &it : m_layers) {
         if (it.m_tag == tag) {
@@ -139,7 +139,7 @@ void Sprite::renderEdge(Vector2f center, Vector2f dirlen, int tag, float rotatio
         rectS.w /= scaler;
         rectS.h /= scaler;
 
-        DrawTexturePro(::Texture2D(*tex), rectS, rectD, V2f(rectS.w, rectS.h) * scaler * 0.5f, rotation, WHITE);
+        DrawTexturePro(::Texture2D(*tex), rectS, rectD, V2f(rectS.w, rectS.h) * scaler * 0.5f, rotation, color);
     }
 }
 

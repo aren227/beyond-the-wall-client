@@ -120,27 +120,31 @@ void Player::update(const Camera &cam, const World &world, float dt) {
 
     // beam raycast
     {
-        Vector2f start = m_pos, dir = m_dir;
+        BeamSegment segment;
+        segment.start = m_pos;
+        segment.dir = m_dir;
 
-        m_beam.m_start = start;
-        m_beam.m_points.clear();
-        m_beam.m_points.push_back(start);
+        m_beam.segments.clear();
 
         for (int i = 0; i <= m_bounces; i++) {
             static std::vector<Vector2i> s_visit;
             s_visit.clear();
 
-            traversal(start, dir, world.m_min - V2I_ONE, world.m_max + V2I_ONE, s_visit);
+            traversal(segment.start, segment.dir,
+                world.m_min - V2I_ONE, world.m_max + V2I_ONE, s_visit);
+
             for (const auto &it : s_visit) {
                 if (world.getTileType(it) != TileType::Empty) {
                     float t;
                     Vector2f normal;
-                    if (cellIntersect(it, start, dir, t, normal)) {
-                        auto next = start + dir * std::max(t - 0.01f, 0.0f);
-                        m_beam.m_points.push_back(next);
+                    if (cellIntersect(it, segment.start, segment.dir, t, normal)) {
+                        segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
 
-                        start = next;
-                        dir = dir.reflected(normal);
+                        m_beam.segments.push_back(segment);
+
+                        segment.start = segment.end;
+                        segment.dir = segment.dir.reflected(normal);
+                        segment.prop = segment.prop.merge(world.getTile(it).m_beamProp);
 
                         break;
                     }
@@ -182,11 +186,11 @@ void Player::render(const Camera &cam) {
     DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
 
     // NOTE(aren): Trick to render hdr color
-    if (m_beam.m_points.size() > 1) {
+    if (m_beam.segments.size() > 0) {
         BeginBlendMode(BLEND_ADDITIVE);
-        for (int i = 0; i + 1 < m_beam.m_points.size(); i++) {
+        for (const auto &it : m_beam.segments) {
             for (int j = 0; j < 5; j++) {
-                DrawLineEx(m_beam.m_points[i], m_beam.m_points[i+1], 0.1f, WHITE);
+                DrawLineEx(it.start, it.end, 0.1f, getColorForBeam(it.prop.color));
             }
         }
         EndBlendMode();

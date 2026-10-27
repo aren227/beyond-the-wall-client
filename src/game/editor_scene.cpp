@@ -6,12 +6,28 @@
 
 namespace aren {
 
+enum class EditorBrush {
+    Wall = 0,
+    Barrier,
+    Glass,
+    Sand,
+    White,
+    Red,
+    Green,
+    Blue,
+    __MAX__,
+};
+
 static const char *getBrushName(EditorBrush type) {
     switch (type) {
         case EditorBrush::Wall: return "Wall";
         case EditorBrush::Barrier: return "Barrier";
         case EditorBrush::Glass: return "Glass";
         case EditorBrush::Sand: return "Sand";
+        case EditorBrush::White: return "White";
+        case EditorBrush::Red: return "Red";
+        case EditorBrush::Green: return "Green";
+        case EditorBrush::Blue: return "Blue";
         default: return "N/A";
     }
 }
@@ -23,6 +39,17 @@ static TileType getTileTypeFromBrush(EditorBrush type) {
         case EditorBrush::Glass: return TileType::Glass;
         case EditorBrush::Sand: return TileType::Sand;
         default: return TileType::Empty;
+    }
+}
+
+static BeamColor getBeamColorFromBrush(EditorBrush type) {
+    switch (type) {
+        case EditorBrush::Red: return BeamColor::Red;
+        case EditorBrush::Green: return BeamColor::Green;
+        case EditorBrush::Blue: return BeamColor::Blue;
+        case EditorBrush::White:
+        default:
+            return BeamColor::White;
     }
 }
 
@@ -108,6 +135,16 @@ void EditorScene::renderUI() {
             auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
             if (tileType != TileType::Empty) {
                 m_world.at(mouse) = Tile(tileType);
+            }
+
+            auto beamColor = getBeamColorFromBrush(static_cast<EditorBrush>(m_brushIndex));
+            if (m_world.contains(mouse)) {
+                auto &tile = m_world.at(mouse);
+                if (tile.m_beamProp.color == BeamColor::White) {
+                    tile.m_beamProp.color = beamColor;
+                } else {
+                    tile.m_beamProp.color = BeamColor(int(tile.m_beamProp.color) | int(beamColor));
+                }
             }
         }
         if (Input::mouseButtonDown(1)) {

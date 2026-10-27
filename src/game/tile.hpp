@@ -1,5 +1,7 @@
 #pragma once
 
+#include "beam.hpp"
+
 namespace aren {
 
 enum class TileType {
@@ -14,6 +16,7 @@ enum class TileType {
 class Tile {
 public:
     TileType m_type = TileType::Empty;
+    BeamProp m_beamProp;
 
     explicit Tile() = default;
     Tile(TileType type) : m_type(type) {}
