@@ -61,6 +61,10 @@ endif()
 
 target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>)
 
+if(APPLE)
+    target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address,undefined>)
+endif()
+
 if(EMSCRIPTEN)
     string(REPLACE "-O3" "-Os" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
     string(REPLACE "-O3" "-Os" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
@@ -99,6 +103,9 @@ else()
             "-framework IOKit"
             "-framework Cocoa"
             "-framework OpenGL"
+        )
+        target_link_options(${PROJECT_NAME} PRIVATE
+            $<$<CONFIG:Debug>:-fsanitize=address>
         )
     endif()
 endif()
