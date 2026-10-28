@@ -71,6 +71,10 @@ struct Vector2f {
         return *this - normal * (2.0f * dot(normal));
     }
 
+    static inline constexpr Vector2f lerp(Vector2f a, Vector2f b, float t) {
+        return (b-a)*t + a;
+    }
+
     inline constexpr Vector2i round() const;
     inline constexpr Vector2i floor() const;
     inline constexpr Vector2i ceil() const;

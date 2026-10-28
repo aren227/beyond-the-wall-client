@@ -18,6 +18,7 @@ BeamColor Tile::beamColor() const {
 
 bool Tile::isTransparent() const {
     switch (m_type) {
+        case TileType::Empty:
         case TileType::Glass:
             return true;
         default:
@@ -31,6 +32,27 @@ bool Tile::isDamagable() const {
             return true;
         default:
             return false;
+    }
+}
+
+bool Tile::isSolid() const {
+    switch (m_type) {
+        case TileType::Empty:
+            return false;
+        default:
+            return true;
+    }
+}
+
+bool Tile::checkCollision(ObjectLayer layer) const {
+    switch (layer) {
+        case ObjectLayer::Light:
+            return isTransparent() == false;
+        case ObjectLayer::Others:
+        case ObjectLayer::Player:
+        case ObjectLayer::Monster:
+        default:
+            return isSolid();
     }
 }
 

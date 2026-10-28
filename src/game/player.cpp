@@ -1,5 +1,6 @@
 #include "player.hpp"
 #include "world.hpp"
+#include "path_query.hpp"
 #include "../camera.hpp"
 #include "../render.hpp"
 
@@ -23,6 +24,8 @@ static Vector2f moveTorwards(const Vector2f &from, const Vector2f &to, float dis
     return from + dir.normalized() * dist;
 }
 
+static std::vector<Vector2f> s_queryRes;
+
 void Player::update(const Camera &cam, World &world, float dt) {
     Vector2f input = V2F_ZERO;
 
@@ -43,81 +46,6 @@ void Player::update(const Camera &cam, World &world, float dt) {
     auto camPos = cam.screenToWorld(Input::mousePosition());
     m_dir = (camPos - m_pos).normalized();
 
-    // beam update
-    const auto traversal = [&](const Vector2f &pos, const Vector2f &dir, const Vector2i &min, const Vector2i &max, std::vector<Vector2i> &res) {
-        auto cell = pos.floor();
-
-        Vector2i step;
-        step.x = dir.x > 0 ? 1 : (dir.x < 0 ? -1 : 0);
-        step.y = dir.y > 0 ? 1 : (dir.y < 0 ? -1 : 0);
-
-        Vector2f tDelta, tMin;
-        tDelta = V2f(1.0f / std::abs(dir.x), 1.0f / std::abs(dir.y));
-
-        tMin.x =  dir.x > 0 ? ((cell.x+1 - pos.x) / dir.x)
-                : dir.x < 0 ? ((pos.x - cell.x) / -dir.x)
-                : 1.0f/0.0f;
-        tMin.y =  dir.y > 0 ? ((cell.y+1 - pos.y) / dir.y)
-                : dir.y < 0 ? ((pos.y - cell.y) / -dir.y)
-                : 1.0f/0.0f;
-
-        do {
-            res.push_back(cell);
-
-            bool x = tMin.x < tMin.y;
-            (x ? cell.x : cell.y) += (x ? step.x : step.y);
-            (x ? tMin.x : tMin.y) += (x ? tDelta.x : tDelta.y);
-
-        } while (cell.x >= min.x && cell.x <= max.x && cell.y >= min.y && cell.y <= max.y);
-    };
-
-    const auto segmentIntersect = [&](const Vector2i &a, const Vector2i &b, const Vector2f &pos, const Vector2f &dir, float &t) -> bool {
-        ASSERT(a.x == b.x || a.y == b.y);
-        if (a.x == b.x && dir.x != 0) {
-            t = (a.x - pos.x) / dir.x;
-            float y = pos.y + dir.y * t;
-            if (t >= 0 && std::min(a.y, b.y) <= y && y <= std::max(a.y, b.y)) {
-                return true;
-            }
-        }
-        if (a.y == b.y && dir.y != 0) {
-            t = (a.y - pos.y) / dir.y;
-            float x = pos.x + dir.x * t;
-            if (t >= 0 && std::min(a.x, b.x) <= x && x <= std::max(a.x, b.x)) {
-                return true;
-            }
-        }
-        return false;
-    };
-
-    const auto cellIntersect = [&](const Vector2i &cell, const Vector2f &pos, const Vector2f &dir, float &t, Vector2f &normal) -> bool {
-        if (dir.x < 0) {
-            if (segmentIntersect(cell + V2i(1, 0), cell + V2i(1, 1), pos, dir, t)) {
-                normal = V2f(1, 0);
-                return true;
-            }
-        }
-        if (dir.x > 0) {
-            if (segmentIntersect(cell + V2i(0, 0), cell + V2i(0, 1), pos, dir, t)) {
-                normal = V2f(-1, 0);
-                return true;
-            }
-        }
-        if (dir.y < 0) {
-            if (segmentIntersect(cell + V2i(0, 1), cell + V2i(1, 1), pos, dir, t)) {
-                normal = V2f(0, 1);
-                return true;
-            }
-        }
-        if (dir.y > 0) {
-            if (segmentIntersect(cell + V2i(0, 0), cell + V2i(1, 0), pos, dir, t)) {
-                normal = V2f(0, -1);
-                return true;
-            }
-        }
-        return false;
-    };
-
     // beam raycast
     {
         BeamSegment segment;
@@ -127,38 +55,31 @@ void Player::update(const Camera &cam, World &world, float dt) {
         m_beam.segments.clear();
 
         for (int i = 0; i <= m_bounces; i++) {
-            static std::vector<Vector2i> s_visit;
-            s_visit.clear();
+            float t;
+            Vector2i hit, normal;
+            if (world.raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, hit, normal)) {
+                segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
 
-            traversal(segment.start, segment.dir,
-                world.m_min - V2I_ONE, world.m_max + V2I_ONE, s_visit);
+                m_beam.segments.push_back(segment);
 
-            for (const auto &it : s_visit) {
-                if (world.getTileType(it) != TileType::Empty) {
-                    const auto &tile = world.getTile(it);
-                    if (tile.isTransparent() == false) {
-                        float t;
-                        Vector2f normal;
-                        if (cellIntersect(it, segment.start, segment.dir, t, normal)) {
-                            segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
+                segment.start = segment.end;
+                segment.dir = segment.dir.reflected(normal.f());
+                segment.prop = segment.prop.merge(world.getTile(hit).beamProp());
 
-                            m_beam.segments.push_back(segment);
-
-                            segment.start = segment.end;
-                            segment.dir = segment.dir.reflected(normal);
-                            segment.prop = segment.prop.merge(world.getTile(it).beamProp());
-
-                            if (world.contains(it)) {
-                                world.at(it).takeDamage(dt * m_baseAttackDamage);
-                            }
-
-                            break;
-                        }
-                    }
+                if (world.contains(hit)) {
+                    world.at(hit).takeDamage(dt * m_baseAttackDamage);
                 }
+
+                break;
             }
         }
     }
+
+    PathQuery query;
+    query.build(world, m_pos, ObjectLayer::Player);
+
+    s_queryRes.clear();
+    query.query(world, camPos, s_queryRes);
 }
 
 void Player::render(const Camera &cam) {
@@ -201,6 +122,10 @@ void Player::render(const Camera &cam) {
             }
         }
         EndBlendMode();
+    }
+
+    for (int i = 1; i < s_queryRes.size(); i++) {
+        DrawLineEx(s_queryRes[i-1], s_queryRes[i], 0.05f, RED);
     }
 
     Render::end2DCam();

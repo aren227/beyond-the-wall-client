@@ -348,4 +348,109 @@ Vector2f World::moveRect(const Rect &rect, const Vector2f &delta) const {
     return res;
 }
 
+bool World::raycast(const Vector2f &start, const Vector2f &dir, float maxDist, ObjectLayer layer, float &t, Vector2i &hit, Vector2i &normal) const {
+    // helper
+    const auto traversal = [&](const Vector2f &pos, const Vector2f &dir, const Vector2i &min, const Vector2i &max, std::vector<Vector2i> &res) {
+        auto cell = pos.floor();
+
+        Vector2i step;
+        step.x = dir.x > 0 ? 1 : (dir.x < 0 ? -1 : 0);
+        step.y = dir.y > 0 ? 1 : (dir.y < 0 ? -1 : 0);
+
+        Vector2f tDelta, tMin;
+        tDelta = V2f(1.0f / std::abs(dir.x), 1.0f / std::abs(dir.y));
+
+        tMin.x =  dir.x > 0 ? ((cell.x+1 - pos.x) / dir.x)
+                : dir.x < 0 ? ((pos.x - cell.x) / -dir.x)
+                : 1.0f/0.0f;
+        tMin.y =  dir.y > 0 ? ((cell.y+1 - pos.y) / dir.y)
+                : dir.y < 0 ? ((pos.y - cell.y) / -dir.y)
+                : 1.0f/0.0f;
+
+        do {
+            res.push_back(cell);
+
+            bool x = tMin.x < tMin.y;
+            (x ? cell.x : cell.y) += (x ? step.x : step.y);
+            (x ? tMin.x : tMin.y) += (x ? tDelta.x : tDelta.y);
+
+        } while (cell.x >= min.x && cell.x <= max.x && cell.y >= min.y && cell.y <= max.y);
+    };
+
+    const auto segmentIntersect = [&](const Vector2i &a, const Vector2i &b, const Vector2f &pos, const Vector2f &dir, float &t) -> bool {
+        ASSERT(a.x == b.x || a.y == b.y);
+        if (a.x == b.x && dir.x != 0) {
+            t = (a.x - pos.x) / dir.x;
+            float y = pos.y + dir.y * t;
+            if (t >= 0 && std::min(a.y, b.y) <= y && y <= std::max(a.y, b.y)) {
+                return true;
+            }
+        }
+        if (a.y == b.y && dir.y != 0) {
+            t = (a.y - pos.y) / dir.y;
+            float x = pos.x + dir.x * t;
+            if (t >= 0 && std::min(a.x, b.x) <= x && x <= std::max(a.x, b.x)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const auto cellIntersect = [&](const Vector2i &cell, const Vector2f &pos, const Vector2f &dir, float &t, Vector2i &normal) -> bool {
+        if (dir.x < 0) {
+            if (segmentIntersect(cell + V2i(1, 0), cell + V2i(1, 1), pos, dir, t)) {
+                normal = V2i(1, 0);
+                return true;
+            }
+        }
+        if (dir.x > 0) {
+            if (segmentIntersect(cell + V2i(0, 0), cell + V2i(0, 1), pos, dir, t)) {
+                normal = V2i(-1, 0);
+                return true;
+            }
+        }
+        if (dir.y < 0) {
+            if (segmentIntersect(cell + V2i(0, 1), cell + V2i(1, 1), pos, dir, t)) {
+                normal = V2i(0, 1);
+                return true;
+            }
+        }
+        if (dir.y > 0) {
+            if (segmentIntersect(cell + V2i(0, 0), cell + V2i(1, 0), pos, dir, t)) {
+                normal = V2i(0, -1);
+                return true;
+            }
+        }
+        return false;
+    };
+
+    static std::vector<Vector2i> s_visit;
+    s_visit.clear();
+
+    auto minBound = m_min - V2I_ONE;
+    auto maxBound = m_max + V2I_ONE;
+
+    if (maxDist >= 0) {
+        auto end = start + dir * maxDist;
+        minBound = minBound.max(start.min(end).floor());
+        maxBound = maxBound.min(start.max(end).floor());
+    }
+
+    traversal(start, dir, minBound, maxBound, s_visit);
+
+    for (const auto &it : s_visit) {
+        const auto &tile = getTile(it);
+        if (tile.checkCollision(layer)) {
+            if (cellIntersect(it, start, dir, t, normal)) {
+                if (maxDist < 0 || t <= maxDist) {
+                    hit = it;
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
 } // namespace aren

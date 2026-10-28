@@ -1,6 +1,7 @@
 #pragma once
 
 #include "beam.hpp"
+#include "object_layer.hpp"
 
 namespace aren {
 
@@ -30,6 +31,9 @@ public:
     BeamColor beamColor() const;
     bool isTransparent() const;
     bool isDamagable() const;
+    bool isSolid() const;
+
+    bool checkCollision(ObjectLayer layer) const;
 
     void takeDamage(float damage);
 };

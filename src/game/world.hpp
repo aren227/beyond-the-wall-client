@@ -2,6 +2,7 @@
 
 #include "tile.hpp"
 #include "player.hpp"
+#include "object_layer.hpp"
 
 namespace aren {
 
@@ -30,6 +31,8 @@ public:
 
     TileType getTileType(const Vector2i &pos) const;
     const Tile &getTile(const Vector2i &pos) const;
+
+    bool raycast(const Vector2f &start, const Vector2f &dir, float maxDist, ObjectLayer layer, float &t, Vector2i &hit, Vector2i &normal) const;
 
 private:
     Color4f getColor(const Vector2i &pos) const;
