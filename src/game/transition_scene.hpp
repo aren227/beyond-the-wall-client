@@ -18,7 +18,7 @@ public:
 private:
     bool m_isOpen;
     SpriteSet m_spriteSet;
-    float m_time;
+    float m_time = 0;
 };
 
 } // namespace aren
