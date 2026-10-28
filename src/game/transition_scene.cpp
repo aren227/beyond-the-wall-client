@@ -22,7 +22,7 @@ void TransitionScene::renderUI() {
         return;
     }
 
-    int r = std::floor(m_time / duration / 17);
+    int r = std::floor(m_time / duration * 17);
 
     if (m_isOpen) {
         r = 16 - r;

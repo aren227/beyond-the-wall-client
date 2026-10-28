@@ -9,7 +9,7 @@ class World;
 
 class Player {
 public:
-    void update(const Camera &cam, const World &world, float dt);
+    void update(const Camera &cam, World &world, float dt);
     void render(const Camera &cam);
 
 private:
@@ -24,6 +24,8 @@ private:
 
     int m_bounces = 2;
     Beam m_beam;
+
+    float m_baseAttackDamage = 100;
 };
 
 } // namespace aren

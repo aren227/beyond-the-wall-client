@@ -13,10 +13,13 @@ enum class TileType {
     __MAX__
 };
 
+static constexpr float TILE_MAX_HEALTH = 100;
+
 class Tile {
 public:
     TileType m_type = TileType::Empty;
     BeamColor m_color = BeamColor::White;
+    float m_health = TILE_MAX_HEALTH;
 
 public:
     explicit Tile() = default;
@@ -26,6 +29,9 @@ public:
 
     BeamColor beamColor() const;
     bool isTransparent() const;
+    bool isDamagable() const;
+
+    void takeDamage(float damage);
 };
 
 } // namespace aren

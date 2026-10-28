@@ -80,6 +80,17 @@ void World::update(const Camera &cam, float dt) {
     updateBounds();
 
     m_player.update(cam, *this, dt);
+
+    static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
+    for (const auto &[k, v] : m_tiles) {
+        if (v.m_health <= 0) {
+            s_toRemove.push_back(k);
+        }
+    }
+
+    for (const auto &k : s_toRemove) {
+        m_tiles.erase(k);
+    }
 }
 
 void World::updateBounds() {
@@ -231,6 +242,24 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
             }
         }
     }
+
+    // NOTE(aren): Overlay after render all stuffs
+    BeginBlendMode(BLEND_MULTIPLIED);
+    for (int x = m_min.x; x <= m_max.x; x++) {
+        for (int y = m_min.y; y <= m_max.y; y++) {
+            auto v = V2i(x, y);
+            float health = getTile(v).m_health;
+            if (health < TILE_MAX_HEALTH) {
+                auto a = cam.worldToScreen(v.f());
+                auto b = cam.worldToScreen((v + V2I_ONE).f());
+
+                const auto &sprite = spriteSet.ditherOpaque;
+                const int tag = std::floor((health / TILE_MAX_HEALTH) * 15) + 1;
+                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, WHITE);
+            }
+        }
+    }
+    EndBlendMode();
 }
 
 void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {

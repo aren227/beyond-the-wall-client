@@ -37,9 +37,14 @@ void Game::update(float dt) {
     }
 #endif
 
-    if (m_scenes.empty()) return;
-    std::shared_ptr<Scene> top = m_scenes.back();
-    top->update(dt);
+    static std::vector<std::shared_ptr<Scene>> s_tempScenes;
+    s_tempScenes = m_scenes;
+
+    for (auto &it : s_tempScenes) {
+        it->update(dt);
+    }
+
+    s_tempScenes.clear();
 }
 
 void Game::render() {

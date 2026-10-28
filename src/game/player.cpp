@@ -23,7 +23,7 @@ static Vector2f moveTorwards(const Vector2f &from, const Vector2f &to, float dis
     return from + dir.normalized() * dist;
 }
 
-void Player::update(const Camera &cam, const World &world, float dt) {
+void Player::update(const Camera &cam, World &world, float dt) {
     Vector2f input = V2F_ZERO;
 
     if (Input::keyDown(KEY_W)) input += V2f(0, -1);
@@ -147,6 +147,10 @@ void Player::update(const Camera &cam, const World &world, float dt) {
                             segment.start = segment.end;
                             segment.dir = segment.dir.reflected(normal);
                             segment.prop = segment.prop.merge(world.getTile(it).beamProp());
+
+                            if (world.contains(it)) {
+                                world.at(it).takeDamage(dt * m_baseAttackDamage);
+                            }
 
                             break;
                         }

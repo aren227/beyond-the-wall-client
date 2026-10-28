@@ -30,21 +30,34 @@ void SpriteSet::load() {
     // XXX(aren): Bake all dithering levels into textures (to avoid using shaders)
     for (int i = 0; i <= 16; i++) {
         Image image = GenImageColor(4, 4, {0, 0, 0, 0});
+        Image imageOpaque = GenImageColor(4, 4, {0, 0, 0, 255});
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 if (DITHER_MATRIX[y][x] >= 16-i) {
                     ImageDrawPixel(&image, x, y, WHITE);
+                    ImageDrawPixel(&imageOpaque, x, y, WHITE);
                 }
             }
         }
 
-        dither.m_name = "Dither";
+        {
+            dither.m_name = "Dither";
 
-        Layer layer;
-        layer.m_texture = Texture(image);
-        layer.m_tag = i;
+            Layer layer;
+            layer.m_texture = Texture(image);
+            layer.m_tag = i;
 
-        dither.m_layers.push_back(std::move(layer));
+            dither.m_layers.push_back(std::move(layer));
+        }
+        {
+            ditherOpaque.m_name = "Dither Opaque";
+
+            Layer layer;
+            layer.m_texture = Texture(imageOpaque);
+            layer.m_tag = i;
+
+            ditherOpaque.m_layers.push_back(std::move(layer));
+        }
     }
 }
 

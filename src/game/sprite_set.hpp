@@ -18,6 +18,7 @@ public:
     std::array<Sprite, int(TileType::__MAX__)> tiles;
     Sprite deco;
     Sprite dither;
+    Sprite ditherOpaque;
 };
 
 } // namespace aren

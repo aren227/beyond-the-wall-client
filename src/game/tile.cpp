@@ -25,4 +25,19 @@ bool Tile::isTransparent() const {
     }
 }
 
+bool Tile::isDamagable() const {
+    switch (m_type) {
+        case TileType::Sand:
+            return true;
+        default:
+            return false;
+    }
+}
+
+void Tile::takeDamage(float damage) {
+    if (isDamagable()) {
+        m_health = std::max(m_health - damage, 0.0f);
+    }
+}
+
 } // namespace aren
