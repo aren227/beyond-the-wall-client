@@ -267,7 +267,7 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
 
     for (int x = m_min.x; x <= m_max.x; x++) {
         for (int y = m_min.y; y <= m_max.y; y++) {
-            if (m_tiles.contains(V2i(x, y)) == false) {
+            if (getTile(V2i(x, y)).isSolid() == false) {
                 std::uniform_real_distribution<float> rd(0.0f, 1.0f);
                 float v = rd(gen);
                 if (v < 0.2f) {
@@ -279,6 +279,27 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
                     std::uniform_int_distribution<int> rdi(0, 4);
                     spriteSet.deco.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 0, PIXEL_SCALER, WHITE);
                 }
+            }
+        }
+    }
+}
+
+void World::renderDebug(const Camera &cam, const SpriteSet &spriteSet) {
+    for (int x = m_min.x; x <= m_max.x; x++) {
+        for (int y = m_min.y; y <= m_max.y; y++) {
+            auto v = V2i(x, y);
+            const auto &tile = getTile(v);
+            if (tile.m_type == TileType::Zone) {
+                auto a = cam.worldToScreen(v.f());
+                auto b = cam.worldToScreen((v + V2I_ONE).f());
+                auto rect = Rect(a.x, a.y, b.x-a.x, b.y-a.y);
+
+                DrawRectangleRec(rect, {255, 255, 0, 32});
+
+                int prev = GuiGetStyle(LABEL, TEXT_COLOR_NORMAL);
+                GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, Color4b(255, 255, 255, 255).rgba32());
+                GuiLabel(rect, tile.m_name.data());
+                GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, prev);
             }
         }
     }

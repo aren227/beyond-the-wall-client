@@ -24,6 +24,12 @@ private:
 
     int m_brushIndex = 0;
     bool m_drawWireframe = true;
+
+    std::array<char, 64> m_levelNameTextBox = {};
+    bool m_levelNameTextBoxEnabled = false;
+
+    std::array<char, 8> m_zoneTextBox = {};
+    bool m_zoneTextBoxEnabled = false;
 };
 
 } // namespace aren

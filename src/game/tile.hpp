@@ -11,6 +11,7 @@ enum class TileType {
     Barrier,
     Glass,
     Sand,
+    Zone,
     __MAX__
 };
 
@@ -21,6 +22,7 @@ public:
     TileType m_type = TileType::Empty;
     BeamColor m_color = BeamColor::White;
     float m_health = TILE_MAX_HEALTH;
+    std::array<char, 8> m_name = {};
 
 public:
     explicit Tile() = default;

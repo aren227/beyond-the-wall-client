@@ -12,6 +12,7 @@ enum class EditorBrush {
     Barrier,
     Glass,
     Sand,
+    Zone,
     White,
     Red,
     Green,
@@ -25,6 +26,7 @@ static const char *getBrushName(EditorBrush type) {
         case EditorBrush::Barrier: return "Barrier";
         case EditorBrush::Glass: return "Glass";
         case EditorBrush::Sand: return "Sand";
+        case EditorBrush::Zone: return "Zone";
         case EditorBrush::White: return "White";
         case EditorBrush::Red: return "Red";
         case EditorBrush::Green: return "Green";
@@ -39,6 +41,7 @@ static TileType getTileTypeFromBrush(EditorBrush type) {
         case EditorBrush::Barrier: return TileType::Barrier;
         case EditorBrush::Glass: return TileType::Glass;
         case EditorBrush::Sand: return TileType::Sand;
+        case EditorBrush::Zone: return TileType::Zone;
         default: return TileType::Empty;
     }
 }
@@ -105,6 +108,8 @@ void EditorScene::render() {
     m_world.renderDecos(m_cam, m_spriteSet);;
 
     m_world.renderMisc(m_cam, m_spriteSet);
+
+    m_world.renderDebug(m_cam, m_spriteSet);
 }
 
 void EditorScene::renderUI() {
@@ -136,6 +141,9 @@ void EditorScene::renderUI() {
             auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
             if (tileType != TileType::Empty) {
                 m_world.at(mouse) = Tile(tileType);
+                if (tileType == TileType::Zone) {
+                    m_world.at(mouse).m_name = m_zoneTextBox;
+                }
             }
 
             auto beamColor = getBeamColorFromBrush(static_cast<EditorBrush>(m_brushIndex));
@@ -172,11 +180,20 @@ void EditorScene::renderUI() {
             m_brushIndex = i;
         }
 
-        if (i < 9 && Input::keyPressed(KEY_ONE + i)) {
+        if (i < 9 && Input::keyPressed(KEY_ONE + i) && m_zoneTextBoxEnabled == false) {
             m_brushIndex = i;
         }
 
         GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, prev);
+        y += 40;
+    }
+
+    if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone) {
+        GuiLabel({10, y, 100, 30}, "Zone name");
+        y += 40;
+        if (GuiTextBox({10, y, 100, 30}, m_zoneTextBox.data(), m_zoneTextBox.size(), m_zoneTextBoxEnabled)) {
+            m_zoneTextBoxEnabled = !m_zoneTextBoxEnabled;
+        }
         y += 40;
     }
 

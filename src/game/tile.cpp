@@ -20,6 +20,7 @@ bool Tile::isTransparent() const {
     switch (m_type) {
         case TileType::Empty:
         case TileType::Glass:
+        case TileType::Zone:
             return true;
         default:
             return false;
@@ -38,6 +39,7 @@ bool Tile::isDamagable() const {
 bool Tile::isSolid() const {
     switch (m_type) {
         case TileType::Empty:
+        case TileType::Zone:
             return false;
         default:
             return true;

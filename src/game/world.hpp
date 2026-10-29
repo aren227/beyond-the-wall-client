@@ -26,6 +26,7 @@ public:
     void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category);
     void renderDecos(const Camera &cam, const SpriteSet &spriteSet);
     void renderMisc(const Camera &cam, const SpriteSet &spriteSet);
+    void renderDebug(const Camera &cam, const SpriteSet &spriteSet);
 
     Vector2f moveRect(const Rect &rect, const Vector2f &delta) const;
 
