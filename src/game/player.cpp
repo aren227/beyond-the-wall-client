@@ -8,22 +8,6 @@ namespace aren {
 
 static constexpr int PIXEL_SCALER = 2;
 
-static Vector2f moveTorwards(const Vector2f &from, const Vector2f &to, float dist) {
-    auto dir = to - from;
-
-    if (dir.lengthSqr() < 1e-6) {
-        return to;
-    }
-
-    float d = dir.length();
-
-    if (dist >= d) {
-        return to;
-    }
-
-    return from + dir.normalized() * dist;
-}
-
 static std::vector<Vector2f> s_queryRes;
 
 Player::Player() {}
@@ -39,7 +23,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
     if (Input::keyDown(KEY_D)) input += V2f(1, 0);
 
     Vector2f velocityTarget = ((input == V2F_ZERO) ? V2F_ZERO : input.normalized()) * m_speed;
-    Vector2f velocityNext = moveTorwards(m_velocity, velocityTarget, ((input == V2F_ZERO) ? m_brakeRate : m_accelRate) * dt);
+    Vector2f velocityNext = Vector2f::moveTorwards(m_velocity, velocityTarget, ((input == V2F_ZERO) ? m_brakeRate : m_accelRate) * dt);
 
     m_velocity = velocityNext;
 

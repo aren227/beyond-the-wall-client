@@ -1,4 +1,5 @@
 #include "monster.hpp"
+#include "world.hpp"
 #include "path_query.hpp"
 #include "../camera.hpp"
 #include "../render.hpp"
@@ -18,11 +19,18 @@ void Monster::update(const PathQuery *query, const World *world, float dt) {
     s_queryRes.clear();
     query->query(world, m_pos, s_queryRes);
 
-    ASSERT(s_queryRes.size() >= 2);
+    if (s_queryRes.size() >= 2) {
+        auto dir = (s_queryRes[1] - s_queryRes[0]).normalized();
 
-    auto dir = (s_queryRes[1] - s_queryRes[0]).normalized();
+        Vector2f velocityTarget = dir * m_speed;
+        Vector2f velocityNext = Vector2f::moveTorwards(m_velocity, velocityTarget, ((velocityTarget.lengthSqr() == 0) ? m_brakeRate : m_accelRate) * dt);
 
-    m_pos += dir * m_speed * dt;
+        m_velocity = velocityNext;
+
+        auto delta = m_velocity * dt;
+        delta = world->moveRect(Rect(m_pos.x - 0.25f, m_pos.y - 0.25f, 0.5f, 0.5f), delta, ObjectLayer::Monster);
+        m_pos += delta;
+    }
 }
 
 void Monster::render(const Camera &cam) {

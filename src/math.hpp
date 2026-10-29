@@ -75,6 +75,22 @@ struct Vector2f {
         return (b-a)*t + a;
     }
 
+    static inline Vector2f moveTorwards(const Vector2f &from, const Vector2f &to, float dist) {
+        auto dir = to - from;
+
+        if (dir.lengthSqr() < 1e-6) {
+            return to;
+        }
+
+        float d = dir.length();
+
+        if (dist >= d) {
+            return to;
+        }
+
+        return from + dir.normalized() * dist;
+    }
+
     inline constexpr Vector2i round() const;
     inline constexpr Vector2i floor() const;
     inline constexpr Vector2i ceil() const;
