@@ -107,7 +107,7 @@ void World::update(const Camera &cam, float dt) {
 
     updateBounds();
 
-    m_player->update(cam, *this, dt);
+    m_player->update(cam, this, dt);
 
     static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
     for (const auto &[k, v] : m_tiles) {
@@ -127,10 +127,10 @@ void World::update(const Camera &cam, float dt) {
         }
     }
 
-    m_pathQuery->build(*this, m_player->pos(), ObjectLayer::Monster);
+    m_pathQuery->build(this, m_player->pos(), ObjectLayer::Monster);
 
     for (const auto &it : m_monsters) {
-        it->update(*m_pathQuery, *this, dt);
+        it->update(m_pathQuery.get(), this, dt);
     }
 }
 

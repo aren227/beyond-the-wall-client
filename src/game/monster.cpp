@@ -13,10 +13,10 @@ Monster::Monster(const Vector2f &pos) {
 
 Monster::~Monster() {}
 
-void Monster::update(const PathQuery &query, const World &world, float dt) {
+void Monster::update(const PathQuery *query, const World *world, float dt) {
     static std::vector<Vector2f> s_queryRes;
     s_queryRes.clear();
-    query.query(world, m_pos, s_queryRes);
+    query->query(world, m_pos, s_queryRes);
 
     ASSERT(s_queryRes.size() >= 2);
 

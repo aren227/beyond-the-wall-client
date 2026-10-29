@@ -12,7 +12,7 @@ public:
     Player();
     virtual ~Player();
 
-    void update(const Camera &cam, World &world, float dt);
+    void update(const Camera &cam, World *world, float dt);
     void render(const Camera &cam);
 
     inline const Vector2f &pos() { return m_pos; }

@@ -30,7 +30,7 @@ Player::Player() {}
 
 Player::~Player() {}
 
-void Player::update(const Camera &cam, World &world, float dt) {
+void Player::update(const Camera &cam, World *world, float dt) {
     Vector2f input = V2F_ZERO;
 
     if (Input::keyDown(KEY_W)) input += V2f(0, -1);
@@ -44,7 +44,7 @@ void Player::update(const Camera &cam, World &world, float dt) {
     m_velocity = velocityNext;
 
     auto delta = m_velocity * dt;
-    delta = world.moveRect(Rect(m_pos.x - 0.25f, m_pos.y - 0.25f, 0.5f, 0.5f), delta, ObjectLayer::Player);
+    delta = world->moveRect(Rect(m_pos.x - 0.25f, m_pos.y - 0.25f, 0.5f, 0.5f), delta, ObjectLayer::Player);
     m_pos += delta;
 
     auto camPos = cam.screenToWorld(Input::mousePosition());
@@ -61,17 +61,17 @@ void Player::update(const Camera &cam, World &world, float dt) {
         for (int i = 0; i <= m_bounces; i++) {
             float t;
             Vector2i hit, normal;
-            if (world.raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, hit, normal)) {
+            if (world->raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, hit, normal)) {
                 segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
 
                 m_beam.segments.push_back(segment);
 
                 segment.start = segment.end;
                 segment.dir = segment.dir.reflected(normal.f());
-                segment.prop = segment.prop.merge(world.getTile(hit).beamProp());
+                segment.prop = segment.prop.merge(world->getTile(hit).beamProp());
 
-                if (world.contains(hit)) {
-                    world.at(hit).takeDamage(dt * m_baseAttackDamage);
+                if (world->contains(hit)) {
+                    world->at(hit).takeDamage(dt * m_baseAttackDamage);
                 }
 
                 break;

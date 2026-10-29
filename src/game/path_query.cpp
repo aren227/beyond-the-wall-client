@@ -3,7 +3,7 @@
 
 namespace aren {
 
-void PathQuery::build(const World &world, const Vector2f &to, ObjectLayer layer) {
+void PathQuery::build(const World *world, const Vector2f &to, ObjectLayer layer) {
     m_to = to;
     m_toI = to.floor();
     m_dirs.clear();
@@ -26,7 +26,7 @@ void PathQuery::build(const World &world, const Vector2f &to, ObjectLayer layer)
 
         for (const auto &delta : DELTAS) {
             auto next = curr + delta;
-            if (world.getTile(next).checkCollision(layer)) {
+            if (world->getTile(next).checkCollision(layer)) {
                 continue;
             }
             if (m_dirs.contains(next)) {
@@ -39,7 +39,7 @@ void PathQuery::build(const World &world, const Vector2f &to, ObjectLayer layer)
     }
 }
 
-bool PathQuery::query(const World &world, const Vector2f &from, std::vector<Vector2f> &path) const {
+bool PathQuery::query(const World *world, const Vector2f &from, std::vector<Vector2f> &path) const {
     auto fromI = from.floor();
     if (m_dirs.contains(fromI) == false) {
         return false;
@@ -76,7 +76,7 @@ bool PathQuery::query(const World &world, const Vector2f &from, std::vector<Vect
         auto delta = to - from;
         float t;
         Vector2i hit, normal;
-        if (world.raycast(from, delta.normalized(), delta.length(), m_layer, t, hit, normal)) {
+        if (world->raycast(from, delta.normalized(), delta.length(), m_layer, t, hit, normal)) {
             l++;
         } else {
             path.erase(path.begin() + l + 1);

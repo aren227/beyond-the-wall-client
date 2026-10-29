@@ -11,7 +11,7 @@ public:
     Monster(const Vector2f &pos);
     virtual ~Monster();
 
-    void update(const PathQuery &query, const World &world, float dt);
+    void update(const PathQuery *query, const World *world, float dt);
     void render(const Camera &cam);
 
 private:
