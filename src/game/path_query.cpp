@@ -39,7 +39,7 @@ void PathQuery::build(const World &world, const Vector2f &to, ObjectLayer layer)
     }
 }
 
-bool PathQuery::query(const World &world, const Vector2f &from, std::vector<Vector2f> &path) {
+bool PathQuery::query(const World &world, const Vector2f &from, std::vector<Vector2f> &path) const {
     auto fromI = from.floor();
     if (m_dirs.contains(fromI) == false) {
         return false;
@@ -49,8 +49,8 @@ bool PathQuery::query(const World &world, const Vector2f &from, std::vector<Vect
     path.push_back(fromI.f() + V2f(0.5f, 0.5f));
 
     auto curr = fromI;
-    while (m_dirs[curr] != V2I_ZERO) {
-        auto next = curr + m_dirs[curr];
+    while (m_dirs.at(curr) != V2I_ZERO) {
+        auto next = curr + m_dirs.at(curr);
         path.push_back(next.f() + V2f(0.5f, 0.5f));
         curr = next;
     }

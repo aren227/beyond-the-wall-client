@@ -2,16 +2,18 @@
 
 #include "scene.hpp"
 #include "../camera.hpp"
-#include "world.hpp"
 #include "sprite_set.hpp"
 
 namespace aren {
+
+class World;
 
 class EditorScene : public Scene {
 public:
     static constexpr SceneType TYPE = SceneType::Editor;
 
     EditorScene();
+    virtual ~EditorScene();
 
     void update(float dt) override;
     void render() override;
@@ -19,7 +21,7 @@ public:
 
 private:
     Camera m_cam;
-    World m_world;
+    std::unique_ptr<World> m_world;
     SpriteSet m_spriteSet;
 
     int m_brushIndex = 0;

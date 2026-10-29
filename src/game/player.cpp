@@ -26,6 +26,10 @@ static Vector2f moveTorwards(const Vector2f &from, const Vector2f &to, float dis
 
 static std::vector<Vector2f> s_queryRes;
 
+Player::Player() {}
+
+Player::~Player() {}
+
 void Player::update(const Camera &cam, World &world, float dt) {
     Vector2f input = V2F_ZERO;
 
@@ -40,7 +44,7 @@ void Player::update(const Camera &cam, World &world, float dt) {
     m_velocity = velocityNext;
 
     auto delta = m_velocity * dt;
-    delta = world.moveRect(Rect(m_pos.x - 0.25f, m_pos.y - 0.25f, 0.5f, 0.5f), delta);
+    delta = world.moveRect(Rect(m_pos.x - 0.25f, m_pos.y - 0.25f, 0.5f, 0.5f), delta, ObjectLayer::Player);
     m_pos += delta;
 
     auto camPos = cam.screenToWorld(Input::mousePosition());

@@ -1,17 +1,21 @@
 #pragma once
 
 #include "tile.hpp"
-#include "player.hpp"
 #include "object_layer.hpp"
+#include "monster_wave.hpp"
 
 namespace aren {
 
 class Camera;
 class SpriteSet;
+class Player;
+class Monster;
+class PathQuery;
 
 class World {
 public:
     World();
+    virtual ~World();
 
     void update(const Camera &cam, float dt);
     void updateBounds();
@@ -26,9 +30,9 @@ public:
     void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category);
     void renderDecos(const Camera &cam, const SpriteSet &spriteSet);
     void renderMisc(const Camera &cam, const SpriteSet &spriteSet);
-    void renderDebug(const Camera &cam, const SpriteSet &spriteSet);
+    void renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet);
 
-    Vector2f moveRect(const Rect &rect, const Vector2f &delta) const;
+    Vector2f moveRect(const Rect &rect, const Vector2f &delta, ObjectLayer layer) const;
 
     TileType getTileType(const Vector2i &pos) const;
     const Tile &getTile(const Vector2i &pos) const;
@@ -37,6 +41,8 @@ public:
 
 private:
     Color4f getColor(const Vector2i &pos) const;
+    bool checkWaveCondition(const MonsterWave &wave);
+    void activateWave(const MonsterWave &wvae);
 
 public:
     // XXX(aren): lazy
@@ -44,8 +50,11 @@ public:
 
 private:
     float m_time = 0;
-    Player m_player;
+    std::unique_ptr<Player> m_player;
     std::unordered_map<Vector2i, Tile> m_tiles;
+    std::vector<std::shared_ptr<Monster>> m_monsters;
+    std::vector<MonsterWave> m_monsterWaves;
+    std::unique_ptr<PathQuery> m_pathQuery;
 };
 
 } // namespace aren

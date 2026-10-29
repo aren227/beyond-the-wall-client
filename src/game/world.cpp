@@ -1,6 +1,9 @@
 #include "world.hpp"
 #include "../camera.hpp"
 #include "sprite_set.hpp"
+#include "player.hpp"
+#include "monster.hpp"
+#include "path_query.hpp"
 #include <random>
 
 namespace aren {
@@ -72,6 +75,31 @@ World::World() {
             }
         }
     }
+
+    m_player = std::make_unique<Player>();
+
+    m_monsterWaves.push_back({
+        .m_zones = {"a", "b"},
+        .m_monsterName = "dummy",
+    });
+
+    m_pathQuery = std::make_unique<PathQuery>();
+}
+
+World::~World() {}
+
+bool World::checkWaveCondition(const MonsterWave &wave) {
+    return true;
+}
+
+void World::activateWave(const MonsterWave &wave) {
+    for (const auto &zone : wave.m_zones) {
+        for (const auto &[pos, tile] : m_tiles) {
+            if (tile.m_type == TileType::Zone && zone == tile.m_name.data()) {
+                m_monsters.push_back(std::make_shared<Monster>(pos.f() + V2f(0.5f, 0.5f)));
+            }
+        }
+    }
 }
 
 void World::update(const Camera &cam, float dt) {
@@ -79,7 +107,7 @@ void World::update(const Camera &cam, float dt) {
 
     updateBounds();
 
-    m_player.update(cam, *this, dt);
+    m_player->update(cam, *this, dt);
 
     static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
     for (const auto &[k, v] : m_tiles) {
@@ -90,6 +118,19 @@ void World::update(const Camera &cam, float dt) {
 
     for (const auto &k : s_toRemove) {
         m_tiles.erase(k);
+    }
+
+    for (int i = int(m_monsterWaves.size()) - 1; i >= 0; i--) {
+        if (checkWaveCondition(m_monsterWaves[i])) {
+            activateWave(m_monsterWaves[i]);
+            m_monsterWaves.erase(m_monsterWaves.begin() + i);
+        }
+    }
+
+    m_pathQuery->build(*this, m_player->pos(), ObjectLayer::Monster);
+
+    for (const auto &it : m_monsters) {
+        it->update(*m_pathQuery, *this, dt);
     }
 }
 
@@ -284,7 +325,7 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
     }
 }
 
-void World::renderDebug(const Camera &cam, const SpriteSet &spriteSet) {
+void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
     for (int x = m_min.x; x <= m_max.x; x++) {
         for (int y = m_min.y; y <= m_max.y; y++) {
             auto v = V2i(x, y);
@@ -294,7 +335,7 @@ void World::renderDebug(const Camera &cam, const SpriteSet &spriteSet) {
                 auto b = cam.worldToScreen((v + V2I_ONE).f());
                 auto rect = Rect(a.x, a.y, b.x-a.x, b.y-a.y);
 
-                DrawRectangleRec(rect, {255, 255, 0, 32});
+                DrawRectangleRec(rect, {255, 255, 0, 128});
 
                 int prev = GuiGetStyle(LABEL, TEXT_COLOR_NORMAL);
                 GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, Color4b(255, 255, 255, 255).rgba32());
@@ -306,10 +347,14 @@ void World::renderDebug(const Camera &cam, const SpriteSet &spriteSet) {
 }
 
 void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
-    m_player.render(cam);
+    for (const auto &it : m_monsters) {
+        it->render(cam);
+    }
+
+    m_player->render(cam);
 }
 
-Vector2f World::moveRect(const Rect &rect, const Vector2f &delta) const {
+Vector2f World::moveRect(const Rect &rect, const Vector2f &delta, ObjectLayer layer) const {
     if (delta.lengthSqr() < 1e-6) {
         return V2F_ZERO;
     }
@@ -334,7 +379,7 @@ Vector2f World::moveRect(const Rect &rect, const Vector2f &delta) const {
 
     for (int x = minXi; x <= maxXi; x++) {
         for (int y = minYi; y <= maxYi; y++) {
-            if (getTileType(V2i(x, y)) != TileType::Empty) {
+            if (getTile(V2i(x, y)).checkCollision(layer)) {
                 if (delta.x > 0) targetMaxX = std::min(targetMaxX, x - MARGIN);
                 else targetMinX = std::max(targetMinX, x + 1 + MARGIN);
             }
@@ -357,7 +402,7 @@ Vector2f World::moveRect(const Rect &rect, const Vector2f &delta) const {
 
     for (int x = minXi; x <= maxXi; x++) {
         for (int y = minYi; y <= maxYi; y++) {
-            if (getTileType(V2i(x, y)) != TileType::Empty) {
+            if (getTile(V2i(x, y)).checkCollision(layer)) {
                 if (delta.y > 0) targetMaxY = std::min(targetMaxY, y - MARGIN);
                 else targetMinY = std::max(targetMinY, y + 1 + MARGIN);
             }

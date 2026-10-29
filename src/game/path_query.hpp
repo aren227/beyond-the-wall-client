@@ -8,8 +8,11 @@ class World;
 
 class PathQuery {
 public:
+    PathQuery() = default;
+    virtual ~PathQuery() = default;
+
     void build(const World &world, const Vector2f &to, ObjectLayer layer);
-    bool query(const World &world, const Vector2f &from, std::vector<Vector2f> &path);
+    bool query(const World &world, const Vector2f &from, std::vector<Vector2f> &path) const;
 
 private:
     Vector2f m_to;

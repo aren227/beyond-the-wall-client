@@ -9,8 +9,13 @@ class World;
 
 class Player {
 public:
+    Player();
+    virtual ~Player();
+
     void update(const Camera &cam, World &world, float dt);
     void render(const Camera &cam);
+
+    inline const Vector2f &pos() { return m_pos; }
 
 private:
     Vector2f m_pos = V2F_ZERO;

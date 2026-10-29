@@ -1,6 +1,7 @@
 #include "editor_scene.hpp"
 #include "../render.hpp"
 #include "game.hpp"
+#include "world.hpp"
 #include "sprite_editor_scene.hpp"
 #include "ingame_scene.hpp"
 #include "transition_scene.hpp"
@@ -60,7 +61,11 @@ static BeamColor getBeamColorFromBrush(EditorBrush type) {
 EditorScene::EditorScene() : Scene(TYPE) {
     m_cam.m_zoom = GetScreenHeight() / 10.0f;
     m_spriteSet.load();
+
+    m_world = std::make_unique<World>();
 }
+
+EditorScene::~EditorScene() {}
 
 void EditorScene::update(float dt) {
     m_cam.update(dt);
@@ -90,7 +95,7 @@ void EditorScene::render() {
 
     // bounds
     {
-        auto m = m_world.m_min, M = m_world.m_max + V2I_ONE;
+        auto m = m_world->m_min, M = m_world->m_max + V2I_ONE;
         DrawLineV(V2f(m.x, m.y), V2f(M.x, m.y), BLUE);
         DrawLineV(V2f(M.x, m.y), V2f(M.x, M.y), BLUE);
         DrawLineV(V2f(M.x, M.y), V2f(m.x, M.y), BLUE);
@@ -102,17 +107,16 @@ void EditorScene::render() {
     // TODO(aren): hardcoded
     // TODO(aren): We need a world space sprite render method!!
     for (int i = 0; i < 4; i++) {
-        m_world.renderTiles(m_cam, m_spriteSet, i);
+        m_world->renderTiles(m_cam, m_spriteSet, i);
     }
 
-    m_world.renderDecos(m_cam, m_spriteSet);;
+    m_world->renderDecos(m_cam, m_spriteSet);;
 
-    m_world.renderMisc(m_cam, m_spriteSet);
-
-    m_world.renderDebug(m_cam, m_spriteSet);
+    m_world->renderMisc(m_cam, m_spriteSet);
 }
 
 void EditorScene::renderUI() {
+    m_world->renderDebugAsUI(m_cam, m_spriteSet);
 
     // camera control
     {
@@ -140,23 +144,23 @@ void EditorScene::renderUI() {
         if (Input::mouseButtonDown(0)) {
             auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
             if (tileType != TileType::Empty) {
-                m_world.at(mouse) = Tile(tileType);
+                m_world->at(mouse) = Tile(tileType);
                 if (tileType == TileType::Zone) {
-                    m_world.at(mouse).m_name = m_zoneTextBox;
+                    m_world->at(mouse).m_name = m_zoneTextBox;
                 }
             }
 
             auto beamColor = getBeamColorFromBrush(static_cast<EditorBrush>(m_brushIndex));
-            if (m_world.contains(mouse)) {
-                auto &tile = m_world.at(mouse);
+            if (m_world->contains(mouse)) {
+                auto &tile = m_world->at(mouse);
                 tile.m_color = beamColor;
             }
         }
         if (Input::mouseButtonDown(1)) {
-            m_world.erase(mouse);
+            m_world->erase(mouse);
         }
 
-        m_world.updateBounds();
+        m_world->updateBounds();
     }
 
     GuiPanel({0, 0, 200, 800}, "Brush List");
@@ -202,7 +206,7 @@ void EditorScene::renderUI() {
     }
 
     if (Input::keyPressed(KEY_F5)) {
-        Game::addScene<IngameScene>(m_world);
+        Game::addScene<IngameScene>(m_world.get());
         Game::addScene<TransitionScene>(true);
     }
 }

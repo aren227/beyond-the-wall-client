@@ -1,15 +1,20 @@
 #include "ingame_scene.hpp"
 #include "game.hpp"
+#include "world.hpp"
 
 namespace aren {
 
-IngameScene::IngameScene(const World &world) : Scene(TYPE) {
-    m_world.tiles() = world.tiles();
+IngameScene::IngameScene(const World *world) : Scene(TYPE) {
+    m_world = std::make_unique<World>();
+    m_world->tiles() = world->tiles();
+
     m_spriteSet.load();
 }
 
+IngameScene::~IngameScene() {}
+
 void IngameScene::update(float dt) {
-    m_world.update(m_cam, dt);
+    m_world->update(m_cam, dt);
 }
 
 void IngameScene::render() {
@@ -17,8 +22,8 @@ void IngameScene::render() {
 
     // camera
     {
-        auto min = m_world.m_min;
-        auto max = m_world.m_max;
+        auto min = m_world->m_min;
+        auto max = m_world->m_max;
 
         max += V2I_ONE;
 
@@ -37,12 +42,12 @@ void IngameScene::render() {
 
     // TODO(aren): hardcoded
     for (int i = 0; i < 4; i++) {
-        m_world.renderTiles(m_cam, m_spriteSet, i);
+        m_world->renderTiles(m_cam, m_spriteSet, i);
     }
 
-    m_world.renderDecos(m_cam, m_spriteSet);
+    m_world->renderDecos(m_cam, m_spriteSet);
 
-    m_world.renderMisc(m_cam, m_spriteSet);
+    m_world->renderMisc(m_cam, m_spriteSet);
 }
 
 void IngameScene::renderUI() {
