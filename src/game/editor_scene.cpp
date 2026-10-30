@@ -122,75 +122,78 @@ void EditorScene::render() {
 void EditorScene::renderUI() {
     m_world->renderDebugAsUI(m_cam, m_spriteSet);
 
-    // camera control
-    {
-        const float sw = GetScreenWidth();
-        const float sh = GetScreenHeight();
+    constexpr float UI_PANEL_WIDTH = 200;
+    if (Input::mousePosition().x > UI_PANEL_WIDTH) {
+        // camera control
+        {
+            const float sw = GetScreenWidth();
+            const float sh = GetScreenHeight();
 
-        const float zoomMin = sh / 10.0f;
-        const float zoomMax = sh / 40.0f;
+            const float zoomMin = sh / 10.0f;
+            const float zoomMax = sh / 40.0f;
 
-        m_cam.m_zoom = std::clamp(m_cam.m_zoom + Input::mouseWheel(), zoomMax, zoomMin);
-        m_cam.m_offset = V2f(sw, sh) * 0.5f;
+            m_cam.m_zoom = std::clamp(m_cam.m_zoom + Input::mouseWheel(), zoomMax, zoomMin);
+            m_cam.m_offset = V2f(sw, sh) * 0.5f;
 
-        if (Input::mouseButtonDown(2)) {
-            m_cam.m_target -= Input::mouseDelta() / m_cam.m_zoom;
+            if (Input::mouseButtonDown(2)) {
+                m_cam.m_target -= Input::mouseDelta() / m_cam.m_zoom;
+            }
         }
-    }
 
-    if (Input::keyPressed(KEY_Q)) m_drawWireframe = !m_drawWireframe;
+        if (Input::keyPressed(KEY_Q)) m_drawWireframe = !m_drawWireframe;
 
-    // tile placement
-    {
-        auto mouse = m_cam.screenToWorld(Input::mousePosition()).floor();
-        DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
+        // tile placement
+        {
+            auto mouse = m_cam.screenToWorld(Input::mousePosition()).floor();
+            DrawRectangleV(mouse.f(), V2F_ONE, {255, 0, 0, 50});
 
-        if (Input::mouseButtonDown(0)) {
-            auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
-            if (tileType != TileType::Empty) {
-                m_world->at(mouse) = Tile(tileType);
-                if (tileType == TileType::Zone) {
-                    m_world->at(mouse).m_name = m_zoneTextBox;
+            if (Input::mouseButtonDown(0)) {
+                auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
+                if (tileType != TileType::Empty) {
+                    m_world->at(mouse) = Tile(tileType);
+                    if (tileType == TileType::Zone) {
+                        m_world->at(mouse).m_name = m_zoneTextBox;
+                    }
+                }
+
+                auto beamColor = getBeamColorFromBrush(static_cast<EditorBrush>(m_brushIndex));
+                if (m_world->contains(mouse)) {
+                    auto &tile = m_world->at(mouse);
+                    tile.m_color = beamColor;
                 }
             }
-
-            auto beamColor = getBeamColorFromBrush(static_cast<EditorBrush>(m_brushIndex));
-            if (m_world->contains(mouse)) {
-                auto &tile = m_world->at(mouse);
-                tile.m_color = beamColor;
+            if (Input::mouseButtonDown(1)) {
+                m_world->erase(mouse);
             }
-        }
-        if (Input::mouseButtonDown(1)) {
-            m_world->erase(mouse);
-        }
 
-        m_world->updateBounds();
+            m_world->updateBounds();
+        }
     }
 
-    GuiPanel({0, 0, 200, 800}, "Brush List");
+    GuiPanel({0, 0, UI_PANEL_WIDTH, float(GetScreenHeight())}, "Tools");
 
     float y = 40;
 
-    if (GuiTextBox({10, y, 100, 30}, m_saveWorldNameTextBox.data(), m_saveWorldNameTextBox.size(), m_saveWorldNameTextBoxEnabled)) {
+    if (GuiTextBox({10, y, 180, 30}, m_saveWorldNameTextBox.data(), m_saveWorldNameTextBox.size(), m_saveWorldNameTextBoxEnabled)) {
         m_saveWorldNameTextBoxEnabled = !m_saveWorldNameTextBoxEnabled;
     }
-    y += 40;
+    y += 35;
 
-    if (GuiButton({10, y, 100, 30}, "Save")) {
+    if (GuiButton({10, y, 180, 30}, "Save")) {
         m_world->save(m_saveWorldNameTextBox.data());
     }
-    y += 40;
+    y += 35;
 
-    auto worldDropdownRect = Rect(10, y, 100, 30);
+    auto worldDropdownRect = Rect(10, y, 180, 30);
     // NOTE(aren): Draw later due to z index
-    y += 40;
+    y += 35;
 
-    if (GuiButton({10, y, 100, 30}, "Load")) {
+    if (GuiButton({10, y, 180, 30}, "Load")) {
         if (m_loadWorldNameSelected < m_scannedWorldNames.size()) {
             m_world = World::load(m_scannedWorldNames[m_loadWorldNameSelected]);
         }
     }
-    y += 40;
+    y += 35;
 
     for (int i = 0; i < int(EditorBrush::__MAX__); i++) {
         int prev = GuiGetStyle(BUTTON, BASE_COLOR_NORMAL);
@@ -200,7 +203,7 @@ void EditorScene::renderUI() {
 
         auto label = ((i < 9) ? (std::to_string(i+1) + ": ") : "") + getBrushName(static_cast<EditorBrush>(i));
 
-        if (GuiButton({10, y, 100, 30}, label.c_str())) {
+        if (GuiButton({10, y, 180, 30}, label.c_str())) {
             m_brushIndex = i;
         }
 
@@ -209,16 +212,16 @@ void EditorScene::renderUI() {
         }
 
         GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, prev);
-        y += 40;
+        y += 35;
     }
 
     if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone) {
-        GuiLabel({10, y, 100, 30}, "Zone name");
-        y += 40;
-        if (GuiTextBox({10, y, 100, 30}, m_zoneTextBox.data(), m_zoneTextBox.size(), m_zoneTextBoxEnabled)) {
+        GuiLabel({10, y, 180, 30}, "Zone name");
+        y += 35;
+        if (GuiTextBox({10, y, 180, 30}, m_zoneTextBox.data(), m_zoneTextBox.size(), m_zoneTextBoxEnabled)) {
             m_zoneTextBoxEnabled = !m_zoneTextBoxEnabled;
         }
-        y += 40;
+        y += 35;
     }
 
     // NOTE(aren): Pass 2

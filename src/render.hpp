@@ -12,7 +12,8 @@ class Camera;
 
 class Render {
 private:
-    static Font s_defaultFont;
+    static Font s_defaultFontSmall;
+    static Font s_defaultFontLarge;
 
 public:
     enum class TextAlignH {
@@ -33,6 +34,8 @@ public:
     static void drawText(Vector2f origin, float size, Color4b color, const char *text, TextAlignH alignH, TextAlignV alignV);
     static void drawTextRotated(Vector2f origin, float size, float rotationDeg, Color4b color, const char *text, TextAlignH alignH, TextAlignV alignV);
 
+    static Font getFontBySize(float size);
+
     static void beginGameDraw();
     static void endGameDraw();
     static void begin2DCam(const Camera &cam);
@@ -41,8 +44,6 @@ public:
     static void endUIDraw();
 
     static void drawTriangleGradient(Vector2f a, Color4b ca, Vector2f b, Color4b cb, Vector2f c, Color4b cc);
-
-    static const Font &defaultFont() { return s_defaultFont; }
 };
 
 } // namespace aren

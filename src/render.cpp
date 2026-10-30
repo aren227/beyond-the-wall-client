@@ -5,7 +5,11 @@
 
 namespace aren {
 
-::Font Render::s_defaultFont = {};
+::Font Render::s_defaultFontSmall = {};
+::Font Render::s_defaultFontLarge = {};
+
+constexpr int FONT_ATLAS_SIZE_SMALL = 16;
+constexpr int FONT_ATLAS_SIZE_LARGE = 96;
 
 Color4b Render::s_backgroundColor = {50, 56, 68, 255};
 uint8_t Render::s_vignette = 16;
@@ -26,13 +30,23 @@ static struct BloomPass {
 static ::Shader s_gammaToLinearShader;
 static ::Shader s_tonemappingShader;
 
+::Font Render::getFontBySize(float size) {
+    if (size > FONT_ATLAS_SIZE_SMALL * 2) {
+        return s_defaultFontLarge;
+    }
+    return s_defaultFontSmall;
+}
+
 void Render::init() {
-    constexpr int FONT_ATLAS_SIZE = 96;
+    s_defaultFontSmall = LoadFontEx("resources/fonts/Noto_Serif/NotoSerif-SemiBold.ttf",
+        FONT_ATLAS_SIZE_SMALL, nullptr, 0);
 
-    s_defaultFont = LoadFontEx("resources/fonts/Noto_Serif/NotoSerif-SemiBold.ttf",
-        FONT_ATLAS_SIZE, nullptr, 0);
+    SetTextureFilter(s_defaultFontSmall.texture, TEXTURE_FILTER_BILINEAR);
 
-    SetTextureFilter(s_defaultFont.texture, TEXTURE_FILTER_BILINEAR);
+    s_defaultFontLarge = LoadFontEx("resources/fonts/Noto_Serif/NotoSerif-SemiBold.ttf",
+        FONT_ATLAS_SIZE_LARGE, nullptr, 0);
+
+    SetTextureFilter(s_defaultFontLarge.texture, TEXTURE_FILTER_BILINEAR);
 
     // TODO(aren): Properly handle high dpi
     auto framebufferSize = V2f(GetScreenWidth(), GetScreenHeight()).scale(V2F_ONE).floor();
@@ -67,11 +81,13 @@ void Render::init() {
 }
 
 void Render::deinit() {
-    UnloadFont(s_defaultFont);
+    UnloadFont(s_defaultFontSmall);
+    UnloadFont(s_defaultFontLarge);
 }
 
 Vector2f Render::measureText(const char *text, float size) {
-    return MeasureTextEx(s_defaultFont, text, size, 1.0f);
+    auto font = getFontBySize(size);
+    return MeasureTextEx(font, text, size, 1.0f);
 }
 
 void Render::drawText(Vector2f origin, float size, Color4b color, const char *text, TextAlignH alignH, TextAlignV alignV) {
@@ -84,7 +100,8 @@ void Render::drawText(Vector2f origin, float size, Color4b color, const char *te
 
     // TODO(aren): shadow
 
-    DrawTextEx(s_defaultFont, text, origin, size, 1.0f, color);
+    auto font = getFontBySize(size);
+    DrawTextEx(font, text, origin, size, 1.0f, color);
 }
 
 void Render::drawTextRotated(Vector2f origin, float size, float rotationDeg, Color4b color, const char *text, TextAlignH alignH, TextAlignV alignV) {
@@ -98,7 +115,8 @@ void Render::drawTextRotated(Vector2f origin, float size, float rotationDeg, Col
 
     // TODO(aren): shadow
 
-    DrawTextPro(s_defaultFont, text, origin, pivot, rotationDeg, size, 1.0f, color);
+    auto font = getFontBySize(size);
+    DrawTextPro(font, text, origin, pivot, rotationDeg, size, 1.0f, color);
 }
 
 void Render::beginGameDraw() {

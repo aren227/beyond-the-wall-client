@@ -62,7 +62,7 @@ int main() {
     s_game.init();
 
     // NOTE(aren): Set default ui styles
-    GuiSetFont(Render::defaultFont());
+    GuiSetFont(Render::getFontBySize(16));
     GuiSetStyle(DEFAULT, TEXT_SIZE, 16);
 
 #if defined(PLATFORM_WEB)
