@@ -19,6 +19,8 @@ public:
     void renderUI() override;
     void render() override;
 
+    virtual bool isBackgroundOpaque() override { return true; }
+
 private:
     Camera m_cam;
     std::unique_ptr<World> m_world;

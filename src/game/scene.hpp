@@ -19,6 +19,8 @@ public:
     virtual void render() = 0;
     virtual void renderUI() = 0;
 
+    virtual bool isBackgroundOpaque() { return false; }
+
     SceneType type() const { return m_type; }
 
 protected:

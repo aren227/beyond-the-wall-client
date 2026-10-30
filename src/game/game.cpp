@@ -50,7 +50,14 @@ void Game::update(float dt) {
 void Game::render() {
     // TODO(aren): May require better handling..
     static std::vector<std::shared_ptr<Scene>> s_tempScenes;
-    s_tempScenes = m_scenes;
+
+    for (auto it = m_scenes.rbegin(); it != m_scenes.rend(); ++it) {
+        s_tempScenes.push_back(*it);
+        if ((*it)->isBackgroundOpaque()) {
+            break;
+        }
+    }
+    std::reverse(s_tempScenes.begin(), s_tempScenes.end());
 
     for (size_t i = 0; i < s_tempScenes.size(); i++) {
         bool isTop = (i + 1 == s_tempScenes.size());
