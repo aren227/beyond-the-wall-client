@@ -26,8 +26,8 @@ private:
     Vector2f m_dir = V2f(1, 0);
 
     float m_speed = 5 * 0.5f;
-    const float m_accelRate = 1 / 0.015f;
-    const float m_brakeRate = 1 / 0.02f;
+    const float m_accelRate = 1 / 0.1f;
+    const float m_brakeRate = 1 / 0.05f;
 
     const float m_collisionExtents = 0.2f;
     const float m_collisionRadius = m_collisionExtents * std::sqrt(2.0f);
