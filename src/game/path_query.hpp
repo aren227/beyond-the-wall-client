@@ -12,7 +12,7 @@ public:
     virtual ~PathQuery() = default;
 
     void build(const World *world, const Vector2f &to, ObjectLayer layer);
-    bool query(const World *world, const Vector2f &from, std::vector<Vector2f> &path) const;
+    bool query(const World *world, const Vector2f &from, float radius, std::vector<Vector2f> &path) const;
 
 private:
     Vector2f m_to;

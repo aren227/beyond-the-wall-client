@@ -67,7 +67,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
     query.build(world, m_pos, ObjectLayer::Player);
 
     s_queryRes.clear();
-    query.query(world, camPos, s_queryRes);
+    query.query(world, camPos, 0.25f, s_queryRes);
 }
 
 void Player::render(const Camera &cam) {

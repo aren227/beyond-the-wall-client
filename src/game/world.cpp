@@ -96,7 +96,7 @@ void World::activateWave(const MonsterWave &wave) {
     for (const auto &zone : wave.m_zones) {
         for (const auto &[pos, tile] : m_tiles) {
             if (tile.m_type == TileType::Zone && zone == tile.m_name.data()) {
-                m_monsters.push_back(std::make_shared<Monster>(pos.f() + V2f(0.5f, 0.5f)));
+                m_monsters.push_back(std::make_shared<Monster>(this, pos.f() + V2f(0.5f, 0.5f)));
             }
         }
     }
@@ -130,9 +130,27 @@ void World::update(const Camera &cam, float dt) {
     m_pathQuery->build(this, m_player->pos(), ObjectLayer::Monster);
 
     for (const auto &it : m_monsters) {
-        it->update(m_pathQuery.get(), this, dt);
+        it->update(m_pathQuery.get(), dt);
     }
-}
+
+    // XXX(aren): O(N^2)
+    for (const auto &it : m_monsters) {
+        auto accumDelta = V2F_ZERO;
+        for (const auto &jt : m_monsters) {
+            if (it == jt) continue;
+
+            auto delta = it->pos() - jt->pos();
+            float len = delta.length();
+
+            if (len < it->collRadius() + jt->collRadius()) {
+                float penerated = it->collRadius() + jt->collRadius() - len;
+                accumDelta += delta.normalized() * penerated * 0.5f;
+            }
+        }
+
+        it->moveDelta(accumDelta);
+    }
+ }
 
 void World::updateBounds() {
     m_min = m_max = V2I_ZERO;

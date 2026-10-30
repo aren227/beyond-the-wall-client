@@ -8,16 +8,17 @@ namespace aren {
 
 static constexpr int PIXEL_SCALER = 2;
 
-Monster::Monster(const Vector2f &pos) {
+Monster::Monster(const World *world, const Vector2f &pos) {
+    m_world = world;
     m_pos = pos;
 }
 
 Monster::~Monster() {}
 
-void Monster::update(const PathQuery *query, const World *world, float dt) {
+void Monster::update(const PathQuery *query, float dt) {
     static std::vector<Vector2f> s_queryRes;
     s_queryRes.clear();
-    query->query(world, m_pos, s_queryRes);
+    query->query(m_world, m_pos, m_collisionRadius, s_queryRes);
 
     if (s_queryRes.size() >= 2) {
         auto dir = (s_queryRes[1] - s_queryRes[0]).normalized();
@@ -27,9 +28,7 @@ void Monster::update(const PathQuery *query, const World *world, float dt) {
 
         m_velocity = velocityNext;
 
-        auto delta = m_velocity * dt;
-        delta = world->moveRect(Rect(m_pos.x - 0.25f, m_pos.y - 0.25f, 0.5f, 0.5f), delta, ObjectLayer::Monster);
-        m_pos += delta;
+        moveDelta(m_velocity * dt);
     }
 }
 
@@ -67,6 +66,11 @@ void Monster::render(const Camera &cam) {
     DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
 
     Render::end2DCam();
+}
+
+void Monster::moveDelta(Vector2f delta) {
+    delta = m_world->moveRect(Rect(m_pos - V2F_ONE * m_collisionExtents, 2 * m_collisionExtents * V2F_ONE), delta, ObjectLayer::Monster);
+    m_pos += delta;
 }
 
 } // namespace aren
