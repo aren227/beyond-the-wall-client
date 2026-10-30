@@ -51,6 +51,8 @@ static const int EDGE_TAG = 4;
 
 static constexpr int PIXEL_SCALER = 2;
 
+static const std::string WORLD_BASE = "./resources/worlds";
+
 World::World() {
     if (s_vertexDefFull.empty()) {
         const auto rotatePattern = [](std::array<bool, 4> &pattern) {
@@ -541,10 +543,14 @@ bool World::raycast(const Vector2f &start, const Vector2f &dir, float maxDist, O
 static constexpr int LVL_VERSION = 1;
 
 static std::string getWorldPath(const std::string &name) {
-    return "./resources/worlds/" + name + ".lvl";
+    return WORLD_BASE + "/" + name + ".lvl";
 }
 
 void World::save(const std::string &name) {
+    if (MakeDirectory(WORLD_BASE.c_str()) != 0) {
+        ASSERT(false);
+    }
+
     std::ofstream os(getWorldPath(name));
 
     os << "version " << LVL_VERSION << std::endl;
