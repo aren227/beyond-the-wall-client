@@ -58,11 +58,15 @@ static BeamColor getBeamColorFromBrush(EditorBrush type) {
     }
 }
 
+static const std::string WORLD_BASE = "./resources/worlds";
+
 EditorScene::EditorScene() : Scene(TYPE) {
     m_cam.m_zoom = GetScreenHeight() / 10.0f;
     m_spriteSet.load();
 
     m_world = std::make_unique<World>();
+
+    refreshScannedWorldNames();
 }
 
 EditorScene::~EditorScene() {}
@@ -166,9 +170,25 @@ void EditorScene::renderUI() {
     GuiPanel({0, 0, 200, 800}, "Brush List");
 
     float y = 40;
-    if (GuiButton({10, y, 180, 30}, "Goto Sprite Editor")) {
-        Game::removeScene<EditorScene>();
-        Game::addScene<SpriteEditorScene>();
+
+    if (GuiTextBox({10, y, 100, 30}, m_saveWorldNameTextBox.data(), m_saveWorldNameTextBox.size(), m_saveWorldNameTextBoxEnabled)) {
+        m_saveWorldNameTextBoxEnabled = !m_saveWorldNameTextBoxEnabled;
+    }
+    y += 40;
+
+    if (GuiButton({10, y, 100, 30}, "Save")) {
+        m_world->save(m_saveWorldNameTextBox.data());
+    }
+    y += 40;
+
+    auto worldDropdownRect = Rect(10, y, 100, 30);
+    // NOTE(aren): Draw later due to z index
+    y += 40;
+
+    if (GuiButton({10, y, 100, 30}, "Load")) {
+        if (m_loadWorldNameSelected < m_scannedWorldNames.size()) {
+            m_world = World::load(m_scannedWorldNames[m_loadWorldNameSelected]);
+        }
     }
     y += 40;
 
@@ -201,6 +221,20 @@ void EditorScene::renderUI() {
         y += 40;
     }
 
+    // NOTE(aren): Pass 2
+    static std::string s_joinedStr;
+    s_joinedStr.clear();
+    for (size_t i = 0; i < m_scannedWorldNames.size(); i++) {
+        s_joinedStr += m_scannedWorldNames[i];
+        if (i + 1 < m_scannedWorldNames.size()) {
+            s_joinedStr += ";";
+        }
+    }
+
+    if (GuiDropdownBox(worldDropdownRect, s_joinedStr.c_str(), &m_loadWorldNameSelected, m_loadWorldNameSelected)) {
+        m_loadWorldNameEnabled = !m_loadWorldNameEnabled;
+    }
+
     if (Input::keyPressed(KEY_ONE)) {
         m_brushIndex = 0;
     }
@@ -208,6 +242,19 @@ void EditorScene::renderUI() {
     if (Input::keyPressed(KEY_F5)) {
         Game::addScene<IngameScene>(m_world.get());
         Game::addScene<TransitionScene>(true);
+    }
+}
+
+void EditorScene::refreshScannedWorldNames() {
+    m_scannedWorldNames.clear();
+
+    if (DirectoryExists(WORLD_BASE.c_str())) {
+        auto res = LoadDirectoryFilesEx(WORLD_BASE.c_str(), ".lvl", false);
+        for (size_t i = 0; i < res.count; i++) {
+            auto name = std::string(GetFileNameWithoutExt(res.paths[i]));
+            m_scannedWorldNames.push_back(std::move(name));
+        }
+        UnloadDirectoryFiles(res);
     }
 }
 

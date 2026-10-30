@@ -5,6 +5,7 @@
 #include "monster.hpp"
 #include "path_query.hpp"
 #include <random>
+#include <fstream>
 
 namespace aren {
 
@@ -536,5 +537,77 @@ bool World::raycast(const Vector2f &start, const Vector2f &dir, float maxDist, O
 
     return false;
 }
+
+static constexpr int LVL_VERSION = 1;
+
+static std::string getWorldPath(const std::string &name) {
+    return "./resources/worlds/" + name + ".lvl";
+}
+
+void World::save(const std::string &name) {
+    std::ofstream os(getWorldPath(name));
+
+    os << "version " << LVL_VERSION << std::endl;
+    os << "tiles " << m_tiles.size() << std::endl;
+
+    for (const auto [k, v] : m_tiles) {
+        os << "pos " << k.x << " " << k.y << std::endl;
+        os << "type " << int(v.m_type) << std::endl;
+        os << "color " << int(v.m_color) << std::endl;
+        os << "name ;" << v.m_name.data() << std::endl;
+        os << "exit" << std::endl;
+    }
+
+    os.close();
+}
+
+std::unique_ptr<World> World::load(const std::string &name) {
+    std::ifstream is(getWorldPath(name));
+    std::string tok;
+
+    is >> tok;
+    if (tok != "version") return nullptr;
+    is >> tok;
+    if (tok != std::to_string(LVL_VERSION)) return nullptr;
+
+    auto world = std::make_unique<World>();
+
+    while (is >> tok) {
+        if (tok == "tiles") {
+            int count; is >> count;
+            for (int i = 0; i < count; i++) {
+                std::optional<Vector2i> pos;
+                Tile tile;
+
+                while (is >> tok) {
+                    if (tok == "pos") {
+                        int x, y; is >> x >> y;
+                        pos = Vector2i(x, y);
+                    } else if (tok == "type") {
+                        int t; is >> t;
+                        tile.m_type = TileType(t);
+                    } else if (tok == "color") {
+                        int c; is >> c;
+                        tile.m_color = BeamColor(c);
+                    } else if (tok == "name") {
+                        std::string name; is >> name;
+                        std::strncpy(tile.m_name.data(), name.c_str() + 1, tile.m_name.size());
+                    } else if (tok == "exit") {
+                        break;
+                    }
+                }
+
+                if (!pos) return nullptr;
+
+                world->m_tiles[pos.value()] = std::move(tile);
+            }
+        }
+    }
+
+    is.close();
+
+    return world;
+}
+
 
 } // namespace aren

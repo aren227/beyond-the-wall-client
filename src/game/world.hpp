@@ -39,6 +39,9 @@ public:
 
     bool raycast(const Vector2f &start, const Vector2f &dir, float maxDist, ObjectLayer layer, float &t, Vector2i &hit, Vector2i &normal) const;
 
+    void save(const std::string &name);
+    static std::unique_ptr<World> load(const std::string &name);
+
 private:
     Color4f getColor(const Vector2i &pos) const;
     bool checkWaveCondition(const MonsterWave &wave);
