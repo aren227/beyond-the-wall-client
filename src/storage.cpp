@@ -172,19 +172,6 @@ static std::string joinList(const std::vector<std::string> &v) {
     return s;
 }
 
-// Parses "key=(type)value". Returns false on malformed input — caller skips.
-// static bool parseLine(const std::string &line, std::string &key, std::string &type, std::string &value) {
-//     size_t eq = line.find('=');
-//     if (eq == std::string::npos) return false;
-//     if (eq + 1 >= line.size() || line[eq + 1] != '(') return false;
-//     size_t rp = line.find(')', eq + 2);
-//     if (rp == std::string::npos) return false;
-//     key   = line.substr(0, eq);
-//     type  = line.substr(eq + 2, rp - eq - 2);
-//     value = line.substr(rp + 1);
-//     return true;
-// }
-
 static bool parse(std::string_view &feed, std::string &key, char &type, std::string &value) {
     size_t eq = feed.find('=');
     if (eq == std::string::npos) return false;
@@ -257,8 +244,6 @@ void Storage::init() {
     char type;
     std::string value;
     while (parse(view, key, type, value)) {
-        printf("LOAD %s %c %s\n", key.c_str(), type, value.c_str());
-        // std::cout << key << ' ' << type << ' ' << value << std::endl;
         Entry e;
         if (type == 's') {
             e = Entry(value);
