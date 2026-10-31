@@ -546,6 +546,78 @@ static std::string getWorldPath(const std::string &name) {
     return WORLD_BASE + "/" + name + ".lvl";
 }
 
+// TODO(aren): Copied from storage.cpp
+
+static std::string escape(const std::string_view &s) {
+    std::string out;
+    out.reserve(s.size() + 1);
+    out += ';';
+    for (char c : s) {
+        switch (c) {
+            case '\\':
+                out += "\\\\";
+                break;
+            case '\n':
+                out += "\\n";
+                break;
+            case '\r':
+                out += "\\r";
+                break;
+            case ' ':
+                out += "\\_";
+                break;
+            default:
+                out += c;
+                break;
+        }
+    }
+    return out;
+}
+
+static std::string unescape(const std::string_view &s) {
+    std::string out;
+    out.reserve(s.size());
+    ASSERT(s.size() > 0 && s[0] == ';');
+    for (size_t i = 1; i < s.size(); i++) {
+        char c = s[i];
+        if (c == '\\' && i + 1 < s.size()) {
+            switch (s[i + 1]) {
+                case '\\':
+                    out += '\\';
+                    i++;
+                    break;
+                case 'n':
+                    out += '\n';
+                    i++;
+                    break;
+                case 'r':
+                    out += '\r';
+                    i++;
+                    break;
+                case '_':
+                    out += ' ';
+                    i++;
+                    break;
+                default:
+                    ASSERT(false);
+                    i++;
+                    break;
+            }
+        } else {
+            out += c;
+        }
+    }
+    return out;
+}
+
+static bool unescapeIs(std::istream &is, std::string &value) {
+    bool res = !!(is >> value);
+    if (res) {
+        value = unescape(value);
+    }
+    return res;
+}
+
 void World::save(const std::string &name) {
     if (MakeDirectory(WORLD_BASE.c_str()) != 0) {
         ASSERT(false);
@@ -554,13 +626,17 @@ void World::save(const std::string &name) {
     std::ofstream os(getWorldPath(name));
 
     os << "version " << LVL_VERSION << std::endl;
+
+    os << "name " << escape(this->m_name) << std::endl;
+    os << "comment " << escape(m_comment) << std::endl;
+
     os << "tiles " << m_tiles.size() << std::endl;
 
     for (const auto [k, v] : m_tiles) {
         os << "pos " << k.x << " " << k.y << std::endl;
         os << "type " << int(v.m_type) << std::endl;
         os << "color " << int(v.m_color) << std::endl;
-        os << "name ;" << v.m_name.data() << std::endl;
+        os << "name " << escape(v.m_name.data()) << std::endl;
         os << "exit" << std::endl;
     }
 
@@ -579,7 +655,11 @@ std::unique_ptr<World> World::load(const std::string &name) {
     auto world = std::make_unique<World>();
 
     while (is >> tok) {
-        if (tok == "tiles") {
+        if (tok == "name") {
+            unescapeIs(is, world->m_name);
+        } else if (tok == "comment") {
+            unescapeIs(is, world->m_comment);
+        } else if (tok == "tiles") {
             int count; is >> count;
             for (int i = 0; i < count; i++) {
                 std::optional<Vector2i> pos;

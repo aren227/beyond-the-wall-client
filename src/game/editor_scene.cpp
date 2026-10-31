@@ -119,6 +119,18 @@ void EditorScene::render() {
     m_world->renderMisc(m_cam, m_spriteSet);
 }
 
+template <typename TBProps>
+static void GuiTextBoxHelper(const Rect &rect, TBProps &tbProps) {
+    if (GuiTextBox(rect, tbProps.str.data(), tbProps.len, tbProps.enabled)) {
+        tbProps.enabled = !tbProps.enabled;
+    }
+}
+
+template <typename TBProps>
+static void strcpyTB(TBProps &tbProps, const std::string_view &str) {
+    strcpy_s(tbProps.str.data(), tbProps.str.size(), str.data());
+}
+
 void EditorScene::renderUI() {
     m_world->renderDebugAsUI(m_cam, m_spriteSet);
 
@@ -152,7 +164,7 @@ void EditorScene::renderUI() {
                 if (tileType != TileType::Empty) {
                     m_world->at(mouse) = Tile(tileType);
                     if (tileType == TileType::Zone) {
-                        m_world->at(mouse).m_name = m_zoneTextBox;
+                        m_world->at(mouse).m_name = m_zoneTB.str;
                     }
                 }
 
@@ -174,13 +186,14 @@ void EditorScene::renderUI() {
 
     float y = 40;
 
-    if (GuiTextBox({10, y, 180, 30}, m_saveWorldNameTextBox.data(), m_saveWorldNameTextBox.size(), m_saveWorldNameTextBoxEnabled)) {
-        m_saveWorldNameTextBoxEnabled = !m_saveWorldNameTextBoxEnabled;
-    }
+    GuiTextBoxHelper({10, y, 180, 30}, m_savedWorldNameTB);
     y += 35;
 
     if (GuiButton({10, y, 180, 30}, "Save")) {
-        m_world->save(m_saveWorldNameTextBox.data());
+        m_world->m_name = std::string(m_worldNameTB.str.data());
+        m_world->m_comment = std::string(m_worldCommentTB.str.data());
+
+        m_world->save(m_savedWorldNameTB.str.data());
     }
     y += 35;
 
@@ -191,8 +204,22 @@ void EditorScene::renderUI() {
     if (GuiButton({10, y, 180, 30}, "Load")) {
         if (m_loadWorldNameSelected < m_scannedWorldNames.size()) {
             m_world = World::load(m_scannedWorldNames[m_loadWorldNameSelected]);
+
+            strcpyTB(m_savedWorldNameTB, m_scannedWorldNames[m_loadWorldNameSelected]);
+            strcpyTB(m_worldNameTB, m_world->m_name);
+            strcpyTB(m_worldCommentTB, m_world->m_comment);
         }
     }
+    y += 35;
+
+    GuiLabel({10, y, 180, 30}, "World Name");
+    y += 25;
+    GuiTextBoxHelper({10, y, 180, 30}, m_worldNameTB);
+    y += 35;
+
+    GuiLabel({10, y, 180, 30}, "Comment");
+    y += 25;
+    GuiTextBoxHelper({10, y, 180, 30}, m_worldCommentTB);
     y += 35;
 
     for (int i = 0; i < int(EditorBrush::__MAX__); i++) {
@@ -207,7 +234,7 @@ void EditorScene::renderUI() {
             m_brushIndex = i;
         }
 
-        if (i < 9 && Input::keyPressed(KEY_ONE + i) && m_zoneTextBoxEnabled == false) {
+        if (i < 9 && Input::keyPressed(KEY_ONE + i) && m_zoneTB.enabled == false) {
             m_brushIndex = i;
         }
 
@@ -218,9 +245,7 @@ void EditorScene::renderUI() {
     if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone) {
         GuiLabel({10, y, 180, 30}, "Zone name");
         y += 35;
-        if (GuiTextBox({10, y, 180, 30}, m_zoneTextBox.data(), m_zoneTextBox.size(), m_zoneTextBoxEnabled)) {
-            m_zoneTextBoxEnabled = !m_zoneTextBoxEnabled;
-        }
+        GuiTextBoxHelper({10, y, 180, 30}, m_zoneTB);
         y += 35;
     }
 

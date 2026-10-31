@@ -50,6 +50,8 @@ private:
 public:
     // XXX(aren): lazy
     Vector2i m_min = V2I_ZERO, m_max = V2I_ZERO;
+    std::string m_name;
+    std::string m_comment;
 
 private:
     float m_time = 0;

@@ -32,14 +32,24 @@ private:
     int m_brushIndex = 0;
     bool m_drawWireframe = true;
 
-    std::array<char, 64> m_saveWorldNameTextBox = {};
-    bool m_saveWorldNameTextBoxEnabled = false;
+    template <size_t SIZE = 256>
+    struct TextBoxProps {
+        static constexpr size_t len = SIZE;
+        std::array<char, SIZE> str = {};
+        bool enabled = false;
+
+        TextBoxProps<>() = default;
+    };
+
+    TextBoxProps<> m_savedWorldNameTB;
 
     int m_loadWorldNameSelected = 0;
     bool m_loadWorldNameEnabled = false;
 
-    std::array<char, 8> m_zoneTextBox = {};
-    bool m_zoneTextBoxEnabled = false;
+    TextBoxProps<> m_worldNameTB;
+    TextBoxProps<> m_worldCommentTB;
+
+    TextBoxProps<8> m_zoneTB;
 };
 
 } // namespace aren
