@@ -57,8 +57,6 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 if (world->contains(hit)) {
                     world->at(hit).takeDamage(dt * m_baseAttackDamage);
                 }
-
-                break;
             }
         }
     }
