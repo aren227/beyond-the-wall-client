@@ -21,6 +21,7 @@ bool Tile::isTransparent() const {
         case TileType::Empty:
         case TileType::Glass:
         case TileType::Zone:
+        case TileType::PlayerSpawn:
             return true;
         default:
             return false;
@@ -40,6 +41,7 @@ bool Tile::isSolid() const {
     switch (m_type) {
         case TileType::Empty:
         case TileType::Zone:
+        case TileType::PlayerSpawn:
             return false;
         default:
             return true;

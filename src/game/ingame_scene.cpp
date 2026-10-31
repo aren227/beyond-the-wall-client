@@ -1,12 +1,21 @@
 #include "ingame_scene.hpp"
 #include "game.hpp"
 #include "world.hpp"
+#include "player.hpp"
 
 namespace aren {
 
 IngameScene::IngameScene(const World *world) : Scene(TYPE) {
     m_world = std::make_unique<World>();
     m_world->tiles() = world->tiles();
+
+
+    for (const auto &[k, v] : m_world->tiles()) {
+        if (v.m_type == TileType::PlayerSpawn) {
+            m_world->player()->teleport(k.f() + V2f(0.5f, 0.5f));
+            break;
+        }
+    }
 
     m_spriteSet.load();
 }

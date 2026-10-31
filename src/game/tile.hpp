@@ -12,6 +12,7 @@ enum class TileType {
     Glass,
     Sand,
     Zone,
+    PlayerSpawn,
     __MAX__
 };
 

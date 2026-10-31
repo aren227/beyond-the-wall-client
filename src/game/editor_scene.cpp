@@ -14,6 +14,7 @@ enum class EditorBrush {
     Glass,
     Sand,
     Zone,
+    PlayerSpawn,
     White,
     Red,
     Green,
@@ -31,6 +32,7 @@ static const char *getBrushName(EditorBrush type) {
         case EditorBrush::Glass: return "Glass";
         case EditorBrush::Sand: return "Sand";
         case EditorBrush::Zone: return "Zone";
+        case EditorBrush::PlayerSpawn: return "Player Spawn";
         case EditorBrush::White: return "White";
         case EditorBrush::Red: return "Red";
         case EditorBrush::Green: return "Green";
@@ -49,6 +51,7 @@ static TileType getTileTypeFromBrush(EditorBrush type) {
         case EditorBrush::Glass: return TileType::Glass;
         case EditorBrush::Sand: return TileType::Sand;
         case EditorBrush::Zone: return TileType::Zone;
+        case EditorBrush::PlayerSpawn: return TileType::PlayerSpawn;
         default: return TileType::Empty;
     }
 }
@@ -186,6 +189,16 @@ void EditorScene::renderUI() {
             if (Input::mouseButtonDown(0)) {
                 auto tileType = getTileTypeFromBrush(static_cast<EditorBrush>(m_brushIndex));
                 if (tileType != TileType::Empty) {
+                    // NOTE(aren): Erase previous tile
+                    if (tileType == TileType::PlayerSpawn) {
+                        for (const auto &[k, v] : m_world->tiles()) {
+                            if (v.m_type == TileType::PlayerSpawn) {
+                                m_world->erase(k);
+                                break;
+                            }
+                        }
+                    }
+
                     m_world->at(mouse) = Tile(tileType);
                     if (tileType == TileType::Zone) {
                         m_world->at(mouse).m_name = m_zoneTB.str;

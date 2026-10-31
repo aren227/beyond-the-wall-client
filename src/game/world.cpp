@@ -363,16 +363,26 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
         for (int y = m_min.y; y <= m_max.y; y++) {
             auto v = V2i(x, y);
             const auto &tile = getTile(v);
-            if (tile.m_type == TileType::Zone) {
+            if (tile.m_type == TileType::Zone || tile.m_type == TileType::PlayerSpawn) {
                 auto a = cam.worldToScreen(v.f());
                 auto b = cam.worldToScreen((v + V2I_ONE).f());
                 auto rect = Rect(a.x, a.y, b.x-a.x, b.y-a.y);
 
-                DrawRectangleRec(rect, {255, 255, 0, 128});
+                auto color = WHITE;
+                const char *label = "?";
+                if (tile.m_type == TileType::Zone) {
+                    color = {255, 255, 0, 128};
+                    label = tile.m_name.data();
+                } else if (tile.m_type == TileType::PlayerSpawn) {
+                    color = {0, 255, 255, 128};
+                    label = "Spawn";
+                }
+
+                DrawRectangleRec(rect, color);
 
                 int prev = GuiGetStyle(LABEL, TEXT_COLOR_NORMAL);
                 GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, Color4b(255, 255, 255, 255).rgba32());
-                GuiLabel(rect, tile.m_name.data());
+                GuiLabel(rect, label);
                 GuiSetStyle(LABEL, TEXT_COLOR_NORMAL, prev);
             }
         }

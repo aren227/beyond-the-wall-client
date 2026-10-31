@@ -16,6 +16,7 @@ public:
     void render(const Camera &cam);
 
     inline const Vector2f &pos() { return m_pos; }
+    void teleport(const Vector2f &dst);
 
 private:
     Vector2f m_pos = V2F_ZERO;

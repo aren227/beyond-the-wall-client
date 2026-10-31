@@ -119,4 +119,9 @@ void Player::render(const Camera &cam) {
     Render::end2DCam();
 }
 
+void Player::teleport(const Vector2f &dst) {
+    m_pos = dst;
+    m_velocity = V2F_ZERO;
+}
+
 } // namespace aren

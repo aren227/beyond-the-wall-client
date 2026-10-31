@@ -42,6 +42,8 @@ public:
     void save(const std::string &name);
     static std::unique_ptr<World> load(const std::string &name);
 
+    inline Player *player() { return m_player.get(); }
+
 private:
     Color4f getColor(const Vector2i &pos) const;
     bool checkWaveCondition(const MonsterWave &wave);
