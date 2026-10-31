@@ -18,6 +18,9 @@ enum class EditorBrush {
     Red,
     Green,
     Blue,
+    x1,
+    x2,
+    x4,
     __MAX__,
 };
 
@@ -32,6 +35,9 @@ static const char *getBrushName(EditorBrush type) {
         case EditorBrush::Red: return "Red";
         case EditorBrush::Green: return "Green";
         case EditorBrush::Blue: return "Blue";
+        case EditorBrush::x1: return "x1";
+        case EditorBrush::x2: return "x2";
+        case EditorBrush::x4: return "x4";
         default: return "N/A";
     }
 }
@@ -55,6 +61,15 @@ static BeamColor getBeamColorFromBrush(EditorBrush type) {
         case EditorBrush::White:
         default:
             return BeamColor::White;
+    }
+}
+
+static int getMultiplierFromBrush(EditorBrush type) {
+    switch (type) {
+        case EditorBrush::x1: return 1;
+        case EditorBrush::x2: return 2;
+        case EditorBrush::x4: return 4;
+        default: return -1;
     }
 }
 
@@ -111,8 +126,17 @@ void EditorScene::render() {
     // TODO(aren): hardcoded
     // TODO(aren): We need a world space sprite render method!!
     for (int i = 0; i < 4; i++) {
-        m_world->renderTiles(m_cam, m_spriteSet, i);
+        m_world->renderTiles(m_cam, m_spriteSet, i, 1);
     }
+
+    // TODO(aren): TOO SLOW!! use custom shader for hdr rendering..
+    BeginBlendMode(BLEND_ADDITIVE);
+    for (int t = 2; t <= 4; t++) {
+        for (int i = 0; i < 4; i++) {
+            m_world->renderTiles(m_cam, m_spriteSet, i, t);
+        }
+    }
+    EndBlendMode();
 
     m_world->renderDecos(m_cam, m_spriteSet);;
 
@@ -172,6 +196,12 @@ void EditorScene::renderUI() {
                 if (m_world->contains(mouse)) {
                     auto &tile = m_world->at(mouse);
                     tile.m_color = beamColor;
+                }
+
+                int multiplier = getMultiplierFromBrush(static_cast<EditorBrush>(m_brushIndex));
+                if (multiplier > 0 && m_world->contains(mouse)) {
+                    auto &tile = m_world->at(mouse);
+                    tile.m_multiplier = multiplier;
                 }
             }
             if (Input::mouseButtonDown(1)) {

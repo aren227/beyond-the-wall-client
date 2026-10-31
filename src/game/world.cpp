@@ -196,7 +196,7 @@ Color4f World::getColor(const Vector2i &pos) const {
     return color;
 }
 
-void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category) {
+void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category, int multiplier) {
     const auto getCategory = [&](const Vector2i &pos) -> int {
         switch (getTileType(pos)) {
             case TileType::Empty:
@@ -223,7 +223,10 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
 
                 const auto &sprite = spriteSet.tile(getTileType(v));
                 const Color4f color = getColor(v);
-                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER, color);
+
+                if (multiplier <= getTile(v).m_multiplier) {
+                    sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER, color);
+                }
             }
         }
     }
@@ -250,7 +253,9 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                     const auto color = getColor(main);
 
                     auto a = cam.worldToScreen(center.f());
-                    sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER, color);
+                    if (multiplier <= getTile(main).m_multiplier) {
+                        sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER, color);
+                    }
                 }
             }
         }
@@ -283,7 +288,9 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x + 1, y)));
                 const auto color = getColor(p ? V2i(x, y) : V2i(x + 1, y));
 
-                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER, color);
+                if (multiplier <= getTile(p ? V2i(x, y) : V2i(x + 1, y)).m_multiplier) {
+                    sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER, color);
+                }
             }
 
             // horizontal
@@ -300,28 +307,33 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x, y + 1)));
                 const auto color = getColor(p ? V2i(x, y) : V2i(x, y + 1));
 
-                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER, color);
+                if (multiplier <= getTile(p ? V2i(x, y) : V2i(x, y + 1)).m_multiplier) {
+                    sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER, color);
+                }
             }
         }
     }
 
     // NOTE(aren): Overlay after render all stuffs
-    BeginBlendMode(BLEND_MULTIPLIED);
-    for (int x = m_min.x; x <= m_max.x; x++) {
-        for (int y = m_min.y; y <= m_max.y; y++) {
-            auto v = V2i(x, y);
-            float health = getTile(v).m_health;
-            if (health < TILE_MAX_HEALTH) {
-                auto a = cam.worldToScreen(v.f());
-                auto b = cam.worldToScreen((v + V2I_ONE).f());
+    // TODO(aren): additive mode doesn't work if beginblendmode is called here..
+    if (multiplier == 1) {
+        BeginBlendMode(BLEND_MULTIPLIED);
+        for (int x = m_min.x; x <= m_max.x; x++) {
+            for (int y = m_min.y; y <= m_max.y; y++) {
+                auto v = V2i(x, y);
+                float health = getTile(v).m_health;
+                if (health < TILE_MAX_HEALTH) {
+                    auto a = cam.worldToScreen(v.f());
+                    auto b = cam.worldToScreen((v + V2I_ONE).f());
 
-                const auto &sprite = spriteSet.ditherOpaque;
-                const int tag = std::floor((health / TILE_MAX_HEALTH) * 15) + 1;
-                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, WHITE);
+                    const auto &sprite = spriteSet.ditherOpaque;
+                    const int tag = std::floor((health / TILE_MAX_HEALTH) * 15) + 1;
+                    sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, WHITE);
+                }
             }
         }
+        EndBlendMode();
     }
-    EndBlendMode();
 }
 
 void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
@@ -636,6 +648,7 @@ void World::save(const std::string &name) {
         os << "pos " << k.x << " " << k.y << std::endl;
         os << "type " << int(v.m_type) << std::endl;
         os << "color " << int(v.m_color) << std::endl;
+        os << "mult " << v.m_multiplier << std::endl;
         os << "name " << escape(v.m_name.data()) << std::endl;
         os << "exit" << std::endl;
     }
@@ -675,6 +688,9 @@ std::unique_ptr<World> World::load(const std::string &name) {
                     } else if (tok == "color") {
                         int c; is >> c;
                         tile.m_color = BeamColor(c);
+                    } else if (tok == "mult") {
+                        int m; is >> m;
+                        tile.m_multiplier = m;
                     } else if (tok == "name") {
                         std::string name; is >> name;
                         std::strncpy(tile.m_name.data(), name.c_str() + 1, tile.m_name.size());
