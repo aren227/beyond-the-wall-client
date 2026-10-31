@@ -41,6 +41,9 @@ private:
         TextBoxProps<>() = default;
     };
 
+    Vector2 m_panelScroll = {0, 0};
+    Rectangle m_panelView = {0, 0, 0, 0};
+
     TextBoxProps<> m_savedWorldNameTB;
 
     int m_loadWorldNameSelected = 0;

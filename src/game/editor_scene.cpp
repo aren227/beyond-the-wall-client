@@ -161,7 +161,7 @@ static void strcpyTB(TBProps &tbProps, const std::string_view &str) {
 void EditorScene::renderUI() {
     m_world->renderDebugAsUI(m_cam, m_spriteSet);
 
-    constexpr float UI_PANEL_WIDTH = 200;
+    constexpr float UI_PANEL_WIDTH = 200 + 16;
     if (Input::mousePosition().x > UI_PANEL_WIDTH) {
         // camera control
         {
@@ -225,9 +225,10 @@ void EditorScene::renderUI() {
         }
     }
 
-    GuiPanel({0, 0, UI_PANEL_WIDTH, float(GetScreenHeight())}, "Tools");
+    GuiScrollPanel({0, 0, UI_PANEL_WIDTH, float(GetScreenHeight())}, "Tools", {0, 0, UI_PANEL_WIDTH-16, 2000}, &m_panelScroll, &m_panelView);
 
     float y = 40;
+    y += m_panelScroll.y;
 
     GuiTextBoxHelper({10, y, 180, 30}, m_savedWorldNameTB);
     y += 35;

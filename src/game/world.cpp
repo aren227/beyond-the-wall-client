@@ -81,22 +81,26 @@ World::World() {
 
     m_player = std::make_unique<Player>();
 
-    m_monsterWaves.push_back({
-        .m_zones = {"a", "b"},
-        .m_monsterName = "dummy",
-    });
-
     m_pathQuery = std::make_unique<PathQuery>();
 }
 
 World::~World() {}
 
 bool World::checkWaveCondition(const MonsterWave &wave) {
+    switch (wave.conditionType) {
+        case MonsterWaveCondition::Always:
+            return true;
+        case MonsterWaveCondition::MonsterCleared:
+            return m_monsters.size() == 0;
+        case MonsterWaveCondition::EnterZone:
+            auto tile = getTile(m_player->pos().floor());
+            return (tile.m_type == TileType::Zone && std::strcmp(tile.m_name.data(), wave.conditionValue.c_str()) == 0);
+    }
     return true;
 }
 
 void World::activateWave(const MonsterWave &wave) {
-    for (const auto &zone : wave.m_zones) {
+    for (const auto &zone : wave.zones) {
         for (const auto &[pos, tile] : m_tiles) {
             if (tile.m_type == TileType::Zone && zone == tile.m_name.data()) {
                 m_monsters.push_back(std::make_shared<Monster>(this, pos.f() + V2f(0.5f, 0.5f)));
@@ -123,10 +127,12 @@ void World::update(const Camera &cam, float dt) {
         m_tiles.erase(k);
     }
 
-    for (int i = int(m_monsterWaves.size()) - 1; i >= 0; i--) {
-        if (checkWaveCondition(m_monsterWaves[i])) {
-            activateWave(m_monsterWaves[i]);
-            m_monsterWaves.erase(m_monsterWaves.begin() + i);
+    for (auto it = m_monsterWaves.begin(); it != m_monsterWaves.end();) {
+        if (checkWaveCondition(*it)) {
+            activateWave(*it);
+            it = m_monsterWaves.erase(it);
+        } else {
+            break;
         }
     }
 
@@ -663,6 +669,21 @@ void World::save(const std::string &name) {
         os << "exit" << std::endl;
     }
 
+    os << "waves " << m_monsterWaves.size() << std::endl;
+
+    for (const auto &it : m_monsterWaves) {
+        os << "zones " << it.zones.size();
+        for (const auto &zone : it.zones) {
+            os << " " << escape(zone);
+        }
+        os << std::endl;
+
+        os << "monster_name " << escape(it.monsterName) << std::endl;
+        os << "condition_type " << int(it.conditionType) << std::endl;
+        os << "condition_value " << escape(it.conditionValue) << std::endl;
+        os << "exit" << std::endl;
+    }
+
     os.close();
 }
 
@@ -712,6 +733,31 @@ std::unique_ptr<World> World::load(const std::string &name) {
                 if (!pos) return nullptr;
 
                 world->m_tiles[pos.value()] = std::move(tile);
+            }
+        } else if (tok == "waves") {
+            int count; is >> count;
+            for (int i = 0; i < count; i++) {
+                MonsterWave wave;
+
+                while (is >> tok) {
+                    if (tok == "zones") {
+                        int c; is >> c;
+
+                        wave.zones.resize(c);
+                        for (int j = 0; j < count; j++) {
+                            unescapeIs(is, wave.zones[j]);
+                        }
+                    } else if (tok == "monster_name") {
+                        unescapeIs(is, wave.monsterName);
+                    } else if (tok == "condition_type") {
+                        int t; is >> t;
+                        wave.conditionType = MonsterWaveCondition(t);
+                    } else if (tok == "condition_value") {
+                        unescapeIs(is, wave.conditionValue);
+                    } else if (tok == "exit") {
+                        break;
+                    }
+                }
             }
         }
     }
