@@ -1,0 +1,170 @@
+version 1
+name ;otherside
+comment ;You\_can\_only\_attack\_the\_enemies\_otherside
+balance
+beam_bounces 2
+exit
+tiles 27
+pos 2 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 3 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 4 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 5 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 1
+type 1
+color 1
+mult 1
+name ;
+exit
+pos 7 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 8 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 9 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 10 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 2
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 3
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 4
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 5
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 3 6
+type 6
+color 7
+mult 1
+name ;
+exit
+pos 6 7
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 8
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 9
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 10
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 2 11
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 3 11
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 4 11
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 5 11
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 11
+type 1
+color 1
+mult 1
+name ;
+exit
+pos 7 11
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 8 11
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 9 11
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 10 11
+type 3
+color 7
+mult 1
+name ;
+exit
+waves 0

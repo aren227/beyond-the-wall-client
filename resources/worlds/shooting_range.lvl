@@ -1,0 +1,848 @@
+version 1
+name ;shooting_range
+comment ;very\_hard\_(boss\_level\_almost)
+balance
+beam_bounces 2
+exit
+tiles 140
+pos 19 1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 2 2
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 21 2
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 3
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 21 3
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 4
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 1 5
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 2 5
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 3 5
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 19 5
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 20 5
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 21 5
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 25 5
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 26 5
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 27 5
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 28 5
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 29 5
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 2 8
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 1 11
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 2 11
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 3 11
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 4 11
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 2 14
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 15 15
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 15 16
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 16 16
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 25 16
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 36 16
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 1 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 2 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 3 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 4 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 15 17
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 23 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 24 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 25 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 26 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 27 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 35 17
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 36 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 37 17
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 6 18
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 15 18
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 16 18
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 18
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 18 18
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 19 18
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 27 18
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 35 18
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 6 19
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 26 19
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 27 19
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 35 19
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 6 20
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 27 20
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 35 20
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 6 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 23 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 24 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 25 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 26 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 27 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 35 21
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 10 24
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 10 25
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 10 26
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 1 27
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 10 27
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 27
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 1 28
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 2 28
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 3 28
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 10 28
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 28
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 3 29
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 29
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 3 30
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 30
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 15 31
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 31
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 31
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 22 31
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 31 31
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 34 31
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 15 32
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 32
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 31 32
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 32 32
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 33 32
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 34 32
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 35 32
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 14 33
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 15 33
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 20 33
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 11 34
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 12 34
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 13 34
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 14 34
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 15 34
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 20 34
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 1 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 2 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 3 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 4 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 5 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 6 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 7 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 8 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 9 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 10 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 11 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 12 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 13 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 14 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 15 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 16 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 17 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 18 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 19 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 20 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 21 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 22 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 23 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 24 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 25 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 26 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 27 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 28 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 29 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 30 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 31 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 32 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 33 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 34 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 35 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 36 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 37 36
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 2 37
+type 6
+color 7
+mult 1
+name ;
+exit
+waves 0
