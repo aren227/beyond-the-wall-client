@@ -5,6 +5,7 @@
 #include "sprite_editor_scene.hpp"
 #include "ingame_scene.hpp"
 #include "transition_scene.hpp"
+#include "player.hpp"
 
 namespace aren {
 
@@ -78,11 +79,18 @@ static int getMultiplierFromBrush(EditorBrush type) {
 
 static const std::string WORLD_BASE = "./resources/worlds";
 
+template <typename TBProps>
+static void strcpyTB(TBProps &tbProps, const std::string_view &str) {
+    strcpy_s(tbProps.str.data(), tbProps.str.size(), str.data());
+}
+
 EditorScene::EditorScene() : Scene(TYPE) {
     m_cam.m_zoom = GetScreenHeight() / 10.0f;
     m_spriteSet.load();
 
     m_world = std::make_unique<World>();
+
+    strcpyTB(m_beamBouncesTB, std::to_string(m_world->player()->m_bounces).c_str());
 
     refreshScannedWorldNames();
 }
@@ -147,15 +155,13 @@ void EditorScene::render() {
 }
 
 template <typename TBProps>
-static void GuiTextBoxHelper(const Rect &rect, TBProps &tbProps) {
+static bool GuiTextBoxHelper(const Rect &rect, TBProps &tbProps) {
+    bool changed = false;
     if (GuiTextBox(rect, tbProps.str.data(), tbProps.len, tbProps.enabled)) {
         tbProps.enabled = !tbProps.enabled;
+        changed = true;
     }
-}
-
-template <typename TBProps>
-static void strcpyTB(TBProps &tbProps, const std::string_view &str) {
-    strcpy_s(tbProps.str.data(), tbProps.str.size(), str.data());
+    return changed;
 }
 
 void EditorScene::renderUI() {
@@ -252,6 +258,7 @@ void EditorScene::renderUI() {
             strcpyTB(m_savedWorldNameTB, m_scannedWorldNames[m_loadWorldNameSelected]);
             strcpyTB(m_worldNameTB, m_world->m_name);
             strcpyTB(m_worldCommentTB, m_world->m_comment);
+            strcpyTB(m_beamBouncesTB, std::to_string(m_world->player()->m_bounces).c_str());
         }
     }
     y += 35;
@@ -288,10 +295,17 @@ void EditorScene::renderUI() {
 
     if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone) {
         GuiLabel({10, y, 180, 30}, "Zone name");
-        y += 35;
+        y += 25;
         GuiTextBoxHelper({10, y, 180, 30}, m_zoneTB);
         y += 35;
     }
+
+    GuiLabel({10, y, 180, 30}, "Beam Bounces");
+    y += 25;
+    if (GuiTextBoxHelper({10, y, 180, 30}, m_beamBouncesTB)) {
+        m_world->player()->m_bounces = std::atoi(m_beamBouncesTB.str.data());
+    }
+    y += 35;
 
     // NOTE(aren): Pass 2
     static std::string s_joinedStr;
@@ -303,7 +317,7 @@ void EditorScene::renderUI() {
         }
     }
 
-    if (GuiDropdownBox(worldDropdownRect, s_joinedStr.c_str(), &m_loadWorldNameSelected, m_loadWorldNameSelected)) {
+    if (GuiDropdownBox(worldDropdownRect, s_joinedStr.c_str(), &m_loadWorldNameSelected, m_loadWorldNameEnabled)) {
         m_loadWorldNameEnabled = !m_loadWorldNameEnabled;
     }
 

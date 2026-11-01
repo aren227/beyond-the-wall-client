@@ -15,6 +15,7 @@ class PathQuery;
 class World {
 public:
     World();
+    explicit World(const World &world);
     virtual ~World();
 
     void update(const Camera &cam, float dt);

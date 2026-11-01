@@ -84,6 +84,18 @@ World::World() {
     m_pathQuery = std::make_unique<PathQuery>();
 }
 
+World::World(const World &world) : World() {
+    m_tiles = world.tiles();
+
+    for (const auto &[k, v] : m_tiles) {
+        if (v.m_type == TileType::PlayerSpawn) {
+            m_player->teleport(k.f() + V2f(0.5f, 0.5f));
+            break;
+        }
+    }
+    m_player->m_bounces = world.m_player->m_bounces;
+}
+
 World::~World() {}
 
 bool World::checkWaveCondition(const MonsterWave &wave) {
@@ -658,6 +670,12 @@ void World::save(const std::string &name) {
     os << "name " << escape(this->m_name) << std::endl;
     os << "comment " << escape(m_comment) << std::endl;
 
+    os << "balance" << std::endl;
+    {
+        os << "beam_bounces " << m_player->m_bounces << std::endl;
+        os << "exit" << std::endl;
+    }
+
     os << "tiles " << m_tiles.size() << std::endl;
 
     for (const auto [k, v] : m_tiles) {
@@ -703,6 +721,15 @@ std::unique_ptr<World> World::load(const std::string &name) {
             unescapeIs(is, world->m_name);
         } else if (tok == "comment") {
             unescapeIs(is, world->m_comment);
+        } else if (tok == "balance") {
+            while (is >> tok) {
+                if (tok == "beam_bounces") {
+                    int c; is >> c;
+                    world->m_player->m_bounces = c;
+                } else if (tok == "exit") {
+                    break;
+                }
+            }
         } else if (tok == "tiles") {
             int count; is >> count;
             for (int i = 0; i < count; i++) {

@@ -53,6 +53,8 @@ private:
     TextBoxProps<> m_worldCommentTB;
 
     TextBoxProps<8> m_zoneTB;
+
+    TextBoxProps<> m_beamBouncesTB;
 };
 
 } // namespace aren

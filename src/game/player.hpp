@@ -18,6 +18,9 @@ public:
     inline const Vector2f &pos() { return m_pos; }
     void teleport(const Vector2f &dst);
 
+public:
+    int m_bounces = 2;
+
 private:
     Vector2f m_pos = V2F_ZERO;
     Vector2f m_velocity = V2F_ZERO;
@@ -28,7 +31,6 @@ private:
 
     Vector2f m_dir = V2f(1, 0);
 
-    int m_bounces = 2;
     Beam m_beam;
 
     float m_baseAttackDamage = 100;
