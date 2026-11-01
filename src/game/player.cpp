@@ -8,8 +8,6 @@ namespace aren {
 
 static constexpr int PIXEL_SCALER = 2;
 
-static std::vector<Vector2f> s_queryRes;
-
 Player::Player() {}
 
 Player::~Player() {}
@@ -62,12 +60,6 @@ void Player::update(const Camera &cam, World *world, float dt) {
             }
         }
     }
-
-    PathQuery query;
-    query.build(world, m_pos, ObjectLayer::Player);
-
-    s_queryRes.clear();
-    query.query(world, camPos, 0.25f, s_queryRes);
 }
 
 void Player::render(const Camera &cam) {
@@ -110,10 +102,6 @@ void Player::render(const Camera &cam) {
             }
         }
         EndBlendMode();
-    }
-
-    for (int i = 1; i < s_queryRes.size(); i++) {
-        DrawLineEx(s_queryRes[i-1], s_queryRes[i], 0.05f, RED);
     }
 
     Render::end2DCam();
