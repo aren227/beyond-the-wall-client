@@ -52,9 +52,11 @@ void Player::update(const Camera &cam, World *world, float dt) {
 
                 segment.start = segment.end;
                 segment.dir = segment.dir.reflected(normal.f());
+
+                auto prevColor = segment.prop.color;
                 segment.prop = segment.prop.merge(world->getTile(hit).beamProp());
 
-                if (world->contains(hit)) {
+                if (world->contains(hit) && prevColor != BeamColor::Black) {
                     world->at(hit).takeDamage(dt * m_baseAttackDamage);
                 }
             }
