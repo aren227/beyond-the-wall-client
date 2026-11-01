@@ -97,6 +97,9 @@ void Player::render(const Camera &cam) {
     if (m_beam.segments.size() > 0) {
         BeginBlendMode(BLEND_ADDITIVE);
         for (const auto &it : m_beam.segments) {
+            if (it.prop.color == BeamColor::Black) {
+                break;
+            }
             for (int j = 0; j < 5; j++) {
                 DrawLineEx(it.start, it.end, 0.1f, getColorForBeam(it.prop.color));
             }
