@@ -3,6 +3,7 @@
 #include "scene.hpp"
 #include "../camera.hpp"
 #include "sprite_set.hpp"
+#include "beam.hpp"
 
 namespace aren {
 
@@ -31,6 +32,13 @@ private:
 
     int m_brushIndex = 0;
     bool m_drawWireframe = true;
+
+    struct DebugBeam {
+        Beam beam;
+        Vector2f start;
+        Vector2f dir;
+    };
+    std::optional<DebugBeam> m_debugBeam;
 
     template <size_t SIZE = 256>
     struct TextBoxProps {

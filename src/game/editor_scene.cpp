@@ -99,6 +99,30 @@ EditorScene::~EditorScene() {}
 
 void EditorScene::update(float dt) {
     m_cam.update(dt);
+
+    // beam raycast
+    if (m_debugBeam) {
+        auto &debug = m_debugBeam.value();
+        BeamSegment segment;
+        segment.start = debug.start;
+        segment.dir = debug.dir;
+
+        debug.beam.segments.clear();
+
+        for (int i = 0; i <= m_world->player()->m_bounces; i++) {
+            float t;
+            Vector2i hit, normal;
+            if (m_world->raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, hit, normal)) {
+                segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
+
+                debug.beam.segments.push_back(segment);
+
+                segment.start = segment.end;
+                segment.dir = segment.dir.reflected(normal.f());
+                segment.prop = segment.prop.merge(m_world->getTile(hit).beamProp());
+            }
+        }
+    }
 }
 
 void EditorScene::render() {
@@ -152,6 +176,20 @@ void EditorScene::render() {
     m_world->renderDecos(m_cam, m_spriteSet);;
 
     m_world->renderMisc(m_cam, m_spriteSet);
+
+    if (m_debugBeam) {
+        Render::begin2DCam(m_cam);
+        const auto &beam = m_debugBeam.value().beam;
+        for (const auto &it : beam.segments) {
+            if (it.prop.color == BeamColor::Black) {
+                break;
+            }
+            for (int j = 0; j < 5; j++) {
+                DrawLineEx(it.start, it.end, 0.1f, getColorForBeam(it.prop.color));
+            }
+        }
+        Render::end2DCam();
+    }
 }
 
 template <typename TBProps>
@@ -228,6 +266,24 @@ void EditorScene::renderUI() {
             }
 
             m_world->updateBounds();
+        }
+
+        // debug beam
+        if (Input::keyPressed(KEY_LEFT_CONTROL)) {
+            m_debugBeam = {
+                .beam = {},
+                .start = m_cam.screenToWorld(Input::mousePosition()),
+                .dir = V2f(1, 0),
+            };
+        }
+        if (Input::keyReleased(KEY_LEFT_CONTROL)) {
+            m_debugBeam.reset();
+        }
+        if (m_debugBeam) {
+            auto curr = m_cam.screenToWorld(Input::mousePosition());
+            auto dir = (curr - m_debugBeam.value().start);
+            dir = (dir == V2F_ZERO) ? V2f(1, 0) : dir.normalized();
+            m_debugBeam.value().dir = dir;
         }
     }
 
