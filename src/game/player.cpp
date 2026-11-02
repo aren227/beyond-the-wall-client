@@ -1,12 +1,11 @@
 #include "player.hpp"
 #include "world.hpp"
 #include "path_query.hpp"
+#include "consts.hpp"
 #include "../camera.hpp"
 #include "../render.hpp"
 
 namespace aren {
-
-static constexpr int PIXEL_SCALER = 2;
 
 Player::Player() {}
 
@@ -101,7 +100,7 @@ void Player::render(const Camera &cam) {
                 break;
             }
             for (int j = 0; j < 5; j++) {
-                DrawLineEx(it.start, it.end, 0.1f, getColorForBeam(it.prop.color));
+                DrawLineEx(it.start, it.end, BEAM_THICKNESS, getColorForBeam(it.prop.color));
             }
         }
         EndBlendMode();

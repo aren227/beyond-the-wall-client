@@ -1,12 +1,11 @@
 #include "monster.hpp"
 #include "world.hpp"
 #include "path_query.hpp"
+#include "consts.hpp"
 #include "../camera.hpp"
 #include "../render.hpp"
 
 namespace aren {
-
-static constexpr int PIXEL_SCALER = 2;
 
 Monster::Monster(const World *world, const Vector2f &pos) {
     m_world = world;

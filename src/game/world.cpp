@@ -4,6 +4,7 @@
 #include "player.hpp"
 #include "monster.hpp"
 #include "path_query.hpp"
+#include "consts.hpp"
 #include <random>
 #include <fstream>
 
@@ -48,8 +49,6 @@ static std::vector<VertexDef> s_vertexDefFull;
 
 static const int SURFACE_TAG = 0;
 static const int EDGE_TAG = 4;
-
-static constexpr int PIXEL_SCALER = 2;
 
 static const std::string WORLD_BASE = "./resources/worlds";
 

@@ -2,10 +2,10 @@
 #include "../render.hpp"
 #include "game.hpp"
 #include "world.hpp"
-#include "sprite_editor_scene.hpp"
 #include "ingame_scene.hpp"
 #include "transition_scene.hpp"
 #include "player.hpp"
+#include "consts.hpp"
 
 namespace aren {
 
@@ -185,7 +185,7 @@ void EditorScene::render() {
                 break;
             }
             for (int j = 0; j < 5; j++) {
-                DrawLineEx(it.start, it.end, 0.1f, getColorForBeam(it.prop.color));
+                DrawLineEx(it.start, it.end, BEAM_THICKNESS, getColorForBeam(it.prop.color));
             }
         }
         Render::end2DCam();
