@@ -350,6 +350,43 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
             }
         }
         EndBlendMode();
+
+        BeginBlendMode(BLEND_ADDITIVE);
+        for (int x = m_min.x; x <= m_max.x; x++) {
+            for (int y = m_min.y; y <= m_max.y; y++) {
+                auto v = V2i(x, y);
+                if (getTile(v).isTransparent()) {
+                    auto vf = v.f() + V2f(0.5f, 0.5f);
+                    float light = 0;
+                    { // player
+                        float playerDist = (vf - m_player->pos()).length();
+                        if (playerDist < 4) {
+                            light = 1 - playerDist / 4;
+                        }
+                    }
+                    for (const auto &it : m_player->beam().segments) {
+                        if (it.prop.color == BeamColor::Black) {
+                            break;
+                        }
+
+                        float beamDist = Vector2f::segmentDist(it.start, it.end, vf);
+                        if (beamDist < 2) {
+                            light = std::max(light, 1 - beamDist / 2);
+                        }
+                    }
+
+                    if (light > 0) {
+                        auto a = cam.worldToScreen(v.f());
+                        auto b = cam.worldToScreen((v + V2I_ONE).f());
+
+                        const auto &sprite = spriteSet.ditherOpaque;
+                        const int tag = std::ceil(light * 6);
+                        sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, C4F_WHITE * 0.2f);
+                    }
+                }
+            }
+        }
+        EndBlendMode();
     }
 }
 
@@ -361,7 +398,7 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
             if (getTile(V2i(x, y)).isSolid() == false) {
                 std::uniform_real_distribution<float> rd(0.0f, 1.0f);
                 float v = rd(gen);
-                if (v < 0.2f) {
+                if (v < 0.05f) {
                     auto offset = V2f(rd(gen) * 0.4f - 0.2f, rd(gen) * 0.4f - 0.2f);
                     auto vf = V2i(x, y).f() + offset;
                     auto a = cam.worldToScreen(vf);

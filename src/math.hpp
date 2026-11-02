@@ -91,6 +91,16 @@ struct Vector2f {
         return from + dir.normalized() * dist;
     }
 
+    static inline float segmentDist(const Vector2f &from, const Vector2f &to, const Vector2f &point) {
+        auto fromToPoint = point - from;
+        auto delta = to - from;
+        float d = fromToPoint.dot(delta) / delta.dot(delta);
+        if (d <= 0) return fromToPoint.length();
+        if (d >= 1) return (point - to).length();
+        auto perp = fromToPoint - (d * delta);
+        return perp.length();
+    }
+
     inline constexpr Vector2i round() const;
     inline constexpr Vector2i floor() const;
     inline constexpr Vector2i ceil() const;

@@ -18,6 +18,8 @@ public:
     inline const Vector2f &pos() { return m_pos; }
     void teleport(const Vector2f &dst);
 
+    inline const Beam &beam() { return m_beam; }
+
 public:
     int m_bounces = 2;
 
