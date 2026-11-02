@@ -101,6 +101,17 @@ struct Vector2f {
         return perp.length();
     }
 
+    static inline float lineCircle(const Vector2f &from, const Vector2f &dir, const Vector2f &center, float radius) {
+        float d = (center - from).dot(dir);
+        auto proj = dir * d;
+        auto perp = (center - from) - proj;
+
+        if (perp.lengthSqr() > radius * radius) return -1;
+        float b = std::sqrt(radius * radius - perp.lengthSqr());
+
+        return (d - b < 0) ? (d + b) : (d - b);
+    }
+
     inline constexpr Vector2i round() const;
     inline constexpr Vector2i floor() const;
     inline constexpr Vector2i ceil() const;

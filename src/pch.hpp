@@ -11,6 +11,7 @@
 #include <limits>
 #include <memory>
 #include <optional>
+#include <variant>
 #include <queue>
 #include <string>
 #include <unordered_map>

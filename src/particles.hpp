@@ -4,10 +4,10 @@ namespace aren {
 
 struct ParticleDef {
     Color4b color = WHITE;
-    float speed = 40.0f;
+    float speed = 4.0f;
     float damping = 0.5f;
     float life = 0.25f;
-    float size = 2.0f;
+    float size = 0.25f;
 };
 
 class Particles {

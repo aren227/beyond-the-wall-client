@@ -17,7 +17,7 @@ Monster::~Monster() {}
 void Monster::update(const PathQuery *query, float dt) {
     static std::vector<Vector2f> s_queryRes;
     s_queryRes.clear();
-    query->query(m_world, m_pos, m_collisionRadius, s_queryRes);
+    query->query(m_world, m_pos, m_collRadius, s_queryRes);
 
     if (s_queryRes.size() >= 2) {
         auto dir = (s_queryRes[1] - s_queryRes[0]).normalized();
@@ -68,7 +68,7 @@ void Monster::render(const Camera &cam) {
 }
 
 void Monster::moveDelta(Vector2f delta) {
-    delta = m_world->moveRect(Rect(m_pos - V2F_ONE * m_collisionExtents, 2 * m_collisionExtents * V2F_ONE), delta, ObjectLayer::Monster);
+    delta = m_world->moveRect(Rect(m_pos - V2F_ONE * m_collExtents, 2 * m_collExtents * V2F_ONE), delta, ObjectLayer::Monster);
     m_pos += delta;
 }
 

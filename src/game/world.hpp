@@ -11,6 +11,7 @@ class SpriteSet;
 class Player;
 class Monster;
 class PathQuery;
+class Particles;
 
 class World {
 public:
@@ -44,6 +45,8 @@ public:
     static std::unique_ptr<World> load(const std::string &name);
 
     inline Player *player() { return m_player.get(); }
+    inline Particles *particles() { return m_particles.get(); }
+    inline const std::vector<std::shared_ptr<Monster>> &monsters() { return m_monsters; }
 
 private:
     Color4f getColor(const Vector2i &pos) const;
@@ -63,6 +66,7 @@ private:
     std::vector<std::shared_ptr<Monster>> m_monsters;
     std::vector<MonsterWave> m_monsterWaves;
     std::unique_ptr<PathQuery> m_pathQuery;
+    std::unique_ptr<Particles> m_particles;
 };
 
 } // namespace aren

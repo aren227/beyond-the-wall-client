@@ -2,8 +2,10 @@
 #include "world.hpp"
 #include "path_query.hpp"
 #include "consts.hpp"
+#include "monster.hpp"
 #include "../camera.hpp"
 #include "../render.hpp"
+#include "../particles.hpp"
 
 namespace aren {
 
@@ -25,7 +27,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
     m_velocity = velocityNext;
 
     auto delta = m_velocity * dt;
-    delta = world->moveRect(Rect(m_pos.x - 0.25f, m_pos.y - 0.25f, 0.5f, 0.5f), delta, ObjectLayer::Player);
+    delta = world->moveRect(Rect(m_pos - V2F_ONE * m_collExtents, 2 * m_collExtents * V2F_ONE), delta, ObjectLayer::Player);
     m_pos += delta;
 
     auto camPos = cam.screenToWorld(Input::mousePosition());
@@ -40,22 +42,70 @@ void Player::update(const Camera &cam, World *world, float dt) {
         m_beam.segments.clear();
 
         for (int i = 0; i <= m_bounces; i++) {
-            float t;
-            Vector2i hit, normal;
-            if (world->raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, hit, normal)) {
-                segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
+            float minT = INFINITY;
+            std::variant<std::monostate, Vector2i, Monster *> hit;
+            Vector2f normal;
+            BeamProp beamProp;
+
+            { // world
+                float t;
+                Vector2i h, n;
+
+                if (world->raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, h, n)) {
+                    minT = t;
+                    hit = h;
+                    normal = n.f();
+                    beamProp = world->getTile(h).beamProp();
+                } else {
+                    ASSERT(false);
+                }
+            }
+            if (i > 0) { // the first beam starts from the player inside
+                float t = Vector2f::lineCircle(segment.start, segment.dir, m_pos, m_hitRadius);
+                if (t >= 0 && t < minT) {
+                    minT = t;
+                    hit = {};
+                    normal = V2f(1, 0);
+                    beamProp = {
+                        .color = BeamColor::Black,
+                    };
+                }
+            }
+            for (const auto &monster : world->monsters()) {
+                float t = Vector2f::lineCircle(segment.start, segment.dir, monster->pos(), monster->m_hitRadius);
+                if (t >= 0 && t < minT) {
+                    minT = t;
+                    hit = monster.get();
+                    normal = V2f(1, 0);
+                    beamProp = {
+                        .color = BeamColor::Black,
+                    };
+                }
+            }
+
+            if (minT < INFINITY) {
+                segment.end = segment.start + segment.dir * std::max(minT - 0.01f, 0.0f);
 
                 m_beam.segments.push_back(segment);
 
                 segment.start = segment.end;
-                segment.dir = segment.dir.reflected(normal.f());
+                segment.dir = segment.dir.reflected(normal);
+                segment.prop = segment.prop.merge(beamProp);
 
-                auto prevColor = segment.prop.color;
-                segment.prop = segment.prop.merge(world->getTile(hit).beamProp());
-
-                if (world->contains(hit) && prevColor != BeamColor::Black) {
-                    world->at(hit).takeDamage(dt * m_baseAttackDamage);
+                if (Vector2i *pos = std::get_if<Vector2i>(&hit)) {
+                    if (world->contains(*pos)) {
+                        world->at(*pos).takeDamage(dt * m_baseAttackDamage);
+                    }
+                } else if (Monster **monster = std::get_if<Monster *>(&hit)) {
+                    world->particles()->emit((*monster)->pos(), 5, {});
                 }
+            } else {
+                UNREACHABLE();
+                break;
+            }
+
+            if (segment.prop.color == BeamColor::Black || segment.prop.strength <= 0) {
+                break;
             }
         }
     }

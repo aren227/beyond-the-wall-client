@@ -1,5 +1,7 @@
 #pragma once
 
+#include "beam.hpp"
+
 namespace aren {
 
 class PathQuery;
@@ -16,7 +18,13 @@ public:
     void moveDelta(Vector2f delta);
 
     inline const Vector2f &pos() { return m_pos; }
-    inline float collRadius() { return m_collisionRadius; }
+
+public:
+    const float m_collExtents = 0.2f;
+    const float m_collRadius = m_collExtents * std::sqrt(2.0f);
+
+    const float m_hitExtents = 0.35f;
+    const float m_hitRadius = m_hitExtents * std::sqrt(2.0f);
 
 private:
     const World *m_world;
@@ -29,8 +37,7 @@ private:
     const float m_accelRate = 1 / 0.1f;
     const float m_brakeRate = 1 / 0.05f;
 
-    const float m_collisionExtents = 0.2f;
-    const float m_collisionRadius = m_collisionExtents * std::sqrt(2.0f);
+    BeamColor m_color = BeamColor::White;
 };
 
 } // namespace aren;

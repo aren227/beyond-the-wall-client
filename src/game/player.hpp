@@ -23,6 +23,12 @@ public:
 public:
     int m_bounces = 2;
 
+    const float m_collExtents = 0.25f;
+    const float m_collRadius = m_collExtents * std::sqrt(2.0f);
+
+    const float m_hitExtents = 0.2f;
+    const float m_hitRadius = m_hitExtents * std::sqrt(2.0f);
+
 private:
     Vector2f m_pos = V2F_ZERO;
     Vector2f m_velocity = V2F_ZERO;

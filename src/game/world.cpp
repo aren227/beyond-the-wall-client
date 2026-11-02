@@ -5,6 +5,8 @@
 #include "monster.hpp"
 #include "path_query.hpp"
 #include "consts.hpp"
+#include "../particles.hpp"
+#include "../render.hpp"
 #include <random>
 #include <fstream>
 
@@ -81,6 +83,8 @@ World::World() {
     m_player = std::make_unique<Player>();
 
     m_pathQuery = std::make_unique<PathQuery>();
+
+    m_particles = std::make_unique<Particles>();
 }
 
 World::World(const World &world) : World() {
@@ -93,6 +97,13 @@ World::World(const World &world) : World() {
         }
     }
     m_player->m_bounces = world.m_player->m_bounces;
+
+    m_monsterWaves.push_back({
+        .zones = {"a"},
+        .monsterName = "dumb_w",
+        .conditionType = MonsterWaveCondition::Always,
+        .conditionValue = "",
+    });
 }
 
 World::~World() {}
@@ -162,14 +173,16 @@ void World::update(const Camera &cam, float dt) {
             auto delta = it->pos() - jt->pos();
             float len = delta.length();
 
-            if (len < it->collRadius() + jt->collRadius()) {
-                float penerated = it->collRadius() + jt->collRadius() - len;
+            if (len < it->m_collRadius + jt->m_collRadius) {
+                float penerated = it->m_collRadius + jt->m_collRadius - len;
                 accumDelta += delta.normalized() * penerated * 0.5f;
             }
         }
 
         it->moveDelta(accumDelta);
     }
+
+    m_particles->update(dt);
  }
 
 void World::updateBounds() {
@@ -449,6 +462,10 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     }
 
     m_player->render(cam);
+
+    Render::begin2DCam(cam);
+    m_particles->render();
+    Render::end2DCam();
 }
 
 Vector2f World::moveRect(const Rect &rect, const Vector2f &delta, ObjectLayer layer) const {
