@@ -25,6 +25,9 @@ private:
     Camera m_cam;
     std::unique_ptr<World> m_world;
     SpriteSet m_spriteSet;
+
+    const float m_hudHeight = 16;
+    float m_hudWidth = 0;
 };
 
 } // namespace aren

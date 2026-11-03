@@ -88,16 +88,19 @@ void Player::update(const Camera &cam, World *world, float dt) {
 
                 m_beam.segments.push_back(segment);
 
+                float damage = segment.prop.strength * m_baseAttackDamage * dt;
+
                 segment.start = segment.end;
                 segment.dir = segment.dir.reflected(normal);
                 segment.prop = segment.prop.merge(beamProp);
 
                 if (Vector2i *pos = std::get_if<Vector2i>(&hit)) {
                     if (world->contains(*pos)) {
-                        world->at(*pos).takeDamage(dt * m_baseAttackDamage);
+                        world->at(*pos).takeDamage(damage);
                     }
                 } else if (Monster **monster = std::get_if<Monster *>(&hit)) {
                     world->particles()->emit((*monster)->pos(), 5, {});
+                    (*monster)->takeDamage(damage);
                 }
             } else {
                 UNREACHABLE();
@@ -158,6 +161,10 @@ void Player::render(const Camera &cam) {
 void Player::teleport(const Vector2f &dst) {
     m_pos = dst;
     m_velocity = V2F_ZERO;
+}
+
+void Player::takeDamage(float damage) {
+    m_health = std::max(m_health - damage, 0.0f);
 }
 
 } // namespace aren

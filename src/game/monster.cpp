@@ -135,4 +135,8 @@ void Monster::moveDelta(Vector2f delta) {
     m_pos += delta;
 }
 
+void Monster::takeDamage(float damage) {
+    m_health = std::max(m_health - damage, 0.0f);
+}
+
 } // namespace aren

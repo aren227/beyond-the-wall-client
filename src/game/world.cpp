@@ -105,6 +105,9 @@ World::World(const World &world) : World() {
         .conditionType = MonsterWaveCondition::Always,
         .conditionValue = "",
     });
+
+    m_name = world.m_name;
+    m_comment = world.m_comment;
 }
 
 World::~World() {}
@@ -163,6 +166,18 @@ void World::update(const Camera &cam, float dt) {
 
     for (const auto &it : m_monsters) {
         it->update(m_pathQuery.get(), dt);
+    }
+    for (auto it = m_monsters.begin(); it != m_monsters.end();) {
+        if ((*it)->m_health <= 0) {
+            m_particles->emit((*it)->pos(), 20, {
+                .speed = 10.0f,
+                .life = 0.5f,
+                .size = 0.5f,
+            });
+            it = m_monsters.erase(it);
+        } else {
+            ++it;
+        }
     }
 
     // XXX(aren): O(N^2)

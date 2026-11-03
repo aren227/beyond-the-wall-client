@@ -21,6 +21,8 @@ public:
 
     inline const Beam &beam() { return m_beam; }
 
+    void takeDamage(float damage);
+
 public:
     int m_bounces = 2;
 
@@ -29,6 +31,9 @@ public:
 
     const float m_hitExtents = 0.2f;
     const float m_hitRadius = m_hitExtents * std::sqrt(2.0f);
+
+    float m_maxHealth = 100;
+    float m_health = m_maxHealth;
 
 private:
     Vector2f m_pos = V2F_ZERO;

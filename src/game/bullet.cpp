@@ -43,6 +43,10 @@ void Bullet::update(const World *world, float dt) {
 
     if (minT < INFINITY) {
         m_destroy = true;
+
+        if (target.has_value()) {
+            target.value()->takeDamage(m_damage);
+        }
     }
 
     m_pos += m_velocity * dt;

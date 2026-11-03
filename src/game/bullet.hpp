@@ -20,6 +20,7 @@ private:
     Vector2f m_pos = V2F_ZERO;
     Vector2f m_velocity = V2F_ZERO;
     bool m_destroy = false;
+    float m_damage = 10;
 };
 
 };
