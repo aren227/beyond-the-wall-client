@@ -77,8 +77,6 @@ static int getMultiplierFromBrush(EditorBrush type) {
     }
 }
 
-static const std::string WORLD_BASE = "./resources/worlds";
-
 template <typename TBProps>
 static void strcpyTB(TBProps &tbProps, const std::string_view &str) {
     strcpy(tbProps.str.data(), str.data());

@@ -53,8 +53,6 @@ static std::vector<VertexDef> s_vertexDefFull;
 static const int SURFACE_TAG = 0;
 static const int EDGE_TAG = 4;
 
-static const std::string WORLD_BASE = "./resources/worlds";
-
 World::World() {
     if (s_vertexDefFull.empty()) {
         const auto rotatePattern = [](std::array<bool, 4> &pattern) {

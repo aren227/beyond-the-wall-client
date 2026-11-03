@@ -1,10 +1,8 @@
 #include "sprite.hpp"
+#include "consts.hpp"
 #include <fstream>
 
 namespace aren {
-
-const static std::string IMAGE_BASE  = "./resources/images";
-const static std::string SPRITE_BASE = "./resources/sprites";
 
 static std::string getImagePath(const std::string &name) {
     return IMAGE_BASE + "/" + name + ".png";
