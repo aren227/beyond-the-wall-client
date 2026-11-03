@@ -15,7 +15,8 @@ public:
     void update(const Camera &cam, World *world, float dt);
     void render(const Camera &cam);
 
-    inline const Vector2f &pos() { return m_pos; }
+    inline const Vector2f &pos() const { return m_pos; }
+    inline const Vector2f &vel() const { return m_velocity; }
     void teleport(const Vector2f &dst);
 
     inline const Beam &beam() { return m_beam; }

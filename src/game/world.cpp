@@ -5,6 +5,7 @@
 #include "monster.hpp"
 #include "path_query.hpp"
 #include "consts.hpp"
+#include "bullet.hpp"
 #include "../particles.hpp"
 #include "../render.hpp"
 #include <random>
@@ -183,7 +184,14 @@ void World::update(const Camera &cam, float dt) {
     }
 
     m_particles->update(dt);
- }
+
+    for (const auto &it : m_bullets) {
+        it->update(this, dt);
+    }
+    std::erase_if(m_bullets, [](const auto &it){
+        return it->done();
+    });
+}
 
 void World::updateBounds() {
     m_min = m_max = V2I_ZERO;
@@ -457,14 +465,22 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
 }
 
 void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
+    Render::begin2DCam(cam);
+
     for (const auto &it : m_monsters) {
         it->render(cam);
     }
 
     m_player->render(cam);
 
-    Render::begin2DCam(cam);
+    BeginBlendMode(BLEND_ADDITIVE);
+    for (const auto &it : m_bullets) {
+        it->render();
+    }
+    EndBlendMode();
+
     m_particles->render();
+
     Render::end2DCam();
 }
 
@@ -847,5 +863,8 @@ std::unique_ptr<World> World::load(const std::string &name) {
     return world;
 }
 
+void World::addBullet(std::unique_ptr<Bullet> bullet) {
+    m_bullets.push_back(std::move(bullet));
+}
 
 } // namespace aren

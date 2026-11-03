@@ -10,7 +10,7 @@ class Camera;
 
 class Monster {
 public:
-    Monster(const World *world, const Vector2f &pos);
+    Monster(World *world, const Vector2f &pos);
     virtual ~Monster();
 
     void update(const PathQuery *query, float dt);
@@ -27,7 +27,7 @@ public:
     const float m_hitRadius = m_hitExtents * std::sqrt(2.0f);
 
 private:
-    const World *m_world;
+    World *m_world;
 
     Vector2f m_pos = V2F_ZERO;
     Vector2f m_velocity = V2F_ZERO;
@@ -38,6 +38,9 @@ private:
     const float m_brakeRate = 1 / 0.05f;
 
     BeamColor m_color = BeamColor::White;
+
+    float m_bulletFireDelay = 1.0f;
+    float m_bulletFireCooldown = 0.5f;
 };
 
 } // namespace aren;

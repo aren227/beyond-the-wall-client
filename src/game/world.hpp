@@ -12,6 +12,7 @@ class Player;
 class Monster;
 class PathQuery;
 class Particles;
+class Bullet;
 
 class World {
 public:
@@ -44,9 +45,11 @@ public:
     void save(const std::string &name);
     static std::unique_ptr<World> load(const std::string &name);
 
-    inline Player *player() { return m_player.get(); }
-    inline Particles *particles() { return m_particles.get(); }
-    inline const std::vector<std::shared_ptr<Monster>> &monsters() { return m_monsters; }
+    void addBullet(std::unique_ptr<Bullet> bullet);
+
+    inline Player *player() const { return m_player.get(); }
+    inline Particles *particles() const { return m_particles.get(); }
+    inline const std::vector<std::shared_ptr<Monster>> &monsters() const { return m_monsters; }
 
 private:
     Color4f getColor(const Vector2i &pos) const;
@@ -67,6 +70,7 @@ private:
     std::vector<MonsterWave> m_monsterWaves;
     std::unique_ptr<PathQuery> m_pathQuery;
     std::unique_ptr<Particles> m_particles;
+    std::vector<std::unique_ptr<Bullet>> m_bullets;
 };
 
 } // namespace aren
