@@ -5,187 +5,19 @@ balance
 beam_bounces 2
 exit
 tiles 60
-pos 10 13
+pos 1 24
+type 6
+color 7
+mult 1
+name ;
+exit
+pos 2 21
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 9 14
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 10 14
-type 1
-color 7
-mult 4
-name ;
-exit
-pos 11 14
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 8 15
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 11 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 15
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 7 16
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 11 16
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 16
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 16
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 6 17
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 10 17
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 11 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 17
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 5 18
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 9 18
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 11 18
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 12 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 18
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 4 19
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 8 19
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 12 19
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 13 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 19
+pos 2 25
 type 1
 color 7
 mult 1
@@ -197,79 +29,25 @@ color 7
 mult 1
 name ;
 exit
-pos 7 20
+pos 3 24
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 13 20
+pos 4 19
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 14 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 20
+pos 4 23
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 2 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 6 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 14 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 15 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 18 21
+pos 5 18
 type 1
 color 7
 mult 1
@@ -281,13 +59,259 @@ color 7
 mult 1
 name ;
 exit
+pos 6 17
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 6 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 7 16
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 7 20
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 8 15
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 8 19
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 9 14
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 9 18
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 10 13
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 10 14
+type 1
+color 7
+mult 4
+name ;
+exit
+pos 10 17
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 11 14
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 11 15
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 11 16
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 11 17
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 11 18
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 12 15
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 12 16
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 12 17
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 12 18
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 12 19
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 13 16
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 13 17
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 13 18
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 13 19
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 13 20
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 14 17
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 14 18
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 14 19
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 14 20
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 14 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 15 18
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 15 19
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 15 20
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 15 21
+type 4
+color 7
+mult 1
+name ;
+exit
 pos 15 22
 type 1
 color 7
 mult 1
 name ;
 exit
+pos 16 19
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 16 20
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 16 21
+type 4
+color 7
+mult 1
+name ;
+exit
 pos 16 22
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 16 23
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 17 20
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 17 21
 type 4
 color 7
 mult 1
@@ -299,25 +323,25 @@ color 7
 mult 1
 name ;
 exit
-pos 18 22
+pos 17 23
 type 4
 color 7
 mult 1
 name ;
 exit
-pos 4 23
+pos 17 24
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 23
+pos 18 21
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 17 23
+pos 18 22
 type 4
 color 7
 mult 1
@@ -329,32 +353,8 @@ color 7
 mult 1
 name ;
 exit
-pos 1 24
-type 6
-color 7
-mult 1
-name ;
-exit
-pos 3 24
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 17 24
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 18 24
 type 4
-color 7
-mult 1
-name ;
-exit
-pos 2 25
-type 1
 color 7
 mult 1
 name ;

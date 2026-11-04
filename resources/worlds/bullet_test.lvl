@@ -11,6 +11,18 @@ color 7
 mult 1
 name ;6
 exit
+pos 4 16
+type 5
+color 7
+mult 1
+name ;5
+exit
+pos 4 23
+type 5
+color 7
+mult 1
+name ;4
+exit
 pos 21 8
 type 5
 color 7
@@ -23,22 +35,10 @@ color 7
 mult 1
 name ;2
 exit
-pos 4 16
-type 5
-color 7
-mult 1
-name ;5
-exit
 pos 21 22
 type 5
 color 7
 mult 1
 name ;3
-exit
-pos 4 23
-type 5
-color 7
-mult 1
-name ;4
 exit
 waves 0

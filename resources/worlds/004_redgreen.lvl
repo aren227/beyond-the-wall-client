@@ -5,6 +5,36 @@ balance
 beam_bounces 2
 exit
 tiles 30
+pos 2 9
+type 1
+color 1
+mult 1
+name ;
+exit
+pos 2 10
+type 1
+color 1
+mult 1
+name ;
+exit
+pos 2 11
+type 1
+color 1
+mult 1
+name ;
+exit
+pos 2 12
+type 1
+color 1
+mult 1
+name ;
+exit
+pos 2 13
+type 1
+color 1
+mult 1
+name ;
+exit
 pos 4 2
 type 1
 color 1
@@ -23,7 +53,79 @@ color 1
 mult 1
 name ;
 exit
+pos 4 5
+type 1
+color 1
+mult 1
+name ;
+exit
+pos 4 6
+type 1
+color 1
+mult 1
+name ;
+exit
+pos 5 14
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 6 8
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 6 14
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 7 8
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 7 14
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 8 8
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 8 14
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 9 8
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 9 14
+type 1
+color 2
+mult 1
+name ;
+exit
 pos 10 4
+type 1
+color 2
+mult 1
+name ;
+exit
+pos 10 8
 type 1
 color 2
 mult 1
@@ -47,73 +149,7 @@ color 2
 mult 1
 name ;
 exit
-pos 14 4
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 4 5
-type 1
-color 1
-mult 1
-name ;
-exit
-pos 4 6
-type 1
-color 1
-mult 1
-name ;
-exit
-pos 6 8
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 7 8
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 8 8
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 9 8
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 10 8
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 2 9
-type 1
-color 1
-mult 1
-name ;
-exit
-pos 2 10
-type 1
-color 1
-mult 1
-name ;
-exit
 pos 13 10
-type 1
-color 1
-mult 1
-name ;
-exit
-pos 2 11
 type 1
 color 1
 mult 1
@@ -125,19 +161,7 @@ color 1
 mult 1
 name ;
 exit
-pos 2 12
-type 1
-color 1
-mult 1
-name ;
-exit
 pos 13 12
-type 1
-color 1
-mult 1
-name ;
-exit
-pos 2 13
 type 1
 color 1
 mult 1
@@ -149,39 +173,15 @@ color 1
 mult 1
 name ;
 exit
-pos 5 14
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 6 14
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 7 14
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 8 14
-type 1
-color 2
-mult 1
-name ;
-exit
-pos 9 14
-type 1
-color 2
-mult 1
-name ;
-exit
 pos 13 14
 type 1
 color 1
+mult 1
+name ;
+exit
+pos 14 4
+type 1
+color 2
 mult 1
 name ;
 exit
