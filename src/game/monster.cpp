@@ -87,14 +87,13 @@ void Monster::update(const PathQuery *query, float dt) {
         auto playerPos = m_world->player()->pos();
         auto playerVel = m_world->player()->vel();
         auto targetDir = (playerPos - m_pos).normalized();
-        const float bulletSpeed = 7;
 
         Vector2f targetDirFuture;
-        if (solveForDirection(m_pos, bulletSpeed, playerPos, playerVel, targetDirFuture)) {
+        if (solveForDirection(m_pos, m_bulletSpeed, playerPos, playerVel, targetDirFuture)) {
             targetDir = targetDirFuture;
         }
 
-        m_world->addBullet(std::make_unique<Bullet>(m_pos, targetDir * bulletSpeed));
+        m_world->addBullet(std::make_unique<Bullet>(m_pos, targetDir * m_bulletSpeed));
     }
 }
 

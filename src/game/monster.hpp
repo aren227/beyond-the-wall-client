@@ -37,9 +37,11 @@ private:
     Vector2f m_velocity = V2F_ZERO;
     Vector2f m_dir = V2f(1, 0);
 
-    float m_speed = 5 * 0.5f;
+    float m_speed = 1.0f;
     const float m_accelRate = 1 / 0.1f;
     const float m_brakeRate = 1 / 0.05f;
+
+    float m_bulletSpeed = 8.0f;
 
     BeamColor m_color = BeamColor::White;
 
