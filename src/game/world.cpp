@@ -10,6 +10,7 @@
 #include "../render.hpp"
 #include <random>
 #include <fstream>
+#include <map>
 
 namespace aren {
 
@@ -758,9 +759,13 @@ void World::save(const std::string &name) {
         os << "exit" << std::endl;
     }
 
-    os << "tiles " << m_tiles.size() << std::endl;
+    std::map<Vector2i, Tile> sortedTiles;
+    for (const auto &[k, v] : m_tiles) {
+        sortedTiles[k] = v;
+    }
 
-    for (const auto [k, v] : m_tiles) {
+    os << "tiles " << sortedTiles.size() << std::endl;
+    for (const auto [k, v] : sortedTiles) {
         os << "pos " << k.x << " " << k.y << std::endl;
         os << "type " << int(v.m_type) << std::endl;
         os << "color " << int(v.m_color) << std::endl;
