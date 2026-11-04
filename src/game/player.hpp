@@ -19,7 +19,8 @@ public:
     inline const Vector2f &vel() const { return m_velocity; }
     void teleport(const Vector2f &dst);
 
-    inline const Beam &beam() { return m_beam; }
+    inline const Beam &beam() const { return m_beam; }
+    inline bool isDashing() const { return m_dashTime > m_dashCooldown; }
 
     void takeDamage(float damage);
 
@@ -40,8 +41,14 @@ private:
     Vector2f m_velocity = V2F_ZERO;
 
     float m_speed = 5;
-    const float m_accelRate = 1 / 0.015f;
+    const float m_accelRate = 1 / 0.01f;
     const float m_brakeRate = 1 / 0.02f;
+
+    const float m_dashSpeed = 17;
+    const float m_dashDuration = 0.2f;
+    const float m_dashCooldown = 0.5f;
+    Vector2f m_dashDir = V2F_ZERO;
+    float m_dashTime = 0;
 
     Vector2f m_dir = V2f(1, 0);
 

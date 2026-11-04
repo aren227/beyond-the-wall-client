@@ -24,6 +24,22 @@ void Player::update(const Camera &cam, World *world, float dt) {
     Vector2f velocityTarget = ((input == V2F_ZERO) ? V2F_ZERO : input.normalized()) * m_speed;
     Vector2f velocityNext = Vector2f::moveTorwards(m_velocity, velocityTarget, ((input == V2F_ZERO) ? m_brakeRate : m_accelRate) * dt);
 
+    m_dashTime = std::max(m_dashTime - dt, 0.0f);
+
+    if (m_dashTime <= 0 && input.lengthSqr() > 0 && Input::keyPressed(KEY_SPACE)) {
+        m_dashTime = m_dashDuration + m_dashCooldown;
+        m_dashDir = input.normalized();
+    }
+
+    if (m_dashTime > m_dashCooldown) {
+        velocityNext = m_dashDir * m_dashSpeed;
+
+        world->particles()->emit(m_pos, 2, {
+            .color = {255, 255, 255, 20},
+            .size = 0.4f,
+        });
+    }
+
     m_velocity = velocityNext;
 
     auto delta = m_velocity * dt;
@@ -34,7 +50,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
     m_dir = (camPos - m_pos).normalized();
 
     // beam raycast
-    {
+    if (isDashing() == false) {
         BeamSegment segment;
         segment.start = m_pos;
         segment.dir = m_dir;
@@ -111,6 +127,8 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 break;
             }
         }
+    } else {
+        m_beam.segments.clear();
     }
 }
 
