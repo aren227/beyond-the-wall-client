@@ -2,7 +2,7 @@
 
 namespace aren {
 
-enum class MonsterWaveCondition {
+enum class MonsterWaveCondition : int {
     Always = 0,
     MonsterCleared,
     EnterZone,

@@ -89,6 +89,7 @@ World::World() {
 
 World::World(const World &world) : World() {
     m_tiles = world.tiles();
+    m_monsterWaves = world.m_monsterWaves;
 
     for (const auto &[k, v] : m_tiles) {
         if (v.m_type == TileType::PlayerSpawn) {
@@ -97,13 +98,6 @@ World::World(const World &world) : World() {
         }
     }
     m_player->m_bounces = world.m_player->m_bounces;
-
-    m_monsterWaves.push_back({
-        .zones = {"a"},
-        .monsterName = "dumb_w",
-        .conditionType = MonsterWaveCondition::Always,
-        .conditionValue = "",
-    });
 
     m_name = world.m_name;
     m_comment = world.m_comment;
@@ -872,6 +866,8 @@ std::unique_ptr<World> World::load(const std::string &name) {
                         break;
                     }
                 }
+
+                world->m_monsterWaves.push_back(std::move(wave));
             }
         }
     }

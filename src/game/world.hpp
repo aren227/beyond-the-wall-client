@@ -61,13 +61,13 @@ public:
     Vector2i m_min = V2I_ZERO, m_max = V2I_ZERO;
     std::string m_name;
     std::string m_comment;
+    std::vector<MonsterWave> m_monsterWaves;
 
 private:
     float m_time = 0;
     std::unique_ptr<Player> m_player;
     std::unordered_map<Vector2i, Tile> m_tiles;
     std::vector<std::shared_ptr<Monster>> m_monsters;
-    std::vector<MonsterWave> m_monsterWaves;
     std::unique_ptr<PathQuery> m_pathQuery;
     std::unique_ptr<Particles> m_particles;
     std::vector<std::unique_ptr<Bullet>> m_bullets;

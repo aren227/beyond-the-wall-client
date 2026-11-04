@@ -63,6 +63,23 @@ private:
     TextBoxProps<8> m_zoneTB;
 
     TextBoxProps<> m_beamBouncesTB;
+
+    enum class Tab : int {
+        World,
+        Brush,
+        Wave,
+    };
+    Tab m_tab = Tab::World;
+    bool m_tabEnabled = false;
+
+    struct MonsterWaveProps {
+        std::string zoneStr;
+        TextBoxProps<> zoneTB;
+        TextBoxProps<> monsterNameTB;
+        bool conditionTypeEnabled = false;
+        TextBoxProps<> conditionValueTB;
+    };
+    std::vector<MonsterWaveProps> m_monsterWaveProps;
 };
 
 } // namespace aren

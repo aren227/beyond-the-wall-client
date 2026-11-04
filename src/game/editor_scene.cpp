@@ -190,11 +190,38 @@ void EditorScene::render() {
     }
 }
 
+static void join(const std::vector<std::string> &vec, std::string &str, char delim) {
+    str.clear();
+    for (size_t i = 0; i < vec.size(); i++) {
+        str += vec[i];
+        if (i + 1 < vec.size()) {
+            str += delim;
+        }
+    }
+}
+
+static void split(std::vector<std::string> &vec, const std::string &str, char delim) {
+    vec.clear();
+    std::string tmp;
+    for (char c : str) {
+        if (c == delim) {
+            vec.push_back(tmp);
+            tmp.clear();
+        } else {
+            tmp += c;
+        }
+    }
+    vec.push_back(tmp);
+}
+
 template <typename TBProps>
-static bool GuiTextBoxHelper(const Rect &rect, TBProps &tbProps) {
+static bool GuiTextBoxHelper(const Rect &rect, TBProps &tbProps, std::string *str = nullptr) {
     bool changed = false;
     if (GuiTextBox(rect, tbProps.str.data(), tbProps.len, tbProps.enabled)) {
         tbProps.enabled = !tbProps.enabled;
+        if (str) {
+            *str = std::string(tbProps.str.data());
+        }
         changed = true;
     }
     return changed;
@@ -285,94 +312,167 @@ void EditorScene::renderUI() {
         }
     }
 
+    if (m_tabEnabled) GuiLock();
+
     GuiScrollPanel({0, 0, UI_PANEL_WIDTH, float(GetScreenHeight())}, "Tools", {0, 0, UI_PANEL_WIDTH-16, 2000}, &m_panelScroll, &m_panelView);
 
-    float y = 40;
+    float y = 30;
     y += m_panelScroll.y;
 
-    GuiTextBoxHelper({10, y, 180, 30}, m_savedWorldNameTB);
+    auto tabDropdownRect = Rect(10, y, 180, 30);
     y += 35;
 
-    if (GuiButton({10, y, 180, 30}, "Save")) {
-        m_world->m_name = std::string(m_worldNameTB.str.data());
-        m_world->m_comment = std::string(m_worldCommentTB.str.data());
+    if (m_tab == Tab::World) {
+        if (m_loadWorldNameEnabled) GuiLock();
 
-        m_world->save(m_savedWorldNameTB.str.data());
-    }
-    y += 35;
-
-    auto worldDropdownRect = Rect(10, y, 180, 30);
-    // NOTE(aren): Draw later due to z index
-    y += 35;
-
-    if (GuiButton({10, y, 180, 30}, "Load")) {
-        if (m_loadWorldNameSelected < m_scannedWorldNames.size()) {
-            m_world = World::load(m_scannedWorldNames[m_loadWorldNameSelected]);
-
-            strcpyTB(m_savedWorldNameTB, m_scannedWorldNames[m_loadWorldNameSelected]);
-            strcpyTB(m_worldNameTB, m_world->m_name);
-            strcpyTB(m_worldCommentTB, m_world->m_comment);
-            strcpyTB(m_beamBouncesTB, std::to_string(m_world->player()->m_bounces).c_str());
-        }
-    }
-    y += 35;
-
-    GuiLabel({10, y, 180, 30}, "World Name");
-    y += 25;
-    GuiTextBoxHelper({10, y, 180, 30}, m_worldNameTB);
-    y += 35;
-
-    GuiLabel({10, y, 180, 30}, "Comment");
-    y += 25;
-    GuiTextBoxHelper({10, y, 180, 30}, m_worldCommentTB);
-    y += 35;
-
-    for (int i = 0; i < int(EditorBrush::__MAX__); i++) {
-        int prev = GuiGetStyle(BUTTON, BASE_COLOR_NORMAL);
-        if (i == m_brushIndex) {
-            GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, Color4b(255, 127, 127, 255).rgba32());
-        }
-
-        auto label = ((i < 9) ? (std::to_string(i+1) + ": ") : "") + getBrushName(static_cast<EditorBrush>(i));
-
-        if (GuiButton({10, y, 180, 30}, label.c_str())) {
-            m_brushIndex = i;
-        }
-
-        if (i < 9 && Input::keyPressed(KEY_ONE + i) && m_zoneTB.enabled == false) {
-            m_brushIndex = i;
-        }
-
-        GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, prev);
+        GuiTextBoxHelper({10, y, 180, 30}, m_savedWorldNameTB);
         y += 35;
-    }
 
-    if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone) {
-        GuiLabel({10, y, 180, 30}, "Zone name");
+        if (GuiButton({10, y, 180, 30}, "Save")) {
+            m_world->m_name = std::string(m_worldNameTB.str.data());
+            m_world->m_comment = std::string(m_worldCommentTB.str.data());
+
+            m_world->save(m_savedWorldNameTB.str.data());
+        }
+        y += 35;
+
+        auto worldDropdownRect = Rect(10, y, 180, 30);
+        // NOTE(aren): Draw later due to z index
+        y += 35;
+
+        if (GuiButton({10, y, 180, 30}, "Load")) {
+            if (m_loadWorldNameSelected < m_scannedWorldNames.size()) {
+                m_world = World::load(m_scannedWorldNames[m_loadWorldNameSelected]);
+
+                strcpyTB(m_savedWorldNameTB, m_scannedWorldNames[m_loadWorldNameSelected]);
+                strcpyTB(m_worldNameTB, m_world->m_name);
+                strcpyTB(m_worldCommentTB, m_world->m_comment);
+                strcpyTB(m_beamBouncesTB, std::to_string(m_world->player()->m_bounces).c_str());
+            }
+        }
+        y += 35;
+
+        GuiLabel({10, y, 180, 30}, "World Name");
         y += 25;
-        GuiTextBoxHelper({10, y, 180, 30}, m_zoneTB);
+        GuiTextBoxHelper({10, y, 180, 30}, m_worldNameTB);
+        y += 35;
+
+        GuiLabel({10, y, 180, 30}, "Comment");
+        y += 25;
+        GuiTextBoxHelper({10, y, 180, 30}, m_worldCommentTB);
+        y += 35;
+
+        GuiLabel({10, y, 180, 30}, "Beam Bounces");
+        y += 25;
+        if (GuiTextBoxHelper({10, y, 180, 30}, m_beamBouncesTB)) {
+            m_world->player()->m_bounces = std::atoi(m_beamBouncesTB.str.data());
+        }
+        y += 35;
+
+        // NOTE(aren): Pass 2, need to stack backward
+        if (m_loadWorldNameEnabled) GuiUnlock();
+
+        static std::string s_joinedStr;
+        join(m_scannedWorldNames, s_joinedStr, ';');
+
+        if (GuiDropdownBox(worldDropdownRect, s_joinedStr.c_str(), &m_loadWorldNameSelected, m_loadWorldNameEnabled)) {
+            m_loadWorldNameEnabled = !m_loadWorldNameEnabled;
+        }
+    } else if (m_tab == Tab::Brush) {
+        for (int i = 0; i < int(EditorBrush::__MAX__); i++) {
+            int prev = GuiGetStyle(BUTTON, BASE_COLOR_NORMAL);
+            if (i == m_brushIndex) {
+                GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, Color4b(255, 127, 127, 255).rgba32());
+            }
+
+            auto label = ((i < 9) ? (std::to_string(i+1) + ": ") : "") + getBrushName(static_cast<EditorBrush>(i));
+
+            if (GuiButton({10, y, 180, 30}, label.c_str())) {
+                m_brushIndex = i;
+            }
+
+            if (i < 9 && Input::keyPressed(KEY_ONE + i) && m_zoneTB.enabled == false) {
+                m_brushIndex = i;
+            }
+
+            GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, prev);
+            y += 35;
+        }
+
+        if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone) {
+            GuiLabel({10, y, 180, 30}, "Zone name");
+            y += 25;
+            GuiTextBoxHelper({10, y, 180, 30}, m_zoneTB);
+            y += 35;
+        }
+    } else if (m_tab == Tab::Wave) {
+        auto &waves = m_world->m_monsterWaves;
+        if (waves.size() != m_monsterWaveProps.size()) {
+            m_monsterWaveProps.clear();
+            for (const auto &it : waves) {
+                MonsterWaveProps props;
+                join(it.zones, props.zoneStr, ',');
+                strcpy(props.zoneTB.str.data(), props.zoneStr.c_str());
+                strcpy(props.monsterNameTB.str.data(), it.monsterName.c_str());
+                strcpy(props.conditionValueTB.str.data(), it.conditionValue.c_str());
+                m_monsterWaveProps.push_back(std::move(props));
+            }
+        }
+
+        int toRemove = -1;
+        for (int i = 0; i < waves.size(); i++) {
+            if (m_monsterWaveProps[i].conditionTypeEnabled) GuiLock();
+
+            GuiLabel({10, y, 180, 30}, TextFormat("%d", i + 1));
+            y += 25;
+            GuiLabel({10, y, 180, 30}, "Zones");
+            y += 25;
+            if (GuiTextBoxHelper({10, y, 180, 30}, m_monsterWaveProps[i].zoneTB, &m_monsterWaveProps[i].zoneStr)) {
+                split(waves[i].zones, m_monsterWaveProps[i].zoneStr, ',');
+            }
+            y += 35;
+            GuiLabel({10, y, 180, 30}, "Monster Name");
+            y += 25;
+            GuiTextBoxHelper({10, y, 180, 30}, m_monsterWaveProps[i].monsterNameTB, &waves[i].monsterName);
+            y += 35;
+            GuiLabel({10, y, 180, 30}, "Condition Type");
+            y += 25;
+            auto conditionValueRect = Rect(10, y, 180, 30);
+            y += 35;
+            GuiLabel({10, y, 180, 30}, "Condition Value");
+            y += 25;
+            GuiTextBoxHelper({10, y, 180, 30}, m_monsterWaveProps[i].conditionValueTB, &waves[i].conditionValue);
+            y += 35;
+            if (GuiButton({10, y, 180, 30}, "X")) {
+                toRemove = i;
+            }
+            y += 35;
+
+            // NOTE(aren): Pass 2, need to stack backward
+            if (m_monsterWaveProps[i].conditionTypeEnabled) GuiUnlock();
+
+            if (GuiDropdownBox(conditionValueRect, "Always;MonsterCleared;EnterZone", reinterpret_cast<int *>(&waves[i].conditionType), m_monsterWaveProps[i].conditionTypeEnabled)) {
+                m_monsterWaveProps[i].conditionTypeEnabled = !m_monsterWaveProps[i].conditionTypeEnabled;
+            }
+        }
+
+        if (toRemove != -1) {
+            waves.erase(waves.begin() + toRemove);
+        }
+
+        if (GuiButton({10, y, 180, 30}, "+")) {
+            waves.push_back({
+                .monsterName = "dumb",
+            });
+        }
         y += 35;
     }
 
-    GuiLabel({10, y, 180, 30}, "Beam Bounces");
-    y += 25;
-    if (GuiTextBoxHelper({10, y, 180, 30}, m_beamBouncesTB)) {
-        m_world->player()->m_bounces = std::atoi(m_beamBouncesTB.str.data());
-    }
-    y += 35;
+    // NOTE(aren): Pass 2, need to stack backward
+    if (m_tabEnabled) GuiUnlock();
 
-    // NOTE(aren): Pass 2
-    static std::string s_joinedStr;
-    s_joinedStr.clear();
-    for (size_t i = 0; i < m_scannedWorldNames.size(); i++) {
-        s_joinedStr += m_scannedWorldNames[i];
-        if (i + 1 < m_scannedWorldNames.size()) {
-            s_joinedStr += ";";
-        }
-    }
-
-    if (GuiDropdownBox(worldDropdownRect, s_joinedStr.c_str(), &m_loadWorldNameSelected, m_loadWorldNameEnabled)) {
-        m_loadWorldNameEnabled = !m_loadWorldNameEnabled;
+    if (GuiDropdownBox(tabDropdownRect, "World;Brush;Wave", reinterpret_cast<int *>(&m_tab), m_tabEnabled)) {
+        m_tabEnabled = !m_tabEnabled;
     }
 
     if (Input::keyPressed(KEY_ONE)) {
