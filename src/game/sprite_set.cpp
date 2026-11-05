@@ -15,6 +15,9 @@ void SpriteSet::load() {
     if (Sprite::load("sand", tile(TileType::Sand)) == false) {
         ASSERT(false);
     }
+    if (Sprite::load("end", tile(TileType::End)) == false) {
+        ASSERT(false);
+    }
 
     if (Sprite::load("deco01", deco) == false) {
         ASSERT(false);

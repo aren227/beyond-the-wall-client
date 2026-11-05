@@ -13,6 +13,7 @@ enum class TileType {
     Sand,
     Zone,
     PlayerSpawn,
+    End,
     __MAX__
 };
 
@@ -26,9 +27,17 @@ public:
     float m_health = TILE_MAX_HEALTH;
     std::array<char, 8> m_name = {};
 
+    bool m_damaged = false;
+
+    // TODO(aren): Very tile specific code..
+    float m_progress = 0;
+    float m_life = 0;
+
 public:
     explicit Tile() = default;
     Tile(TileType type) : m_type(type) {}
+
+    void update(float dt);
 
     BeamProp beamProp() const;
 
@@ -39,7 +48,8 @@ public:
 
     bool checkCollision(ObjectLayer layer) const;
 
-    void takeDamage(float damage);
+    void takeDamage(float dt, float damage);
+    float progress() const;
 };
 
 } // namespace aren

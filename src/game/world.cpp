@@ -8,6 +8,7 @@
 #include "bullet.hpp"
 #include "../particles.hpp"
 #include "../render.hpp"
+#include "raymath.h"
 #include <random>
 #include <fstream>
 #include <map>
@@ -136,7 +137,8 @@ void World::update(const Camera &cam, float dt) {
     m_player->update(cam, this, dt);
 
     static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
-    for (const auto &[k, v] : m_tiles) {
+    for (auto &[k, v] : m_tiles) {
+        v.update(dt);
         if (v.m_health <= 0) {
             s_toRemove.push_back(k);
         }
@@ -474,6 +476,58 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
 
 void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     Render::begin2DCam(cam);
+
+    const float worldToScreenScale = cam.worldToScreen(V2f(1, 0)).x - cam.worldToScreen(V2f(0, 0)).x;
+    const float thickness = PIXEL_SCALER / worldToScreenScale;
+
+    // TODO(aren): TOO SLOW!! use custom shader for hdr rendering..
+    BeginBlendMode(BLEND_ADDITIVE);
+
+    for (const auto &[v, tile] : m_tiles) {
+        if (tile.m_type == TileType::End) {
+            int additiveCount = tile.progress() * 31 + 1;
+
+            std::array<Vector3, 6> hexes = {{
+                { 1, 0, 0 },
+                { 0.5f, 0.866f, 0 },
+                { -0.5f, 0.866f, 0 },
+                { -1, 0, 0 },
+                { -0.5f, -0.866f, 0 },
+                { 0.5f, -0.866f, 0 },
+            }};
+
+            auto mat1 = MatrixRotate(Vector3Normalize({0.5f, 0.866f, 0.0f}), 1.7f*tile.m_life);
+            auto mat2 = MatrixRotate(Vector3Normalize({-0.5f, 0.866f, 0.0f}), 1.3f*tile.m_life);
+            auto mat3 = MatrixRotate(Vector3Normalize({1.0f, 0.0f, 0.0f}), 1.1f*tile.m_life);
+            mat1 = MatrixMultiply(mat1, MatrixTranslate(v.x + 0.5f, v.y + 0.5f, 0));
+            mat2 = MatrixMultiply(mat2, mat1);
+            mat3 = MatrixMultiply(mat3, mat2);
+            for (int i = 0; i < 6; i++) {
+                auto a3 = Vector3Scale(hexes[i], 0.4f);
+                auto b3 = Vector3Scale(hexes[(i + 1) % 6], 0.4f);
+                a3 = Vector3Transform(a3, mat1);
+                b3 = Vector3Transform(b3, mat1);
+                for (int j = 0; j < additiveCount; j++)
+                    DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Red));
+
+                a3 = Vector3Scale(hexes[i], 0.3f);
+                b3 = Vector3Scale(hexes[(i + 1) % 6], 0.3f);
+                a3 = Vector3Transform(a3, mat2);
+                b3 = Vector3Transform(b3, mat2);
+                for (int j = 0; j < additiveCount; j++)
+                    DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Green));
+
+                a3 = Vector3Scale(hexes[i], 0.2f);
+                b3 = Vector3Scale(hexes[(i + 1) % 6], 0.2f);
+                a3 = Vector3Transform(a3, mat3);
+                b3 = Vector3Transform(b3, mat3);
+                for (int j = 0; j < additiveCount; j++)
+                    DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Blue));
+            }
+        }
+    }
+
+    EndBlendMode();
 
     for (const auto &it : m_monsters) {
         it->render(cam);

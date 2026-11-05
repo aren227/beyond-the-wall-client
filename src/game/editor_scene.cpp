@@ -16,6 +16,7 @@ enum class EditorBrush {
     Sand,
     Zone,
     PlayerSpawn,
+    End,
     White,
     Red,
     Green,
@@ -34,6 +35,7 @@ static const char *getBrushName(EditorBrush type) {
         case EditorBrush::Sand: return "Sand";
         case EditorBrush::Zone: return "Zone";
         case EditorBrush::PlayerSpawn: return "Player Spawn";
+        case EditorBrush::End: return "End";
         case EditorBrush::White: return "White";
         case EditorBrush::Red: return "Red";
         case EditorBrush::Green: return "Green";
@@ -53,6 +55,7 @@ static TileType getTileTypeFromBrush(EditorBrush type) {
         case EditorBrush::Sand: return TileType::Sand;
         case EditorBrush::Zone: return TileType::Zone;
         case EditorBrush::PlayerSpawn: return TileType::PlayerSpawn;
+        case EditorBrush::End: return TileType::End;
         default: return TileType::Empty;
     }
 }

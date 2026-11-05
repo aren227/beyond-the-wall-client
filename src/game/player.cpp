@@ -113,7 +113,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
 
                 if (Vector2i *pos = std::get_if<Vector2i>(&hit)) {
                     if (world->contains(*pos)) {
-                        world->at(*pos).takeDamage(damage);
+                        world->at(*pos).takeDamage(dt, damage);
                     }
                 } else if (Monster **monster = std::get_if<Monster *>(&hit)) {
                     if ((*monster)->m_color == prevColor) {
