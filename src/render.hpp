@@ -11,10 +11,6 @@ namespace aren {
 class Camera;
 
 class Render {
-private:
-    static Font s_defaultFontSmall;
-    static Font s_defaultFontLarge;
-
 public:
     enum class TextAlignH {
         Left, Center, Right
@@ -34,7 +30,10 @@ public:
     static void drawText(Vector2f origin, float size, Color4b color, const char *text, TextAlignH alignH, TextAlignV alignV);
     static void drawTextRotated(Vector2f origin, float size, float rotationDeg, Color4b color, const char *text, TextAlignH alignH, TextAlignV alignV);
 
-    static Font getFontBySize(float size);
+    static Font getFontBySize(const std::string &name, float size);
+
+    static void pushFontName(const std::string &name);
+    static void popFontName();
 
     static void beginGameDraw();
     static void endGameDraw();

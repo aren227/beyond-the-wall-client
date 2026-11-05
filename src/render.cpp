@@ -5,11 +5,15 @@
 
 namespace aren {
 
-::Font Render::s_defaultFontSmall = {};
-::Font Render::s_defaultFontLarge = {};
+struct FontFamily {
+    ::Font small;
+    float smallSize;
+    ::Font large;
+    float largeSize;
+};
 
-constexpr int FONT_ATLAS_SIZE_SMALL = 16;
-constexpr int FONT_ATLAS_SIZE_LARGE = 96;
+static std::unordered_map<std::string, FontFamily> s_fonts;
+static std::vector<std::string> s_fontNameStack = { "default" };
 
 Color4b Render::s_backgroundColor = {50, 56, 68, 255};
 uint8_t Render::s_vignette = 16;
@@ -30,23 +34,46 @@ static struct BloomPass {
 static ::Shader s_gammaToLinearShader;
 static ::Shader s_tonemappingShader;
 
-::Font Render::getFontBySize(float size) {
-    if (size > FONT_ATLAS_SIZE_SMALL * 2) {
-        return s_defaultFontLarge;
+::Font Render::getFontBySize(const std::string &name, float size) {
+    const FontFamily *family = nullptr;
+    if (s_fonts.contains(name) == false) {
+        family = &s_fonts["default"];
+    } else {
+        family = &s_fonts[name];
     }
-    return s_defaultFontSmall;
+
+    if (size >= family->largeSize) {
+        return family->large;
+    }
+    return family->small;
+}
+
+void Render::pushFontName(const std::string &name) {
+    s_fontNameStack.push_back(name);
+}
+
+void Render::popFontName() {
+    ASSERT(s_fontNameStack.size() > 1);
+    s_fontNameStack.pop_back();
+}
+
+static FontFamily loadFontFamily(const char *path, float smallSize, float largeSize, bool bilinear) {
+    FontFamily family = {
+        .small = LoadFontEx(path, smallSize, nullptr, 0),
+        .smallSize = smallSize,
+        .large = LoadFontEx(path, largeSize, nullptr, 0),
+        .largeSize = largeSize,
+    };
+    if (bilinear) {
+        SetTextureFilter(family.small.texture, TEXTURE_FILTER_BILINEAR);
+        SetTextureFilter(family.large.texture, TEXTURE_FILTER_BILINEAR);
+    }
+    return family;
 }
 
 void Render::init() {
-    s_defaultFontSmall = LoadFontEx("resources/fonts/Noto_Serif/NotoSerif-SemiBold.ttf",
-        FONT_ATLAS_SIZE_SMALL, nullptr, 0);
-
-    SetTextureFilter(s_defaultFontSmall.texture, TEXTURE_FILTER_BILINEAR);
-
-    s_defaultFontLarge = LoadFontEx("resources/fonts/Noto_Serif/NotoSerif-SemiBold.ttf",
-        FONT_ATLAS_SIZE_LARGE, nullptr, 0);
-
-    SetTextureFilter(s_defaultFontLarge.texture, TEXTURE_FILTER_BILINEAR);
+    s_fonts["default"] = loadFontFamily("resources/fonts/Jersey_10/Jersey10-Regular.ttf", 20, 40, false);
+    s_fonts["editor"] = loadFontFamily("resources/fonts/Noto_Serif/NotoSerif-SemiBold.ttf", 16, 96, true);
 
     // TODO(aren): Properly handle high dpi
     auto framebufferSize = V2f(GetScreenWidth(), GetScreenHeight()).scale(V2F_ONE).floor();
@@ -81,12 +108,14 @@ void Render::init() {
 }
 
 void Render::deinit() {
-    UnloadFont(s_defaultFontSmall);
-    UnloadFont(s_defaultFontLarge);
+    for (const auto &[k, v] : s_fonts) {
+        UnloadFont(v.small);
+        UnloadFont(v.large);
+    }
 }
 
 Vector2f Render::measureText(const char *text, float size) {
-    auto font = getFontBySize(size);
+    auto font = getFontBySize(s_fontNameStack.back(), size);
     return MeasureTextEx(font, text, size, 1.0f);
 }
 
@@ -100,7 +129,7 @@ void Render::drawText(Vector2f origin, float size, Color4b color, const char *te
 
     // TODO(aren): shadow
 
-    auto font = getFontBySize(size);
+    auto font = getFontBySize(s_fontNameStack.back(), size);
     DrawTextEx(font, text, origin, size, 1.0f, color);
 }
 
@@ -115,7 +144,7 @@ void Render::drawTextRotated(Vector2f origin, float size, float rotationDeg, Col
 
     // TODO(aren): shadow
 
-    auto font = getFontBySize(size);
+    auto font = getFontBySize(s_fontNameStack.back(), size);
     DrawTextPro(font, text, origin, pivot, rotationDeg, size, 1.0f, color);
 }
 
