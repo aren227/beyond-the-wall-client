@@ -10,7 +10,7 @@ static constexpr float PROGRESS_UP_SPEED = 1;
 void Tile::update(float dt) {
     if (m_type == TileType::End) {
         if (m_damaged) {
-            m_progress = std::min(m_progress + (PROGRESS_UP_SPEED + PROGRESS_DOWN_SPEED) * dt, MAX_PROGRESS);
+            m_progress = std::min(m_progress + PROGRESS_UP_SPEED * dt, MAX_PROGRESS);
         } else {
             m_progress = std::max(m_progress - PROGRESS_DOWN_SPEED * dt, 0.0f);
         }

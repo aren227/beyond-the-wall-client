@@ -47,6 +47,8 @@ public:
 
     void addBullet(std::unique_ptr<Bullet> bullet);
 
+    inline bool hasEnded() const { return m_endFlag; }
+
     inline Player *player() const { return m_player.get(); }
     inline Particles *particles() const { return m_particles.get(); }
     inline const std::vector<std::shared_ptr<Monster>> &monsters() const { return m_monsters; }
@@ -65,6 +67,7 @@ public:
 
 private:
     float m_time = 0;
+    bool m_endFlag = false;
     std::unique_ptr<Player> m_player;
     std::unordered_map<Vector2i, Tile> m_tiles;
     std::vector<std::shared_ptr<Monster>> m_monsters;

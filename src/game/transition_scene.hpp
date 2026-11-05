@@ -15,10 +15,13 @@ public:
     void render() override;
     void renderUI() override;
 
+    void setOnEnd(std::function<void()> onEnd) { m_onEnd = onEnd; }
+
 private:
     bool m_isOpen;
     SpriteSet m_spriteSet;
     float m_time = 0;
+    std::function<void()> m_onEnd;
 };
 
 } // namespace aren

@@ -6,8 +6,11 @@
 #include "path_query.hpp"
 #include "consts.hpp"
 #include "bullet.hpp"
+#include "transition_scene.hpp"
+#include "ingame_scene.hpp"
 #include "../particles.hpp"
 #include "../render.hpp"
+#include "game.hpp"
 #include "raymath.h"
 #include <random>
 #include <fstream>
@@ -141,6 +144,15 @@ void World::update(const Camera &cam, float dt) {
         v.update(dt);
         if (v.m_health <= 0) {
             s_toRemove.push_back(k);
+        }
+        if (v.m_type == TileType::End && v.progress() >= 1) {
+            if (m_endFlag == false) {
+                Game::addScene<TransitionScene>(false);
+                Game::getScene<TransitionScene>()->setOnEnd([]() {
+                    Game::removeScene<IngameScene>();
+                });
+            }
+            m_endFlag = true;
         }
     }
 

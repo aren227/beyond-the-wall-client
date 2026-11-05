@@ -3,6 +3,8 @@
 
 namespace aren {
 
+static constexpr float DURATION = 0.7f;
+
 TransitionScene::TransitionScene(bool isOpen) : Scene(TYPE) {
     m_isOpen = isOpen;
     m_spriteSet.load();
@@ -10,19 +12,21 @@ TransitionScene::TransitionScene(bool isOpen) : Scene(TYPE) {
 
 void TransitionScene::update(float dt) {
     m_time += dt;
+
+    if (m_time > DURATION) {
+        if (m_onEnd) {
+            m_onEnd();
+        }
+
+        Game::removeScene<TransitionScene>();
+    }
 }
 
 void TransitionScene::render() {
 }
 
 void TransitionScene::renderUI() {
-    constexpr float duration = 0.7f;
-    if (m_time > duration) {
-        Game::removeScene<TransitionScene>();
-        return;
-    }
-
-    int r = std::floor(m_time / duration * 17);
+    int r = std::floor(m_time / DURATION * 17);
 
     if (m_isOpen) {
         r = 16 - r;
