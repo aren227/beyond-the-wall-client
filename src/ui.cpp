@@ -4,21 +4,12 @@
 
 namespace aren {
 
-Color4b UI::s_colorTextPrimary      = {255, 255, 255, 255};
-Color4b UI::s_colorTextSecondary    = {185, 185, 185, 255};
-Color4b UI::s_colorTextButtonIdle   = {200, 200, 200, 255};
-Color4b UI::s_colorTextButtonHover  = {255, 255, 255, 255};
-Color4b UI::s_colorControlPrimary   = {220, 220, 230, 255};
-Color4b UI::s_colorControlAccent    = {90,  170, 255, 255};
-Color4b UI::s_colorControlEmpty     = {0,   0,   0,   120};
-Color4b UI::s_colorControlHover     = {255, 255, 255, 255};
-
 std::optional<int> UI::s_clickSfxId = std::nullopt;
 
 static int s_enableInput = 0;
 
 // NOTE(aren): Assume that label string pointers are distinct..
-static const char *s_dragSlider = nullptr;
+static const char *s_selectedSlider = nullptr;
 
 void UI::beginInput() {
     s_enableInput++;
@@ -29,123 +20,86 @@ void UI::endInput() {
     ASSERT(s_enableInput >= 0);
 }
 
-bool UI::textButton(Vector2f center, float size, const char *label) {
-    constexpr Vector2f PAD = V2f(12.0f, 4.0f);
+bool UI::textButton(Vector2f origin, float size, const char *text, Render::TextAlignH alignH, Render::TextAlignV alignV) {
+    auto dimension = Render::measureText(text, size);
 
-    auto dim = Render::measureText(label, size);
-    auto hit = Rect(center - dim * 0.5f - PAD, dim + 2 * PAD);
+    if (alignH == Render::TextAlignH::Center) origin.x -= dimension.x * 0.5f;
+    else if (alignH == Render::TextAlignH::Right) origin.x -= dimension.x;
+    if (alignV == Render::TextAlignV::Center) origin.y -= dimension.y * 0.5f;
+    else if (alignV == Render::TextAlignV::Bottom) origin.y -= dimension.y;
 
-    auto m = Input::mousePosition();
-    bool hovered = (s_enableInput > 0) && hit.contains(m);
+    auto hit = Rect(origin, dimension);
+    bool hovered = (s_enableInput > 0) && hit.contains(Input::mousePosition());
+    bool selected = hovered && Input::mouseButtonDown(MOUSE_BUTTON_LEFT);
+    bool clicked = hovered && Input::mouseButtonReleased(MOUSE_BUTTON_LEFT);
 
-    Render::drawText(center, size, hovered ? s_colorTextButtonHover : s_colorTextButtonIdle, label,
-        Render::TextAlignH::Center, Render::TextAlignV::Center);
-    bool clicked = hovered && Input::mouseButtonPressed(MOUSE_BUTTON_LEFT);
-    if (clicked && s_clickSfxId) Audio::play(s_clickSfxId.value());
+    auto color = selected ? SELECTED : hovered ? SECONDARY : PRIMARY;
+
+    auto font = Render::getCurrentFontBySize(size);
+    DrawTextEx(font, text, origin, size, 1.0f, color);
+
+    if (clicked && s_clickSfxId) {
+        Audio::play(s_clickSfxId.value());
+    }
+
     return clicked;
 }
 
-int UI::slider(Vector2f center, float size, const char *label, int value, int steps) {
-    constexpr float SEG_W_MUL = 0.55f;
-    constexpr Vector2f HANDLE_SIZE = V2f(8.0f, 24.0f);
-    constexpr float HANDLE_CLICK_MARGIN = 12.0f;
-    constexpr float SEG_H = 8.0f;
-    constexpr float SEG_GAP = 2.0f;
-    constexpr float LABEL_GAP = 20.0f;
+int UI::slider(Vector2f center, float width, int maxValue, const char *id, int value) {
+    Vector2f start = center - V2f(width * 0.5f, 0);
+    Vector2f end = center + V2f(width * 0.5f, 0);
+    auto rect = Rect(start.x, start.y - 16, width, 32);
 
-    float segW = size * SEG_W_MUL;
-    float stepW = segW + SEG_GAP;
-    float barW = float(steps) * segW + float(steps - 1) * SEG_GAP;
+    bool hovered = (s_enableInput > 0) && rect.contains(Input::mousePosition());
 
-    auto labelDim = Render::measureText(label, size);
-    float totalW = labelDim.x + LABEL_GAP + barW;
-    float startX = center.x - totalW * 0.5f;
-
-    Render::drawText(V2f(startX, center.y), size,
-        s_colorTextPrimary, label,
-        Render::TextAlignH::Left, Render::TextAlignV::Center);
-
-    float barX = startX + labelDim.x + LABEL_GAP;
-    auto mouse = Input::mousePosition();
-
-    int newValue = value;
-
-    float handleX = barX + float(value) * stepW;
-    auto handleHit = Rect(V2f(handleX, center.y) - HANDLE_SIZE * 0.5f, HANDLE_SIZE).extends(HANDLE_CLICK_MARGIN);
-
-    bool handleHovered = (s_enableInput > 0) && handleHit.contains(mouse);
-
-    if (handleHovered && Input::mouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        s_dragSlider = label;
+    if (hovered && Input::mouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        s_selectedSlider = id;
+    }
+    if (s_selectedSlider == id && (Input::mouseButtonDown(MOUSE_BUTTON_LEFT) == false || Input::mouseButtonReleased(MOUSE_BUTTON_LEFT))) {
+        s_selectedSlider = nullptr;
     }
 
-    if (s_dragSlider == label) {
-        if (Input::mouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            int snapped = std::clamp(int(std::round((mouse.x - barX) / stepW)), 0, steps);
-            if (snapped != newValue) {
-                newValue = snapped;
-                if (s_clickSfxId) {
-                    Audio::play(s_clickSfxId.value(), {0.33f, 1.0f, 0.5f});
-                }
-            }
-        } else {
-            s_dragSlider = nullptr;
-        }
+    bool selected = (s_selectedSlider == id) && Input::mouseButtonDown(MOUSE_BUTTON_LEFT);
+
+    auto color = selected ? SELECTED : hovered ? SECONDARY : PRIMARY;
+    auto innerColor = selected ? SELECTED : ACCENT;
+
+    DrawLineEx(start, end, 4, innerColor);
+
+    float rate = float(value) / maxValue;
+    auto curr = Vector2f::lerp(start, end, rate);
+    DrawLineEx(curr + V2f(0, 16), curr - V2f(0, 16), 4, color);
+
+    if (selected) {
+        float nextRate = std::clamp((Input::mousePosition().x - start.x) / (end.x - start.x), 0.0f, 1.0f);
+        value = std::round(nextRate * maxValue);
     }
 
-    // Segment bar
-    for (int i = 0; i < steps; i++) {
-        auto r = Rect(
-            barX + float(i) * stepW,
-            center.y - SEG_H * 0.5f,
-            segW,
-            SEG_H
-        );
-        DrawRectangleRec(r, (i < newValue) ? s_colorControlAccent : s_colorControlEmpty);
-    }
-
-    // Handle
-    {
-        float hx = barX + float(newValue) * stepW;
-        auto r = Rect(V2f(hx, center.y) - HANDLE_SIZE * 0.5f, HANDLE_SIZE);
-        bool active = handleHovered || (s_dragSlider == label);
-        DrawRectangleRec(r, active ? s_colorControlHover : s_colorControlPrimary);
-    }
-
-    return newValue;
+    return value;
 }
 
-bool UI::checkbox(Vector2f center, float size, const char *label, bool value) {
-    constexpr float BOX_MUL = 0.7f;
-    constexpr float LABEL_GAP = 14.0f;
-    constexpr float BORDER = 2.0f;
-    constexpr float INNER_PAD = 4.0f;
+bool UI::checkbox(Vector2f center, bool value) {
+    auto size = V2f(32, 32);
+    auto rect = Rect(center - size * 0.5f, size);
+    bool hovered = (s_enableInput > 0) && rect.contains(Input::mousePosition());
+    bool selected = hovered && Input::mouseButtonDown(MOUSE_BUTTON_LEFT);
+    bool clicked = hovered && Input::mouseButtonReleased(MOUSE_BUTTON_LEFT);
 
-    float box = size * BOX_MUL;
-    auto labelDim = Render::measureText(label, size);
-    float totalW = labelDim.x + LABEL_GAP + box;
-    float startX = center.x - totalW * 0.5f;
+    auto color = selected ? SELECTED : hovered ? SECONDARY : PRIMARY;
+    auto innerColor = selected ? SELECTED : ACCENT;
 
-    Render::drawText(V2f(startX, center.y), size, s_colorTextPrimary, label, Render::TextAlignH::Left, Render::TextAlignV::Center);
-
-    auto r = Rect(startX + labelDim.x + LABEL_GAP, center.y - box * 0.5f, box, box);
-    auto mouse = Input::mousePosition();
-    bool hovered = (s_enableInput > 0) && r.contains(mouse);
-
-    DrawRectangleRec(r, s_colorControlEmpty);
-    DrawRectangleLinesEx(r, BORDER, hovered ? s_colorControlHover : s_colorControlPrimary);
+    DrawRectangleLinesEx(rect, 3, color);
     if (value) {
-        auto inner = r.extends(-INNER_PAD);
-        DrawRectangleRec(inner, s_colorControlAccent);
+        DrawRectangleRec(rect.extends(-8), innerColor);
     }
 
-    bool toggled = hovered && Input::mouseButtonPressed(MOUSE_BUTTON_LEFT);
-    if (toggled) {
+    if (clicked) {
         value = !value;
         if (s_clickSfxId) {
             Audio::play(s_clickSfxId.value());
         }
     }
+
     return value;
 }
 

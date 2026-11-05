@@ -7,13 +7,6 @@
 
 namespace aren {
 
-constexpr float TITLE_NAME_SIZE         = 120.0f;
-constexpr float TITLE_BUTTON_SIZE       = 50.0f;
-constexpr float TITLE_BUTTON_GAP        = 70.0f;
-constexpr float TITLE_BLOCK_OFFSET_Y    = 30.0f;
-constexpr float TITLE_VERSION_SIZE      = 30.0f;
-constexpr float TITLE_VERSION_PAD       = 20.0f;
-
 static void startGame() {
     Game::removeScene<TitleScene>();
 }
@@ -35,54 +28,52 @@ void TitleScene::update(float dt) {
     if (Input::keyPressed(KEY_ENTER) || Input::keyPressed(KEY_KP_ENTER)) {
         startGame();
     }
-
-    startEditor();
 }
 
 void TitleScene::render() {}
 
 void TitleScene::renderUI() {
+    ClearBackground(BLACK);
+
     int sw = GetScreenWidth();
     int sh = GetScreenHeight();
-    Vector2f c = V2f(sw * 0.5f, sh * 0.5f + TITLE_BLOCK_OFFSET_Y);
 
-    Render::drawText(V2f(c.x, c.y - TITLE_BUTTON_GAP * 3.0f),
-        TITLE_NAME_SIZE, UI::s_colorTextPrimary, "Beyond The Wall",
+    Vector2f c = V2f(sw * 0.5f, sh * 0.5f - 120);
+
+    Render::drawText(c, 60, UI::PRIMARY, "Beyond The Wall",
         Render::TextAlignH::Center, Render::TextAlignV::Center);
+    c.y += 60;
 
-    float row = c.y - TITLE_BUTTON_GAP * 1.5f;
-    if (UI::textButton(V2f(c.x, row), TITLE_BUTTON_SIZE, "Start")) {
+    if (UI::textButton(c, 40, "Start", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
         startGame();
         return;
     }
-    row += TITLE_BUTTON_GAP;
+    c.y += 60;
 
-    if (UI::textButton(V2f(c.x, row), TITLE_BUTTON_SIZE, "Editor")) {
+    if (UI::textButton(c, 40, "Editor", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
         startEditor();
         return;
     }
-    row += TITLE_BUTTON_GAP;
+    c.y += 60;
 
-    if (UI::textButton(V2f(c.x, row), TITLE_BUTTON_SIZE, "Settings")) {
+    if (UI::textButton(c, 40, "Settings", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
         startSettings();
         return;
     }
-    row += TITLE_BUTTON_GAP;
+    c.y += 60;
 
 #if !defined(PLATFORM_WEB)
-    if (UI::textButton(V2f(c.x, row), TITLE_BUTTON_SIZE, "Exit")) {
+    if (UI::textButton(c, 40, "Exit", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
         Game::requestExit();
     }
-    row += TITLE_BUTTON_GAP;
+    c.y += 60;
 #endif
 
-    Render::drawText(V2f(TITLE_VERSION_PAD, sh - TITLE_VERSION_PAD),
-        TITLE_VERSION_SIZE, UI::s_colorTextSecondary,
+    Render::drawText(V2f(10, sh - 10), 20, UI::SECONDARY,
         TextFormat("version %s", GAME_VERSION),
         Render::TextAlignH::Left, Render::TextAlignV::Bottom);
 
-    Render::drawText(V2f(sw - TITLE_VERSION_PAD, sh - TITLE_VERSION_PAD),
-        TITLE_VERSION_SIZE, UI::s_colorTextSecondary,
+    Render::drawText(V2f(sw - 10, sh - 10), 20, UI::SECONDARY,
         "A game by aren227",
         Render::TextAlignH::Right, Render::TextAlignV::Bottom);
 }

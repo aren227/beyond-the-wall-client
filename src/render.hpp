@@ -31,6 +31,7 @@ public:
     static void drawTextRotated(Vector2f origin, float size, float rotationDeg, Color4b color, const char *text, TextAlignH alignH, TextAlignV alignV);
 
     static Font getFontBySize(const std::string &name, float size);
+    static Font getCurrentFontBySize(float size);
 
     static void pushFontName(const std::string &name);
     static void popFontName();

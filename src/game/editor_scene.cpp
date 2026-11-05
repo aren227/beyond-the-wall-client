@@ -4,6 +4,7 @@
 #include "world.hpp"
 #include "ingame_scene.hpp"
 #include "transition_scene.hpp"
+#include "title_scene.hpp"
 #include "player.hpp"
 #include "consts.hpp"
 
@@ -485,6 +486,11 @@ void EditorScene::renderUI() {
     if (Input::keyPressed(KEY_F5)) {
         Game::addScene<IngameScene>(m_world.get());
         Game::addScene<TransitionScene>(true);
+    }
+
+    if (Input::keyPressed(KEY_ESCAPE)) {
+        Game::removeScene<EditorScene>();
+        Game::addScene<TitleScene>();
     }
 }
 

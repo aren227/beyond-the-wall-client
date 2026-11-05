@@ -48,6 +48,10 @@ static ::Shader s_tonemappingShader;
     return family->small;
 }
 
+::Font Render::getCurrentFontBySize(float size) {
+    return getFontBySize(s_fontNameStack.back(), size);
+}
+
 void Render::pushFontName(const std::string &name) {
     s_fontNameStack.push_back(name);
 }
@@ -115,7 +119,7 @@ void Render::deinit() {
 }
 
 Vector2f Render::measureText(const char *text, float size) {
-    auto font = getFontBySize(s_fontNameStack.back(), size);
+    auto font = getCurrentFontBySize(size);
     return MeasureTextEx(font, text, size, 1.0f);
 }
 
@@ -129,7 +133,7 @@ void Render::drawText(Vector2f origin, float size, Color4b color, const char *te
 
     // TODO(aren): shadow
 
-    auto font = getFontBySize(s_fontNameStack.back(), size);
+    auto font = getCurrentFontBySize(size);
     DrawTextEx(font, text, origin, size, 1.0f, color);
 }
 
@@ -144,7 +148,7 @@ void Render::drawTextRotated(Vector2f origin, float size, float rotationDeg, Col
 
     // TODO(aren): shadow
 
-    auto font = getFontBySize(s_fontNameStack.back(), size);
+    auto font = getCurrentFontBySize(size);
     DrawTextPro(font, text, origin, pivot, rotationDeg, size, 1.0f, color);
 }
 

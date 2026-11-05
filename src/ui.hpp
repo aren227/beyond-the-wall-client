@@ -1,23 +1,21 @@
 #pragma once
 
+#include "render.hpp"
+
 namespace aren {
 
 class UI {
 public:
-    static Color4b s_colorTextPrimary;
-    static Color4b s_colorTextSecondary;
-    static Color4b s_colorTextButtonIdle;
-    static Color4b s_colorTextButtonHover;
-    static Color4b s_colorControlPrimary;
-    static Color4b s_colorControlAccent;
-    static Color4b s_colorControlEmpty;
-    static Color4b s_colorControlHover;
-
     static std::optional<int> s_clickSfxId;
 
-    static bool textButton(Vector2f center, float size, const char *label);
-    static int slider(Vector2f center, float size, const char *label, int value, int steps);
-    static bool checkbox(Vector2f center, float size, const char *label, bool value);
+    static constexpr Color4b PRIMARY = { 255, 255, 255, 255 };
+    static constexpr Color4b SECONDARY = { 190, 190, 190, 255 };
+    static constexpr Color4b SELECTED = { 127, 127, 127, 255 };
+    static constexpr Color4b ACCENT = { 255, 220, 0, 255 };
+
+    static bool textButton(Vector2f origin, float size, const char *text, Render::TextAlignH alignH, Render::TextAlignV alignV);
+    static int slider(Vector2f center, float width, int maxValue, const char *id, int value);
+    static bool checkbox(Vector2f center, bool value);
 
     static void beginInput();
     static void endInput();
