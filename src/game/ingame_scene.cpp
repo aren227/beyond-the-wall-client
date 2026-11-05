@@ -60,8 +60,8 @@ void IngameScene::renderUI() {
     const float xMargin = 4;
 
     Render::drawText(
-        V2f(sx + xMargin, sh-36),
-        32,
+        V2f(sx + xMargin, sh-40),
+        40,
         WHITE,
         m_world->m_name.c_str(),
         Render::TextAlignH::Left,
@@ -72,8 +72,8 @@ void IngameScene::renderUI() {
     const auto player = m_world->player();
 
     Render::drawText(
-        V2f(sx+m_hudWidth-healthWidth-xMargin-50, sh-36),
-        32,
+        V2f(sx+m_hudWidth-healthWidth-xMargin-50, sh-40),
+        40,
         WHITE,
         TextFormat("x%d", player->m_bounces),
         Render::TextAlignH::Left,
