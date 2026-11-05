@@ -105,6 +105,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 m_beam.segments.push_back(segment);
 
                 float damage = segment.prop.strength * m_baseAttackDamage * dt;
+                auto prevColor = segment.prop.color;
 
                 segment.start = segment.end;
                 segment.dir = segment.dir.reflected(normal);
@@ -115,8 +116,10 @@ void Player::update(const Camera &cam, World *world, float dt) {
                         world->at(*pos).takeDamage(damage);
                     }
                 } else if (Monster **monster = std::get_if<Monster *>(&hit)) {
-                    world->particles()->emit((*monster)->pos(), 5, {});
-                    (*monster)->takeDamage(damage);
+                    if ((*monster)->m_color == prevColor) {
+                        (*monster)->takeDamage(damage);
+                        world->particles()->emit((*monster)->pos(), 5, {});
+                    }
                 }
             } else {
                 UNREACHABLE();

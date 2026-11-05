@@ -9,9 +9,69 @@
 
 namespace aren {
 
-Monster::Monster(World *world, const Vector2f &pos) {
+static std::unordered_map<std::string, MonsterDefinition> s_defs;
+
+static void registerDefs() {
+    std::unordered_map<std::string, MonsterDefinition> tmp;
+    tmp["dumb"] = {
+        .maxHealth = 100.0f,
+        .speed = 1.5f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 0,
+    };
+    tmp["dumb_fast"] = {
+        .maxHealth = 100.0f,
+        .speed = 4.0f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 0,
+    };
+    tmp["shooter"] = {
+        .maxHealth = 100.0f,
+        .speed = 1.0f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 1,
+    };
+    tmp["shooter_hard"] = {
+        .maxHealth = 100.0f,
+        .speed = 1.0f,
+        .bulletSpeed = 15.0f,
+        .bulletFireCooldown = 1.0f,
+        .bulletSpreadCount = 3,
+    };
+
+    for (const auto &[k, v] : tmp) {
+        s_defs[k] = v;
+        s_defs[k + "_r"] = v;
+        s_defs[k + "_g"] = v;
+        s_defs[k + "_b"] = v;
+
+        s_defs[k].color        = BeamColor::White;
+        s_defs[k + "_r"].color = BeamColor::Red;
+        s_defs[k + "_g"].color = BeamColor::Green;
+        s_defs[k + "_b"].color = BeamColor::Blue;
+    }
+}
+
+Monster::Monster(World *world, const std::string &typeName, const Vector2f &pos) {
+    if (s_defs.empty()) {
+        registerDefs();
+    }
+
     m_world = world;
     m_pos = pos;
+
+    ASSERT(s_defs.contains(typeName));
+    const auto &def = s_defs[typeName];
+
+    m_health = def.maxHealth;
+    m_speed = def.speed;
+    m_bulletSpeed = def.bulletSpeed;
+    m_bulletFireCooldown = def.bulletFireCooldown;
+    m_bulletSpreadCount = def.bulletSpreadCount;
+    m_color = def.color;
 }
 
 Monster::~Monster() {}
@@ -81,7 +141,7 @@ void Monster::update(const PathQuery *query, float dt) {
     }
 
     m_bulletFireDelay -= dt;
-    if (m_bulletFireDelay <= 0) {
+    if (m_bulletFireDelay <= 0 && m_bulletSpreadCount > 0) {
         m_bulletFireDelay += m_bulletFireCooldown;
 
         auto playerPos = m_world->player()->pos();
@@ -93,19 +153,29 @@ void Monster::update(const PathQuery *query, float dt) {
             targetDir = targetDirFuture;
         }
 
-        m_world->addBullet(std::make_unique<Bullet>(m_pos, targetDir * m_bulletSpeed));
+        const float RAD_PER_BULLET = 10 * DEG2RAD;
+        float radLo = -RAD_PER_BULLET * (m_bulletSpreadCount - 1) * 0.5f;
+        float radHi = -radLo;
+
+        for (int i = 0; i < m_bulletSpreadCount; i++) {
+            float rad = (radHi - radLo) * i / std::max(float(m_bulletSpreadCount-1), 1.0f) + radLo;
+
+            m_world->addBullet(std::make_unique<Bullet>(m_pos, targetDir.rotated(rad) * m_bulletSpeed));
+        }
     }
 }
 
 void Monster::render(const Camera &cam) {
     // TODO(aren): Copied from player.cpp
 
+    auto color = getColorForBeam(m_color);
+
     const float worldToScreenScale = cam.worldToScreen(V2f(1, 0)).x - cam.worldToScreen(V2f(0, 0)).x;
 
     float thickness = PIXEL_SCALER / worldToScreenScale;
 
     const auto drawRect = [&](const Vector2f &center, const Vector2f &half) {
-        DrawRectangleV(center - half, half * 2, WHITE);
+        DrawRectangleV(center - half, half * 2, color);
         DrawRectangleV(center - half + V2F_ONE * thickness, half * 2 - V2F_ONE * thickness * 2, BLACK);
     };
 
@@ -125,7 +195,7 @@ void Monster::render(const Camera &cam) {
     float rot = std::atan2(m_dir.y, m_dir.x) * RAD2DEG;
 
     const float playerRadius = 0.22f;
-    DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, WHITE);
+    DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, color);
     DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
 }
 

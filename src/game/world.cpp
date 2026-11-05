@@ -122,7 +122,7 @@ void World::activateWave(const MonsterWave &wave) {
     for (const auto &zone : wave.zones) {
         for (const auto &[pos, tile] : m_tiles) {
             if (tile.m_type == TileType::Zone && zone == tile.m_name.data()) {
-                m_monsters.push_back(std::make_shared<Monster>(this, pos.f() + V2f(0.5f, 0.5f)));
+                m_monsters.push_back(std::make_shared<Monster>(this, wave.monsterName, pos.f() + V2f(0.5f, 0.5f)));
             }
         }
     }

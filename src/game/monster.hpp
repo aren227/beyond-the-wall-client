@@ -8,9 +8,18 @@ class PathQuery;
 class World;
 class Camera;
 
+struct MonsterDefinition {
+    float maxHealth = 100.0f;
+    float speed = 1.0f;
+    float bulletSpeed = 8.0f;
+    float bulletFireCooldown = 0.5f;
+    int bulletSpreadCount = 1; // zero means does not shoot
+    BeamColor color = BeamColor::White;
+};
+
 class Monster {
 public:
-    Monster(World *world, const Vector2f &pos);
+    Monster(World *world, const std::string &typeName, const Vector2f &pos);
     virtual ~Monster();
 
     void update(const PathQuery *query, float dt);
@@ -29,6 +38,7 @@ public:
     const float m_hitRadius = m_hitExtents * std::sqrt(2.0f);
 
     float m_health = 100;
+    BeamColor m_color = BeamColor::White;
 
 private:
     World *m_world;
@@ -42,8 +52,7 @@ private:
     const float m_brakeRate = 1 / 0.05f;
 
     float m_bulletSpeed = 8.0f;
-
-    BeamColor m_color = BeamColor::White;
+    int m_bulletSpreadCount = 1;
 
     float m_bulletFireDelay = 1.0f;
     float m_bulletFireCooldown = 0.5f;
