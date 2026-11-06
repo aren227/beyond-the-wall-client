@@ -25,6 +25,8 @@ public:
     void takeDamage(float damage);
 
 public:
+    bool m_visible = true;
+
     int m_bounces = 2;
 
     const float m_collExtents = 0.25f;

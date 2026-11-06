@@ -136,6 +136,10 @@ void Player::update(const Camera &cam, World *world, float dt) {
 }
 
 void Player::render(const Camera &cam) {
+    if (m_visible == false) {
+        return;
+    }
+
     const float worldToScreenScale = cam.worldToScreen(V2f(1, 0)).x - cam.worldToScreen(V2f(0, 0)).x;
 
     float thickness = PIXEL_SCALER / worldToScreenScale;

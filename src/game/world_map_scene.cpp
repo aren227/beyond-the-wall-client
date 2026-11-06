@@ -5,12 +5,15 @@
 #include "transition_scene.hpp"
 #include "ingame_scene.hpp"
 #include "title_scene.hpp"
+#include "player.hpp"
 
 namespace aren {
 
 WorldMapScene::WorldMapScene() : Scene(TYPE) {
     m_world = World::load("world_map");
     ASSERT(m_world);
+
+    m_world->player()->m_visible = false;
 
     m_world->m_onWorldPortalClick = [](std::string name) {
         Game::addScene<TransitionScene>(false);
