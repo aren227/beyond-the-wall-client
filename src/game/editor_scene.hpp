@@ -60,7 +60,7 @@ private:
     TextBoxProps<> m_worldNameTB;
     TextBoxProps<> m_worldCommentTB;
 
-    TextBoxProps<8> m_zoneTB;
+    TextBoxProps<> m_tileNameTB;
 
     TextBoxProps<> m_beamBouncesTB;
 

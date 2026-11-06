@@ -14,6 +14,7 @@ enum class TileType {
     Zone,
     PlayerSpawn,
     End,
+    WorldPortal,
     __MAX__
 };
 
@@ -25,7 +26,7 @@ public:
     BeamColor m_color = BeamColor::White;
     int m_multiplier = 1;
     float m_health = TILE_MAX_HEALTH;
-    std::array<char, 8> m_name = {};
+    std::string m_name;
 
     bool m_damaged = false;
 

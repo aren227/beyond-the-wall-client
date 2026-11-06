@@ -1,0 +1,58 @@
+#include "pause_scene.hpp"
+#include "game.hpp"
+#include "world_map_scene.hpp"
+#include "ingame_scene.hpp"
+#include "../render.hpp"
+#include "../ui.hpp"
+
+namespace aren {
+
+static void resumeGame() {
+    Game::removeScene<PauseScene>();
+}
+
+static void exitGame() {
+    Game::removeScene<PauseScene>();
+    Game::removeScene<IngameScene>();
+    Game::addScene<WorldMapScene>();
+}
+
+PauseScene::PauseScene() : Scene(TYPE) {}
+
+PauseScene::~PauseScene() {}
+
+void PauseScene::update(float dt) {
+    (void)dt;
+    if (Input::keyPressed(KEY_ESCAPE)) {
+        resumeGame();
+    }
+}
+
+void PauseScene::renderUI() {
+    int sw = GetScreenWidth();
+    int sh = GetScreenHeight();
+
+    DrawRectangleRec(Rect(0, 0, sw, sh), {0, 0, 0, 200});
+
+    Vector2f c = V2f(sw * 0.5f, sh * 0.5f - 120);
+
+    Render::drawText(c, 60, UI::PRIMARY, "Paused",
+    Render::TextAlignH::Center, Render::TextAlignV::Center);
+    c.y += 60;
+
+    if (UI::textButton(c, 40, "Resume", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        resumeGame();
+        return;
+    }
+    c.y += 60;
+
+    if (UI::textButton(c, 40, "Exit", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        exitGame();
+        return;
+    }
+    c.y += 60;
+}
+
+void PauseScene::render() {}
+
+} // namespace aren

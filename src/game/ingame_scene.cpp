@@ -2,6 +2,8 @@
 #include "game.hpp"
 #include "world.hpp"
 #include "player.hpp"
+#include "editor_scene.hpp"
+#include "pause_scene.hpp"
 #include "../render.hpp"
 
 namespace aren {
@@ -15,7 +17,17 @@ IngameScene::IngameScene(const World *world) : Scene(TYPE) {
 IngameScene::~IngameScene() {}
 
 void IngameScene::update(float dt) {
-    m_world->update(m_cam, dt);
+    if (Game::getScene<PauseScene>() == nullptr) {
+        m_world->update(m_cam, dt);
+    }
+
+    if (Input::keyPressed(KEY_ESCAPE)) {
+        if (Game::getScene<EditorScene>() != nullptr) {
+            Game::removeScene<IngameScene>();
+        } else if (Game::getScene<PauseScene>() == nullptr) {
+            Game::addScene<PauseScene>();
+        }
+    }
 }
 
 void IngameScene::render() {
@@ -84,10 +96,6 @@ void IngameScene::renderUI() {
     DrawRectangleRec(healthRect, DARKGRAY);
     healthRect.w *= player->m_health / player->m_maxHealth;
     DrawRectangleRec(healthRect, WHITE);
-
-    if (Input::keyPressed(KEY_ESCAPE)) {
-        Game::removeScene<IngameScene>();
-    }
 }
 
 } // namespace aren

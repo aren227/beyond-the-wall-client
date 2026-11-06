@@ -18,6 +18,7 @@ enum class EditorBrush {
     Zone,
     PlayerSpawn,
     End,
+    WorldPortal,
     White,
     Red,
     Green,
@@ -37,6 +38,7 @@ static const char *getBrushName(EditorBrush type) {
         case EditorBrush::Zone: return "Zone";
         case EditorBrush::PlayerSpawn: return "Player Spawn";
         case EditorBrush::End: return "End";
+        case EditorBrush::WorldPortal: return "World Portal";
         case EditorBrush::White: return "White";
         case EditorBrush::Red: return "Red";
         case EditorBrush::Green: return "Green";
@@ -57,6 +59,7 @@ static TileType getTileTypeFromBrush(EditorBrush type) {
         case EditorBrush::Zone: return TileType::Zone;
         case EditorBrush::PlayerSpawn: return TileType::PlayerSpawn;
         case EditorBrush::End: return TileType::End;
+        case EditorBrush::WorldPortal: return TileType::WorldPortal;
         default: return TileType::Empty;
     }
 }
@@ -273,8 +276,8 @@ void EditorScene::renderUI() {
                     }
 
                     m_world->at(mouse) = Tile(tileType);
-                    if (tileType == TileType::Zone) {
-                        m_world->at(mouse).m_name = m_zoneTB.str;
+                    if (tileType == TileType::Zone || tileType == TileType::WorldPortal) {
+                        m_world->at(mouse).m_name = std::string(m_tileNameTB.str.data());
                     }
                 }
 
@@ -395,7 +398,7 @@ void EditorScene::renderUI() {
                 m_brushIndex = i;
             }
 
-            if (i < 9 && Input::keyPressed(KEY_ONE + i) && m_zoneTB.enabled == false) {
+            if (i < 9 && Input::keyPressed(KEY_ONE + i) && m_tileNameTB.enabled == false) {
                 m_brushIndex = i;
             }
 
@@ -403,10 +406,10 @@ void EditorScene::renderUI() {
             y += 35;
         }
 
-        if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone) {
-            GuiLabel({10, y, 180, 30}, "Zone name");
+        if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone || static_cast<EditorBrush>(m_brushIndex) == EditorBrush::WorldPortal) {
+            GuiLabel({10, y, 180, 30}, "Tile name");
             y += 25;
-            GuiTextBoxHelper({10, y, 180, 30}, m_zoneTB);
+            GuiTextBoxHelper({10, y, 180, 30}, m_tileNameTB);
             y += 35;
         }
     } else if (m_tab == Tab::Wave) {
@@ -477,10 +480,6 @@ void EditorScene::renderUI() {
 
     if (GuiDropdownBox(tabDropdownRect, "World;Brush;Wave", reinterpret_cast<int *>(&m_tab), m_tabEnabled)) {
         m_tabEnabled = !m_tabEnabled;
-    }
-
-    if (Input::keyPressed(KEY_ONE)) {
-        m_brushIndex = 0;
     }
 
     if (Input::keyPressed(KEY_F5)) {

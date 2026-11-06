@@ -11,6 +11,7 @@ enum class SceneType {
     Ingame,
     TransitionScene,
     WorldMap,
+    Pause,
 };
 
 class Scene {

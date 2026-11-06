@@ -1,12 +1,28 @@
 #include "world_map_scene.hpp"
 #include "world.hpp"
 #include "../render.hpp"
+#include "game.hpp"
+#include "transition_scene.hpp"
+#include "ingame_scene.hpp"
+#include "title_scene.hpp"
 
 namespace aren {
 
 WorldMapScene::WorldMapScene() : Scene(TYPE) {
     m_world = World::load("world_map");
     ASSERT(m_world);
+
+    m_world->m_onWorldPortalClick = [](std::string name) {
+        Game::addScene<TransitionScene>(false);
+        auto scene = Game::getScene<TransitionScene>();
+        scene->setOnEnd([name]() {
+            auto loaded = World::load(name);
+            ASSERT(loaded);
+            Game::removeScene<WorldMapScene>();
+            Game::addScene<IngameScene>(loaded.get());
+            Game::addScene<TransitionScene>(true);
+        });
+    };
 
     m_spriteSet.load();
 }
@@ -15,6 +31,11 @@ WorldMapScene::~WorldMapScene() {}
 
 void WorldMapScene::update(float dt) {
     m_world->update(m_cam, dt);
+
+    if (Input::keyPressed(KEY_ESCAPE)) {
+        Game::removeScene<WorldMapScene>();
+        Game::addScene<TitleScene>();
+    }
 }
 
 void WorldMapScene::render() {
@@ -66,23 +87,6 @@ void WorldMapScene::renderUI() {
         Render::TextAlignH::Left,
         Render::TextAlignV::Top
     );
-
-    // const float healthWidth = 200;
-    // const auto player = m_world->player();
-
-    // Render::drawText(
-    //     V2f(sx+m_hudWidth-healthWidth-xMargin-50, sh-40),
-    //     40,
-    //     WHITE,
-    //     TextFormat("x%d", player->m_bounces),
-    //     Render::TextAlignH::Left,
-    //     Render::TextAlignV::Top
-    // );
-
-    // auto healthRect = Rect(sx+m_hudWidth-healthWidth-xMargin, sh-30, healthWidth, 22);
-    // DrawRectangleRec(healthRect, DARKGRAY);
-    // healthRect.w *= player->m_health / player->m_maxHealth;
-    // DrawRectangleRec(healthRect, WHITE);
 }
 
 } // namespace aren

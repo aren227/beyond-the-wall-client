@@ -64,6 +64,7 @@ public:
     std::string m_name;
     std::string m_comment;
     std::vector<MonsterWave> m_monsterWaves;
+    std::function<void(std::string)> m_onWorldPortalClick;
 
 private:
     float m_time = 0;

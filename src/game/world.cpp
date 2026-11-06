@@ -10,6 +10,7 @@
 #include "ingame_scene.hpp"
 #include "../particles.hpp"
 #include "../render.hpp"
+#include "../ui.hpp"
 #include "game.hpp"
 #include "raymath.h"
 #include <random>
@@ -117,7 +118,7 @@ bool World::checkWaveCondition(const MonsterWave &wave) {
             return m_monsters.size() == 0;
         case MonsterWaveCondition::EnterZone:
             auto tile = getTile(m_player->pos().floor());
-            return (tile.m_type == TileType::Zone && std::strcmp(tile.m_name.data(), wave.conditionValue.c_str()) == 0);
+            return (tile.m_type == TileType::Zone && tile.m_name == wave.conditionValue);
     }
     return true;
 }
@@ -125,7 +126,7 @@ bool World::checkWaveCondition(const MonsterWave &wave) {
 void World::activateWave(const MonsterWave &wave) {
     for (const auto &zone : wave.zones) {
         for (const auto &[pos, tile] : m_tiles) {
-            if (tile.m_type == TileType::Zone && zone == tile.m_name.data()) {
+            if (tile.m_type == TileType::Zone && zone == tile.m_name) {
                 m_monsters.push_back(std::make_shared<Monster>(this, wave.monsterName, pos.f() + V2f(0.5f, 0.5f)));
             }
         }
@@ -265,6 +266,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
             case TileType::Wall:
                 return 1;
             case TileType::Glass:
+            case TileType::WorldPortal:
                 return 2;
             case TileType::Sand:
                 return 3;
@@ -460,7 +462,7 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
         for (int y = m_min.y; y <= m_max.y; y++) {
             auto v = V2i(x, y);
             const auto &tile = getTile(v);
-            if (tile.m_type == TileType::Zone || tile.m_type == TileType::PlayerSpawn) {
+            if (tile.m_type == TileType::Zone || tile.m_type == TileType::PlayerSpawn || tile.m_type == TileType::WorldPortal) {
                 auto a = cam.worldToScreen(v.f());
                 auto b = cam.worldToScreen((v + V2I_ONE).f());
                 auto rect = Rect(a.x, a.y, b.x-a.x, b.y-a.y);
@@ -469,10 +471,13 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
                 const char *label = "?";
                 if (tile.m_type == TileType::Zone) {
                     color = {255, 255, 0, 128};
-                    label = tile.m_name.data();
+                    label = tile.m_name.c_str();
                 } else if (tile.m_type == TileType::PlayerSpawn) {
                     color = {0, 255, 255, 128};
                     label = "Spawn";
+                } else if (tile.m_type == TileType::WorldPortal) {
+                    color = {0, 0, 0, 0};
+                    label = tile.m_name.c_str();
                 }
 
                 DrawRectangleRec(rect, color);
@@ -487,6 +492,22 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
 }
 
 void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
+    for (const auto &[v, tile] : m_tiles) {
+        if (tile.m_type == TileType::WorldPortal) {
+            auto idx = tile.m_name.find(',');
+            if (idx != std::string::npos) {
+                auto a = cam.worldToScreen(v.f() + V2f(0.5f, 0.5f));
+                if (UI::textButton(a, 40, tile.m_name.substr(0, idx).c_str(), Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+                    if (m_onWorldPortalClick) {
+                        m_onWorldPortalClick(tile.m_name.substr(idx+1));
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
     Render::begin2DCam(cam);
 
     const float worldToScreenScale = cam.worldToScreen(V2f(1, 0)).x - cam.worldToScreen(V2f(0, 0)).x;
@@ -830,7 +851,7 @@ void World::save(const std::string &name) {
         os << "type " << int(v.m_type) << std::endl;
         os << "color " << int(v.m_color) << std::endl;
         os << "mult " << v.m_multiplier << std::endl;
-        os << "name " << escape(v.m_name.data()) << std::endl;
+        os << "name " << escape(v.m_name) << std::endl;
         os << "exit" << std::endl;
     }
 
@@ -897,8 +918,7 @@ std::unique_ptr<World> World::load(const std::string &name) {
                         int m; is >> m;
                         tile.m_multiplier = m;
                     } else if (tok == "name") {
-                        std::string name; is >> name;
-                        std::strncpy(tile.m_name.data(), name.c_str() + 1, tile.m_name.size());
+                        unescapeIs(is, tile.m_name);
                     } else if (tok == "exit") {
                         break;
                     }

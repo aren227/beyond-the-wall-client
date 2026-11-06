@@ -14,11 +14,11 @@ void TransitionScene::update(float dt) {
     m_time += dt;
 
     if (m_time > DURATION) {
+        Game::removeScene<TransitionScene>();
+
         if (m_onEnd) {
             m_onEnd();
         }
-
-        Game::removeScene<TransitionScene>();
     }
 }
 
