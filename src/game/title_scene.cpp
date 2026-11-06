@@ -4,11 +4,13 @@
 #include "../ui.hpp"
 #include "../render.hpp"
 #include "settings_scene.hpp"
+#include "world_map_scene.hpp"
 
 namespace aren {
 
 static void startGame() {
     Game::removeScene<TitleScene>();
+    Game::addScene<WorldMapScene>();
 }
 
 static void startEditor() {

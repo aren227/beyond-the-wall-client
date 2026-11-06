@@ -10,6 +10,7 @@ enum class SceneType {
     SpriteEditor,
     Ingame,
     TransitionScene,
+    WorldMap,
 };
 
 class Scene {
