@@ -93,16 +93,21 @@ World::World(const World *world) : World() {
     m_tiles = world->tiles();
     m_monsterWaves = world->m_monsterWaves;
 
+    m_player->m_bounces = world->m_player->m_bounces;
+
+    m_name = world->m_name;
+    m_comment = world->m_comment;
+
+    resetPlayerPos();
+}
+
+void World::resetPlayerPos() {
     for (const auto &[k, v] : m_tiles) {
         if (v.m_type == TileType::PlayerSpawn) {
             m_player->teleport(k.f() + V2f(0.5f, 0.5f));
             break;
         }
     }
-    m_player->m_bounces = world->m_player->m_bounces;
-
-    m_name = world->m_name;
-    m_comment = world->m_comment;
 }
 
 World::~World() {}
@@ -955,6 +960,8 @@ std::unique_ptr<World> World::load(const std::string &name) {
     }
 
     is.close();
+
+    world->resetPlayerPos();
 
     return world;
 }

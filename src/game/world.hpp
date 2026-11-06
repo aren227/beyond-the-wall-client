@@ -55,6 +55,7 @@ public:
     inline const std::vector<std::shared_ptr<Monster>> &monsters() const { return m_monsters; }
 
 private:
+    void resetPlayerPos();
     Color4f getColor(const Vector2i &pos) const;
     bool checkWaveCondition(const MonsterWave &wave);
     void activateWave(const MonsterWave &wvae);
