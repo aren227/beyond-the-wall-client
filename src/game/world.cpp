@@ -6,12 +6,9 @@
 #include "path_query.hpp"
 #include "consts.hpp"
 #include "bullet.hpp"
-#include "transition_scene.hpp"
-#include "ingame_scene.hpp"
 #include "../particles.hpp"
 #include "../render.hpp"
 #include "../ui.hpp"
-#include "game.hpp"
 #include "raymath.h"
 #include <random>
 #include <fstream>
@@ -92,9 +89,9 @@ World::World() {
     m_particles = std::make_unique<Particles>();
 }
 
-World::World(const World &world) : World() {
-    m_tiles = world.tiles();
-    m_monsterWaves = world.m_monsterWaves;
+World::World(const World *world) : World() {
+    m_tiles = world->tiles();
+    m_monsterWaves = world->m_monsterWaves;
 
     for (const auto &[k, v] : m_tiles) {
         if (v.m_type == TileType::PlayerSpawn) {
@@ -102,10 +99,10 @@ World::World(const World &world) : World() {
             break;
         }
     }
-    m_player->m_bounces = world.m_player->m_bounces;
+    m_player->m_bounces = world->m_player->m_bounces;
 
-    m_name = world.m_name;
-    m_comment = world.m_comment;
+    m_name = world->m_name;
+    m_comment = world->m_comment;
 }
 
 World::~World() {}
@@ -147,13 +144,8 @@ void World::update(const Camera &cam, float dt) {
             s_toRemove.push_back(k);
         }
         if (v.m_type == TileType::End && v.progress() >= 1) {
-            if (m_endFlag == false) {
-                Game::addScene<TransitionScene>(false);
-                Game::getScene<TransitionScene>()->setOnEnd([]() {
-                    Game::removeScene<IngameScene>();
-                });
-            }
             m_endFlag = true;
+            m_playerWin = true;
         }
     }
 
@@ -214,6 +206,10 @@ void World::update(const Camera &cam, float dt) {
     std::erase_if(m_bullets, [](const auto &it){
         return it->done();
     });
+
+    if (m_player->m_health <= 0) {
+        m_endFlag = true;
+    }
 }
 
 void World::updateBounds() {

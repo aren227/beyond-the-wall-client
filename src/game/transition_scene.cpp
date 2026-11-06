@@ -32,7 +32,9 @@ void TransitionScene::renderUI() {
         r = 16 - r;
     }
 
-    m_spriteSet.dither.render(Rect(0, 0, GetScreenWidth(), GetScreenHeight()), r, 0, 2, WHITE);
+    const auto &sprite = m_isWhite ? m_spriteSet.dither : m_spriteSet.ditherBlack;
+
+    sprite.render(Rect(0, 0, GetScreenWidth(), GetScreenHeight()), r, 0, 2, WHITE);
 }
 
 } // namespace aren

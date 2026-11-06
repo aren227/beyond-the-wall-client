@@ -22,7 +22,7 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
             auto loaded = World::load(name);
             ASSERT(loaded);
             Game::removeScene<WorldMapScene>();
-            Game::addScene<IngameScene>(loaded.get());
+            Game::addScene<IngameScene>(std::move(loaded));
             Game::addScene<TransitionScene>(true);
         });
     };

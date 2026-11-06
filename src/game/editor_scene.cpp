@@ -128,6 +128,16 @@ void EditorScene::update(float dt) {
             }
         }
     }
+
+    if (Input::keyPressed(KEY_F5) && Game::isTopScene(this)) {
+        Game::addScene<IngameScene>(std::make_unique<World>(m_world.get()));
+        Game::addScene<TransitionScene>(true);
+    }
+
+    if (Input::keyPressed(KEY_ESCAPE) && Game::isTopScene(this)) {
+        Game::removeScene<EditorScene>();
+        Game::addScene<TitleScene>();
+    }
 }
 
 void EditorScene::render() {
@@ -480,16 +490,6 @@ void EditorScene::renderUI() {
 
     if (GuiDropdownBox(tabDropdownRect, "World;Brush;Wave", reinterpret_cast<int *>(&m_tab), m_tabEnabled)) {
         m_tabEnabled = !m_tabEnabled;
-    }
-
-    if (Input::keyPressed(KEY_F5)) {
-        Game::addScene<IngameScene>(m_world.get());
-        Game::addScene<TransitionScene>(true);
-    }
-
-    if (Input::keyPressed(KEY_ESCAPE)) {
-        Game::removeScene<EditorScene>();
-        Game::addScene<TitleScene>();
     }
 }
 

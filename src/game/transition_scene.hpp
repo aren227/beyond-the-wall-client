@@ -16,9 +16,11 @@ public:
     void renderUI() override;
 
     void setOnEnd(std::function<void()> onEnd) { m_onEnd = onEnd; }
+    void setIsWhite(bool isWhite) { m_isWhite = isWhite; }
 
 private:
     bool m_isOpen;
+    bool m_isWhite = false;
     SpriteSet m_spriteSet;
     float m_time = 0;
     std::function<void()> m_onEnd;

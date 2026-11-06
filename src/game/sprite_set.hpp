@@ -19,6 +19,7 @@ public:
     Sprite deco;
     Sprite dither;
     Sprite ditherOpaque;
+    Sprite ditherBlack;
 };
 
 } // namespace aren

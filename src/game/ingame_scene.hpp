@@ -12,7 +12,7 @@ class IngameScene : public Scene {
 public:
     static constexpr SceneType TYPE = SceneType::Ingame;
 
-    IngameScene(const World *world);
+    IngameScene(std::unique_ptr<World> world);
     virtual ~IngameScene();
 
     void update(float dt) override;
@@ -24,6 +24,7 @@ public:
 private:
     Camera m_cam;
     std::unique_ptr<World> m_world;
+    std::unique_ptr<World> m_worldInitCoied;
     SpriteSet m_spriteSet;
 
     const float m_hudHeight = 16;

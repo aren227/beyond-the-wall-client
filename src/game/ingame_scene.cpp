@@ -4,12 +4,16 @@
 #include "player.hpp"
 #include "editor_scene.hpp"
 #include "pause_scene.hpp"
+#include "transition_scene.hpp"
+#include "ingame_scene.hpp"
+#include "world_map_scene.hpp"
 #include "../render.hpp"
 
 namespace aren {
 
-IngameScene::IngameScene(const World *world) : Scene(TYPE) {
-    m_world = std::make_unique<World>(*world);
+IngameScene::IngameScene(std::unique_ptr<World> world) : Scene(TYPE) {
+    m_world = std::move(world);
+    m_worldInitCoied = std::make_unique<World>(m_world.get());
 
     m_spriteSet.load();
 }
@@ -18,7 +22,27 @@ IngameScene::~IngameScene() {}
 
 void IngameScene::update(float dt) {
     if (Game::getScene<PauseScene>() == nullptr) {
+        bool prevEndFlag = m_world->hasEnded();
         m_world->update(m_cam, dt);
+        bool currEndFlag = m_world->hasEnded();
+
+        if (prevEndFlag == false && currEndFlag) {
+            Game::addScene<TransitionScene>(false);
+            bool win = m_world->hasPlayerWon();
+            Game::getScene<TransitionScene>()->setIsWhite(win);
+            Game::getScene<TransitionScene>()->setOnEnd([win]() {
+                auto initCopiedWorld = std::move(Game::getScene<IngameScene>()->m_worldInitCoied);
+                Game::removeScene<IngameScene>();
+
+                if (Game::getScene<EditorScene>() == nullptr) {
+                    if (win) {
+                        Game::addScene<WorldMapScene>();
+                    } else {
+                        Game::addScene<IngameScene>(std::move(initCopiedWorld));
+                    }
+                }
+            });
+        }
     }
 
     if (Input::keyPressed(KEY_ESCAPE)) {

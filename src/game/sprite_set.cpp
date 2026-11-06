@@ -37,11 +37,13 @@ void SpriteSet::load() {
     for (int i = 0; i <= 16; i++) {
         Image image = GenImageColor(4, 4, {0, 0, 0, 0});
         Image imageOpaque = GenImageColor(4, 4, {0, 0, 0, 255});
+        Image imageBlack = GenImageColor(4, 4, {0, 0, 0, 0});
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 if (DITHER_MATRIX[y][x] >= 16-i) {
                     ImageDrawPixel(&image, x, y, WHITE);
                     ImageDrawPixel(&imageOpaque, x, y, WHITE);
+                    ImageDrawPixel(&imageBlack, x, y, BLACK);
                 }
             }
         }
@@ -63,6 +65,15 @@ void SpriteSet::load() {
             layer.m_tag = i;
 
             ditherOpaque.m_layers.push_back(std::move(layer));
+        }
+        {
+            ditherBlack.m_name = "Dither Black";
+
+            Layer layer;
+            layer.m_texture = Texture(imageBlack);
+            layer.m_tag = i;
+
+            ditherBlack.m_layers.push_back(std::move(layer));
         }
     }
 }
