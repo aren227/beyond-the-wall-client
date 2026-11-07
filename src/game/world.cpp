@@ -83,6 +83,7 @@ World::World() {
     }
 
     m_player = std::make_unique<Player>();
+    m_prevPlayerHealth = m_player->m_health;
 
     m_pathQuery = std::make_unique<PathQuery>();
 
@@ -141,6 +142,11 @@ void World::update(Camera &cam, float dt) {
     updateBounds();
 
     m_player->update(cam, this, dt);
+
+    if (m_prevPlayerHealth > m_player->m_health) {
+        cam.shake(5.0f, 0.15f);
+    }
+    m_prevPlayerHealth = m_player->m_health;
 
     static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
     for (auto &[k, v] : m_tiles) {

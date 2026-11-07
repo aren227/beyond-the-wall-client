@@ -72,6 +72,7 @@ private:
     float m_time = 0;
     bool m_endFlag = false;
     bool m_playerWin = false;
+    float m_prevPlayerHealth = 0;
     std::unique_ptr<Player> m_player;
     std::unordered_map<Vector2i, Tile> m_tiles;
     std::vector<std::shared_ptr<Monster>> m_monsters;
