@@ -84,7 +84,6 @@ Monster::~Monster() {}
 static bool solveForDirection(Vector2f bulletPos, float bulletSpeed, Vector2f targetPos, Vector2f targetVel, Vector2f &res) {
     // make bulletPos origin
     targetPos -= bulletPos;
-    bulletPos = V2F_ZERO;
 
     // s + dt, rt
     float dd = targetVel.dot(targetVel);
@@ -125,7 +124,7 @@ static bool solveForDirection(Vector2f bulletPos, float bulletSpeed, Vector2f ta
     }
 
     auto targetT = targetPos + targetVel * t;
-    res = (targetT - bulletPos).normalized();
+    res = targetT + bulletPos;
     return true;
 }
 
@@ -133,6 +132,9 @@ void Monster::update(const PathQuery *query, float dt) {
     static std::vector<Vector2f> s_queryRes;
     s_queryRes.clear();
     query->query(m_world, m_pos, m_collRadius, s_queryRes);
+
+    const auto playerPos = m_world->player()->pos();
+    const auto playerVel = m_world->player()->vel();
 
     if (s_queryRes.size() >= 2) {
         auto dir = (s_queryRes[1] - s_queryRes[0]).normalized();
@@ -153,23 +155,33 @@ void Monster::update(const PathQuery *query, float dt) {
     if (m_bulletFireDelay <= 0 && m_bulletSpreadCount > 0) {
         m_bulletFireDelay += m_bulletFireCooldown;
 
-        auto playerPos = m_world->player()->pos();
-        auto playerVel = m_world->player()->vel();
-        auto targetDir = (playerPos - m_pos).normalized();
+        auto targetPos = playerPos;
 
-        Vector2f targetDirFuture;
-        if (solveForDirection(m_pos, m_bulletSpeed, playerPos, playerVel, targetDirFuture)) {
-            targetDir = targetDirFuture;
+        float t;
+        Vector2i h, n;
+
+        Vector2f targetFuture;
+        if (solveForDirection(m_pos, m_bulletSpeed, playerPos, playerVel, targetFuture)) {
+            bool monsterToFutureClear = m_world->raycast(m_pos, (targetFuture - m_pos).normalized(), (targetFuture - m_pos).length(), ObjectLayer::Monster, t, h, n) == false;
+            bool playerToFutureClear = m_world->raycast(playerPos, (targetFuture - playerPos).normalized(), (targetFuture - playerPos).length(), ObjectLayer::Player, t, h, n) == false;
+
+            if (monsterToFutureClear && playerToFutureClear) {
+                targetPos = targetFuture;
+            }
         }
 
-        const float RAD_PER_BULLET = 10 * DEG2RAD;
-        float radLo = -RAD_PER_BULLET * (m_bulletSpreadCount - 1) * 0.5f;
-        float radHi = -radLo;
+        if (m_world->raycast(m_pos, (targetPos - m_pos).normalized(), (targetPos - m_pos).length(), ObjectLayer::Monster, t, h, n) == false) {
+            auto targetDir = (targetPos - m_pos).normalized();
 
-        for (int i = 0; i < m_bulletSpreadCount; i++) {
-            float rad = (radHi - radLo) * i / std::max(float(m_bulletSpreadCount-1), 1.0f) + radLo;
+            const float RAD_PER_BULLET = 10 * DEG2RAD;
+            float radLo = -RAD_PER_BULLET * (m_bulletSpreadCount - 1) * 0.5f;
+            float radHi = -radLo;
 
-            m_world->addBullet(std::make_unique<Bullet>(m_pos, targetDir.rotated(rad) * m_bulletSpeed));
+            for (int i = 0; i < m_bulletSpreadCount; i++) {
+                float rad = (radHi - radLo) * i / std::max(float(m_bulletSpreadCount-1), 1.0f) + radLo;
+
+                m_world->addBullet(std::make_unique<Bullet>(m_pos, targetDir.rotated(rad) * m_bulletSpeed));
+            }
         }
     }
 
@@ -180,7 +192,7 @@ void Monster::update(const PathQuery *query, float dt) {
         melee.time += dt;
         auto currPos = melee.currPos();
 
-        if (melee.hitPlayer == false && Vector2f::segmentDist(prevPos, currPos, m_world->player()->pos()) < m_hitRadius) {
+        if (melee.hitPlayer == false && Vector2f::segmentDist(prevPos, currPos, playerPos) < m_hitRadius) {
             melee.hitPlayer = true;
             m_world->player()->takeDamage(melee.damage);
         }
@@ -194,13 +206,13 @@ void Monster::update(const PathQuery *query, float dt) {
     } else {
         m_meleeDelay = std::max(m_meleeDelay - dt, 0.0f);
 
-        auto playerDelta = m_world->player()->pos() - m_pos;
+        auto playerDelta = playerPos - m_pos;
         if (m_melee.has_value() == false && m_meleeCooldown > 0 && m_meleeDelay <= 0 && playerDelta.lengthSqr() < std::pow(m_meleeLength * 0.8f, 2)) {
             m_meleeDelay += m_meleeCooldown;
 
             m_melee = {
                 .fromPos = m_pos,
-                .targetPos = m_world->player()->pos(),
+                .targetPos = playerPos,
             };
         }
     }
