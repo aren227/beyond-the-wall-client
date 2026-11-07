@@ -105,7 +105,7 @@ pos 7 7
 type 5
 color 7
 mult 1
-name ;1
+name ;a
 exit
 pos 7 10
 type 1
@@ -135,7 +135,7 @@ pos 8 30
 type 5
 color 7
 mult 1
-name ;7
+name ;a
 exit
 pos 9 10
 type 1
@@ -201,7 +201,7 @@ pos 11 23
 type 5
 color 7
 mult 1
-name ;6
+name ;a
 exit
 pos 11 28
 type 1
@@ -333,7 +333,7 @@ pos 18 8
 type 5
 color 7
 mult 1
-name ;2
+name ;a
 exit
 pos 18 16
 type 1
@@ -369,7 +369,7 @@ pos 21 18
 type 5
 color 7
 mult 1
-name ;4
+name ;a
 exit
 pos 21 23
 type 1
@@ -471,7 +471,7 @@ pos 23 27
 type 5
 color 7
 mult 1
-name ;5
+name ;a
 exit
 pos 23 30
 type 1
@@ -507,7 +507,7 @@ pos 26 7
 type 5
 color 7
 mult 1
-name ;3
+name ;a
 exit
 pos 26 9
 type 1
@@ -591,6 +591,11 @@ pos 31 16
 type 5
 color 7
 mult 1
-name ;8
+name ;a
 exit
-waves 0
+waves 1
+zones 1 ;a
+monster_name ;dumb
+condition_type 0
+condition_value ;
+exit
