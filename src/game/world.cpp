@@ -258,7 +258,7 @@ Color4f World::getColor(const Vector2i &pos) const {
     return color;
 }
 
-void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category, int multiplier) {
+void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category) {
     const auto getCategory = [&](const Vector2i &pos) -> int {
         switch (getTileType(pos)) {
             case TileType::Empty:
@@ -287,9 +287,9 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 const auto &sprite = spriteSet.tile(getTileType(v));
                 const Color4f color = getColor(v);
 
-                if (multiplier <= getTile(v).m_multiplier) {
-                    sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER, color);
-                }
+                Render::pushColor(C4F_WHITE.brighten(getTile(v).m_multiplier));
+                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), SURFACE_TAG, 0, PIXEL_SCALER, color);
+                Render::popColor();
             }
         }
     }
@@ -316,9 +316,10 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                     const auto color = getColor(main);
 
                     auto a = cam.worldToScreen(center.f());
-                    if (multiplier <= getTile(main).m_multiplier) {
-                        sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER, color);
-                    }
+
+                    Render::pushColor(C4F_WHITE.brighten(getTile(main).m_multiplier));
+                    sprite.renderCorner(a, it.tag, it.rotate * 90, PIXEL_SCALER, color);
+                    Render::popColor();
                 }
             }
         }
@@ -351,9 +352,9 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x + 1, y)));
                 const auto color = getColor(p ? V2i(x, y) : V2i(x + 1, y));
 
-                if (multiplier <= getTile(p ? V2i(x, y) : V2i(x + 1, y)).m_multiplier) {
-                    sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER, color);
-                }
+                Render::pushColor(C4F_WHITE.brighten(getTile(p ? V2i(x, y) : V2i(x + 1, y)).m_multiplier));
+                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 90 : 270, PIXEL_SCALER, color);
+                Render::popColor();
             }
 
             // horizontal
@@ -370,70 +371,67 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x, y + 1)));
                 const auto color = getColor(p ? V2i(x, y) : V2i(x, y + 1));
 
-                if (multiplier <= getTile(p ? V2i(x, y) : V2i(x, y + 1)).m_multiplier) {
-                    sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER, color);
-                }
+                Render::pushColor(C4F_WHITE.brighten(getTile(p ? V2i(x, y) : V2i(x, y + 1)).m_multiplier));
+                sprite.renderEdge((aSS + bSS) * 0.5f, bSS - aSS, EDGE_TAG, q ? 180 : 0, PIXEL_SCALER, color);
+                Render::popColor();
             }
         }
     }
 
     // NOTE(aren): Overlay after render all stuffs
-    // TODO(aren): additive mode doesn't work if beginblendmode is called here..
-    if (multiplier == 1) {
-        BeginBlendMode(BLEND_MULTIPLIED);
-        for (int x = m_min.x; x <= m_max.x; x++) {
-            for (int y = m_min.y; y <= m_max.y; y++) {
-                auto v = V2i(x, y);
-                float health = getTile(v).m_health;
-                if (health < TILE_MAX_HEALTH) {
+    BeginBlendMode(BLEND_MULTIPLIED);
+    for (int x = m_min.x; x <= m_max.x; x++) {
+        for (int y = m_min.y; y <= m_max.y; y++) {
+            auto v = V2i(x, y);
+            float health = getTile(v).m_health;
+            if (health < TILE_MAX_HEALTH) {
+                auto a = cam.worldToScreen(v.f());
+                auto b = cam.worldToScreen((v + V2I_ONE).f());
+
+                const auto &sprite = spriteSet.ditherOpaque;
+                const int tag = std::floor((health / TILE_MAX_HEALTH) * 15) + 1;
+                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, WHITE);
+            }
+        }
+    }
+    EndBlendMode();
+
+    BeginBlendMode(BLEND_ADDITIVE);
+    for (int x = m_min.x; x <= m_max.x; x++) {
+        for (int y = m_min.y; y <= m_max.y; y++) {
+            auto v = V2i(x, y);
+            if (getTile(v).isTransparent()) {
+                auto vf = v.f() + V2f(0.5f, 0.5f);
+                float light = 0;
+                { // player
+                    float playerDist = (vf - m_player->pos()).length();
+                    if (playerDist < 4) {
+                        light = 1 - playerDist / 4;
+                    }
+                }
+                for (const auto &it : m_player->beam().segments) {
+                    if (it.prop.color == BeamColor::Black) {
+                        break;
+                    }
+
+                    float beamDist = Vector2f::segmentDist(it.start, it.end, vf);
+                    if (beamDist < 2) {
+                        light = std::max(light, 1 - beamDist / 2);
+                    }
+                }
+
+                if (light > 0) {
                     auto a = cam.worldToScreen(v.f());
                     auto b = cam.worldToScreen((v + V2I_ONE).f());
 
                     const auto &sprite = spriteSet.ditherOpaque;
-                    const int tag = std::floor((health / TILE_MAX_HEALTH) * 15) + 1;
-                    sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, WHITE);
+                    const int tag = std::ceil(light * 6);
+                    sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, C4F_WHITE * 0.2f);
                 }
             }
         }
-        EndBlendMode();
-
-        BeginBlendMode(BLEND_ADDITIVE);
-        for (int x = m_min.x; x <= m_max.x; x++) {
-            for (int y = m_min.y; y <= m_max.y; y++) {
-                auto v = V2i(x, y);
-                if (getTile(v).isTransparent()) {
-                    auto vf = v.f() + V2f(0.5f, 0.5f);
-                    float light = 0;
-                    { // player
-                        float playerDist = (vf - m_player->pos()).length();
-                        if (playerDist < 4) {
-                            light = 1 - playerDist / 4;
-                        }
-                    }
-                    for (const auto &it : m_player->beam().segments) {
-                        if (it.prop.color == BeamColor::Black) {
-                            break;
-                        }
-
-                        float beamDist = Vector2f::segmentDist(it.start, it.end, vf);
-                        if (beamDist < 2) {
-                            light = std::max(light, 1 - beamDist / 2);
-                        }
-                    }
-
-                    if (light > 0) {
-                        auto a = cam.worldToScreen(v.f());
-                        auto b = cam.worldToScreen((v + V2I_ONE).f());
-
-                        const auto &sprite = spriteSet.ditherOpaque;
-                        const int tag = std::ceil(light * 6);
-                        sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, C4F_WHITE * 0.2f);
-                    }
-                }
-            }
-        }
-        EndBlendMode();
     }
+    EndBlendMode();
 }
 
 void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
@@ -514,12 +512,10 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     const float worldToScreenScale = cam.worldToScreen(V2f(1, 0)).x - cam.worldToScreen(V2f(0, 0)).x;
     const float thickness = PIXEL_SCALER / worldToScreenScale;
 
-    // TODO(aren): TOO SLOW!! use custom shader for hdr rendering..
-    BeginBlendMode(BLEND_ADDITIVE);
-
     for (const auto &[v, tile] : m_tiles) {
         if (tile.m_type == TileType::End) {
-            int additiveCount = tile.progress() * 31 + 1;
+            Color4f color = C4F_WHITE.brighten(tile.progress() * 15 + 1);
+            Render::pushColor(color);
 
             std::array<Vector3, 6> hexes = {{
                 { 1, 0, 0 },
@@ -541,27 +537,24 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
                 auto b3 = Vector3Scale(hexes[(i + 1) % 6], 0.4f);
                 a3 = Vector3Transform(a3, mat1);
                 b3 = Vector3Transform(b3, mat1);
-                for (int j = 0; j < additiveCount; j++)
-                    DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Red));
+                DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Red));
 
                 a3 = Vector3Scale(hexes[i], 0.3f);
                 b3 = Vector3Scale(hexes[(i + 1) % 6], 0.3f);
                 a3 = Vector3Transform(a3, mat2);
                 b3 = Vector3Transform(b3, mat2);
-                for (int j = 0; j < additiveCount; j++)
-                    DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Green));
+                DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Green));
 
                 a3 = Vector3Scale(hexes[i], 0.2f);
                 b3 = Vector3Scale(hexes[(i + 1) % 6], 0.2f);
                 a3 = Vector3Transform(a3, mat3);
                 b3 = Vector3Transform(b3, mat3);
-                for (int j = 0; j < additiveCount; j++)
-                    DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Blue));
+                DrawLineEx({a3.x, a3.y}, {b3.x, b3.y}, thickness, getColorForBeam(BeamColor::Blue));
             }
+
+            Render::popColor();
         }
     }
-
-    EndBlendMode();
 
     for (const auto &it : m_monsters) {
         it->render(cam);
@@ -569,11 +562,9 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
 
     m_player->render(cam);
 
-    BeginBlendMode(BLEND_ADDITIVE);
     for (const auto &it : m_bullets) {
         it->render();
     }
-    EndBlendMode();
 
     m_particles->render();
 

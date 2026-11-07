@@ -168,18 +168,13 @@ void Player::render(const Camera &cam) {
     DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, WHITE);
     DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
 
-    // NOTE(aren): Trick to render hdr color
-    if (m_beam.segments.size() > 0) {
-        BeginBlendMode(BLEND_ADDITIVE);
-        for (const auto &it : m_beam.segments) {
-            if (it.prop.color == BeamColor::Black) {
-                break;
-            }
-            for (int j = 0; j < 5; j++) {
-                DrawLineEx(it.start, it.end, BEAM_THICKNESS, getColorForBeam(it.prop.color));
-            }
+    for (const auto &it : m_beam.segments) {
+        if (it.prop.color == BeamColor::Black) {
+            break;
         }
-        EndBlendMode();
+        Render::pushColor(m_beamBaseColor);
+        DrawLineEx(it.start, it.end, BEAM_THICKNESS, getColorForBeam(it.prop.color));
+        Render::popColor();
     }
 }
 

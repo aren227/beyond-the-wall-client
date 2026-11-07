@@ -176,17 +176,8 @@ void EditorScene::render() {
     // TODO(aren): hardcoded
     // TODO(aren): We need a world space sprite render method!!
     for (int i = 0; i < 4; i++) {
-        m_world->renderTiles(m_cam, m_spriteSet, i, 1);
+        m_world->renderTiles(m_cam, m_spriteSet, i);
     }
-
-    // TODO(aren): TOO SLOW!! use custom shader for hdr rendering..
-    BeginBlendMode(BLEND_ADDITIVE);
-    for (int t = 2; t <= 4; t++) {
-        for (int i = 0; i < 4; i++) {
-            m_world->renderTiles(m_cam, m_spriteSet, i, t);
-        }
-    }
-    EndBlendMode();
 
     m_world->renderDecos(m_cam, m_spriteSet);;
 

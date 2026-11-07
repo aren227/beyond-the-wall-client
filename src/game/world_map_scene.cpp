@@ -68,7 +68,7 @@ void WorldMapScene::render() {
 
     // TODO(aren): hardcoded
     for (int i = 0; i < 4; i++) {
-        m_world->renderTiles(m_cam, m_spriteSet, i, 1);
+        m_world->renderTiles(m_cam, m_spriteSet, i);
     }
 
     m_world->renderDecos(m_cam, m_spriteSet);

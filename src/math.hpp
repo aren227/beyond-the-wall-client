@@ -219,6 +219,8 @@ struct Color4f {
 
     inline constexpr bool operator==(Color4f v) const { return r == v.r && g == v.g && b == v.b && a == v.a; }
     inline constexpr bool operator!=(Color4f v) const { return !(*this == v); }
+
+    inline constexpr Color4f brighten(float intensity) const { return { r * intensity, g * intensity, b * intensity, a}; }
 };
 
 static constexpr Color4f C4F_WHITE = Color4f(1, 1, 1, 1);

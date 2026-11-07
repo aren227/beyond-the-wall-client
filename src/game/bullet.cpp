@@ -1,6 +1,7 @@
 #include "bullet.hpp"
 #include "world.hpp"
 #include "player.hpp"
+#include "../render.hpp"
 
 namespace aren {
 
@@ -53,9 +54,9 @@ void Bullet::update(const World *world, float dt) {
 }
 
 void Bullet::render() {
-    for (int i = 0; i < 4; i++) {
-        DrawCircleV(m_pos, m_radius, {255, 200, 100, 255});
-    }
+    Render::pushColor(m_color);
+    DrawCircleV(m_pos, m_radius, WHITE);
+    Render::popColor();
 }
 
 } // namespace aren

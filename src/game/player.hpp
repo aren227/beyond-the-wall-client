@@ -55,6 +55,7 @@ private:
     Vector2f m_dir = V2f(1, 0);
 
     Beam m_beam;
+    const Color4f m_beamBaseColor = C4F_WHITE.brighten(3);
 
     float m_baseAttackDamage = 100;
 };

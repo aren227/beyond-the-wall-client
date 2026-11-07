@@ -30,7 +30,7 @@ public:
     void erase(const Vector2i &pos) { m_tiles.erase(pos); }
     Tile &at(const Vector2i &pos) { return m_tiles[pos]; }
 
-    void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category, int multiplier);
+    void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category);
     void renderDecos(const Camera &cam, const SpriteSet &spriteSet);
     void renderMisc(const Camera &cam, const SpriteSet &spriteSet);
     void renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet);

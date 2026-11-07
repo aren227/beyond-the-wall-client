@@ -15,6 +15,8 @@ struct FontFamily {
 static std::unordered_map<std::string, FontFamily> s_fonts;
 static std::vector<std::string> s_fontNameStack = { "default" };
 
+static std::vector<Color4f> s_hdrColorStack = { C4F_WHITE };
+
 Color4b Render::s_backgroundColor = {50, 56, 68, 255};
 uint8_t Render::s_vignette = 16;
 
@@ -32,6 +34,8 @@ static struct BloomPass {
 } s_bloomPass;
 
 static ::Shader s_gammaToLinearShader;
+static int s_gammaToLinearShaderDiffuseHDRLoc;
+
 static ::Shader s_tonemappingShader;
 
 ::Font Render::getFontBySize(const std::string &name, float size) {
@@ -59,6 +63,31 @@ void Render::pushFontName(const std::string &name) {
 void Render::popFontName() {
     ASSERT(s_fontNameStack.size() > 1);
     s_fontNameStack.pop_back();
+}
+
+// NOTE(aren): Works only in game render pass
+void Render::pushColor(const Color4f &color) {
+    const auto &prev = s_hdrColorStack.back();
+
+    s_hdrColorStack.push_back(color);
+
+    // XXX(aren): Must manually flush the current batch.
+    if (prev != color) {
+        rlDrawRenderBatchActive();
+        SetShaderValue(s_gammaToLinearShader, s_gammaToLinearShaderDiffuseHDRLoc, &s_hdrColorStack.back(), SHADER_UNIFORM_VEC4);
+    }
+}
+
+void Render::popColor() {
+    const auto &prev = s_hdrColorStack.back();
+
+    ASSERT(s_hdrColorStack.size() > 1);
+    s_hdrColorStack.pop_back();
+
+    if (prev != s_hdrColorStack.back()) {
+        rlDrawRenderBatchActive();
+        SetShaderValue(s_gammaToLinearShader, s_gammaToLinearShaderDiffuseHDRLoc, &s_hdrColorStack.back(), SHADER_UNIFORM_VEC4);
+    }
 }
 
 static FontFamily loadFontFamily(const char *path, float smallSize, float largeSize, bool bilinear) {
@@ -107,6 +136,8 @@ void Render::init() {
         TextFormat("resources/shaders/glsl%i/gamma_to_linear.vs", GLSL_VERSION),
         TextFormat("resources/shaders/glsl%i/gamma_to_linear.fs", GLSL_VERSION)
     );
+
+    s_gammaToLinearShaderDiffuseHDRLoc = GetShaderLocation(s_gammaToLinearShader, "colDiffuseHDR");
 
     s_tonemappingShader = LoadShader(NULL, TextFormat("resources/shaders/glsl%i/tonemapping.fs", GLSL_VERSION));
 }
@@ -163,6 +194,8 @@ void Render::beginGameDraw() {
     ClearBackground(s_backgroundColor);
 
     BeginShaderMode(s_gammaToLinearShader);
+
+    SetShaderValue(s_gammaToLinearShader, s_gammaToLinearShaderDiffuseHDRLoc, &s_hdrColorStack.back(), SHADER_UNIFORM_VEC4);
 }
 
 void Render::endGameDraw() {

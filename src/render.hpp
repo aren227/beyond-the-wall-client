@@ -36,6 +36,9 @@ public:
     static void pushFontName(const std::string &name);
     static void popFontName();
 
+    static void pushColor(const Color4f &color);
+    static void popColor();
+
     static void beginGameDraw();
     static void endGameDraw();
     static void begin2DCam(const Camera &cam);

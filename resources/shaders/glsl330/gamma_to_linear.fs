@@ -7,6 +7,7 @@ out vec4 finalColor;
 
 uniform sampler2D texture0;
 uniform vec4 colDiffuse;
+uniform vec4 colDiffuseHDR;
 
 vec4 gammaToLinear(vec4 col) {
     col.rgb = pow(col.rgb, vec3(2.2));
@@ -17,5 +18,5 @@ void main()
 {
     vec4 texelColor = texture(texture0, fragTexCoord);
     texelColor = gammaToLinear(texelColor);
-    finalColor = texelColor*gammaToLinear(colDiffuse)*fragColor;
+    finalColor = texelColor*gammaToLinear(colDiffuse)*gammaToLinear(colDiffuseHDR)*fragColor;
 }
