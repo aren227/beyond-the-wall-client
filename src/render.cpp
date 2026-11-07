@@ -67,7 +67,7 @@ void Render::popFontName() {
 
 // NOTE(aren): Works only in game render pass
 void Render::pushColor(const Color4f &color) {
-    const auto &prev = s_hdrColorStack.back();
+    const auto prev = s_hdrColorStack.back();
 
     s_hdrColorStack.push_back(color);
 
@@ -79,7 +79,7 @@ void Render::pushColor(const Color4f &color) {
 }
 
 void Render::popColor() {
-    const auto &prev = s_hdrColorStack.back();
+    const auto prev = s_hdrColorStack.back();
 
     ASSERT(s_hdrColorStack.size() > 1);
     s_hdrColorStack.pop_back();
