@@ -23,7 +23,7 @@ static void registerDefs() {
     };
     tmp["dumb_fast"] = {
         .maxHealth = 100.0f,
-        .speed = 4.0f,
+        .speed = 6.0f,
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,

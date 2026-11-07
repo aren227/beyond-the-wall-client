@@ -38,6 +38,8 @@ public:
     float m_maxHealth = 100;
     float m_health = m_maxHealth;
 
+    bool m_beamDisabled = false;
+
 private:
     Vector2f m_pos = V2F_ZERO;
     Vector2f m_velocity = V2F_ZERO;

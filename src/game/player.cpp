@@ -50,7 +50,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
     m_dir = (camPos - m_pos).normalized();
 
     // beam raycast
-    if (isDashing() == false) {
+    if (isDashing() == false && m_beamDisabled == false) {
         BeamSegment segment;
         segment.start = m_pos;
         segment.dir = m_dir;

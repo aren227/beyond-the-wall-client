@@ -19,6 +19,7 @@ enum class EditorBrush {
     PlayerSpawn,
     End,
     WorldPortal,
+    Consumable,
     White,
     Red,
     Green,
@@ -39,6 +40,7 @@ static const char *getBrushName(EditorBrush type) {
         case EditorBrush::PlayerSpawn: return "Player Spawn";
         case EditorBrush::End: return "End";
         case EditorBrush::WorldPortal: return "World Portal";
+        case EditorBrush::Consumable: return "Consumable";
         case EditorBrush::White: return "White";
         case EditorBrush::Red: return "Red";
         case EditorBrush::Green: return "Green";
@@ -60,6 +62,7 @@ static TileType getTileTypeFromBrush(EditorBrush type) {
         case EditorBrush::PlayerSpawn: return TileType::PlayerSpawn;
         case EditorBrush::End: return TileType::End;
         case EditorBrush::WorldPortal: return TileType::WorldPortal;
+        case EditorBrush::Consumable: return TileType::Consumable;
         default: return TileType::Empty;
     }
 }
@@ -277,7 +280,7 @@ void EditorScene::renderUI() {
                     }
 
                     m_world->at(mouse) = Tile(tileType);
-                    if (tileType == TileType::Zone || tileType == TileType::WorldPortal) {
+                    if (tileType == TileType::Zone || tileType == TileType::WorldPortal || tileType == TileType::Consumable) {
                         m_world->at(mouse).m_name = std::string(m_tileNameTB.str.data());
                     }
                 }
@@ -407,7 +410,7 @@ void EditorScene::renderUI() {
             y += 35;
         }
 
-        if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone || static_cast<EditorBrush>(m_brushIndex) == EditorBrush::WorldPortal) {
+        if (static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Zone || static_cast<EditorBrush>(m_brushIndex) == EditorBrush::WorldPortal || static_cast<EditorBrush>(m_brushIndex) == EditorBrush::Consumable) {
             GuiLabel({10, y, 180, 30}, "Tile name");
             y += 25;
             GuiTextBoxHelper({10, y, 180, 30}, m_tileNameTB);

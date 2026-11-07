@@ -154,7 +154,7 @@ void World::update(Camera &cam, float dt) {
 
     static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
     for (auto &[k, v] : m_tiles) {
-        v.update(this, dt);
+        v.update(this, k, dt);
         if (v.m_health <= 0) {
             s_toRemove.push_back(k);
         }
@@ -475,7 +475,7 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
         for (int y = m_min.y; y <= m_max.y; y++) {
             auto v = V2i(x, y);
             const auto &tile = getTile(v);
-            if (tile.m_type == TileType::Zone || tile.m_type == TileType::PlayerSpawn || tile.m_type == TileType::WorldPortal) {
+            if (tile.m_type == TileType::Zone || tile.m_type == TileType::PlayerSpawn || tile.m_type == TileType::WorldPortal || tile.m_type == TileType::Consumable) {
                 auto a = cam.worldToScreen(v.f());
                 auto b = cam.worldToScreen((v + V2I_ONE).f());
                 auto rect = Rect(a.x, a.y, b.x-a.x, b.y-a.y);
@@ -490,6 +490,9 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
                     label = "Spawn";
                 } else if (tile.m_type == TileType::WorldPortal) {
                     color = {0, 0, 0, 0};
+                    label = tile.m_name.c_str();
+                } else if (tile.m_type == TileType::Consumable) {
+                    color = {255, 0, 255, 128};
                     label = tile.m_name.c_str();
                 }
 
