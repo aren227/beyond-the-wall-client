@@ -136,6 +136,10 @@ void World::activateWave(const MonsterWave &wave) {
     }
 }
 
+bool World::checkWorldCanBeDone() const {
+    return m_monsterWaves.empty() && m_monsters.empty();
+}
+
 void World::update(Camera &cam, float dt) {
     m_time += dt;
 
@@ -150,13 +154,16 @@ void World::update(Camera &cam, float dt) {
 
     static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
     for (auto &[k, v] : m_tiles) {
-        v.update(dt);
+        v.update(this, dt);
         if (v.m_health <= 0) {
             s_toRemove.push_back(k);
         }
-        if (v.m_type == TileType::End && v.progress() >= 1) {
-            m_endFlag = true;
-            m_playerWin = true;
+
+        if (v.m_type == TileType::End) {
+            if (v.progress() >= 1) {
+                m_endFlag = true;
+                m_playerWin = true;
+            }
         }
     }
 

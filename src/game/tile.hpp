@@ -5,6 +5,8 @@
 
 namespace aren {
 
+class World;
+
 enum class TileType {
     Empty = 0,
     Wall,
@@ -38,7 +40,7 @@ public:
     explicit Tile() = default;
     Tile(TileType type) : m_type(type) {}
 
-    void update(float dt);
+    void update(const World *world, float dt);
 
     BeamProp beamProp() const;
 

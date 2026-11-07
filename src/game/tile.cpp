@@ -1,4 +1,5 @@
 #include "tile.hpp"
+#include "world.hpp"
 #include "raymath.h"
 
 namespace aren {
@@ -7,9 +8,9 @@ static constexpr float MAX_PROGRESS = 5;
 static constexpr float PROGRESS_DOWN_SPEED = 5;
 static constexpr float PROGRESS_UP_SPEED = 1;
 
-void Tile::update(float dt) {
+void Tile::update(const World *world, float dt) {
     if (m_type == TileType::End) {
-        if (m_damaged) {
+        if (m_damaged && world->checkWorldCanBeDone()) {
             m_progress = std::min(m_progress + PROGRESS_UP_SPEED * dt, MAX_PROGRESS);
         } else {
             m_progress = std::max(m_progress - PROGRESS_DOWN_SPEED * dt, 0.0f);

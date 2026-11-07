@@ -49,6 +49,7 @@ public:
 
     inline bool hasEnded() const { return m_endFlag; }
     inline bool hasPlayerWon() const { return m_playerWin; }
+    bool checkWorldCanBeDone() const;
 
     inline Player *player() const { return m_player.get(); }
     inline Particles *particles() const { return m_particles.get(); }
