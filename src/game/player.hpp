@@ -57,6 +57,9 @@ private:
     Beam m_beam;
     const Color4f m_beamBaseColor = C4F_WHITE.brighten(3);
 
+    const float m_beamTrailDuration = 0.1f;
+    std::vector<std::pair<float, Beam>> m_beamPrevs;
+
     float m_baseAttackDamage = 100;
 };
 

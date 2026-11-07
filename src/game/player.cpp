@@ -16,6 +16,9 @@ Player::~Player() {}
 void Player::update(const Camera &cam, World *world, float dt) {
     Vector2f input = V2F_ZERO;
 
+    const auto prevPos = m_pos;
+    const auto prevDir = m_dir;
+
     if (Input::keyDown(KEY_W)) input += V2f(0, -1);
     if (Input::keyDown(KEY_S)) input += V2f(0, 1);
     if (Input::keyDown(KEY_A)) input += V2f(-1, 0);
@@ -49,13 +52,12 @@ void Player::update(const Camera &cam, World *world, float dt) {
     auto camPos = cam.screenToWorld(Input::mousePosition());
     m_dir = (camPos - m_pos).normalized();
 
-    // beam raycast
-    if (isDashing() == false) {
+    const auto calcBeamSegment = [&](Beam &beam, const Vector2f &pos, const Vector2f &dir) {
         BeamSegment segment;
-        segment.start = m_pos;
-        segment.dir = m_dir;
+        segment.start = pos;
+        segment.dir = dir;
 
-        m_beam.segments.clear();
+        beam.segments.clear();
 
         for (int i = 0; i <= m_bounces; i++) {
             float minT = INFINITY;
@@ -102,7 +104,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
             if (minT < INFINITY) {
                 segment.end = segment.start + segment.dir * std::max(minT - 0.01f, 0.0f);
 
-                m_beam.segments.push_back(segment);
+                beam.segments.push_back(segment);
 
                 float damage = segment.prop.strength * m_baseAttackDamage * dt;
                 auto prevColor = segment.prop.color;
@@ -141,8 +143,30 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 break;
             }
         }
+    };
+
+    // beam raycast
+    if (isDashing() == false) {
+        for (int i = 0; i < 16; i++) {
+            auto lerpedPos = Vector2f::lerp(prevPos, m_pos, float(i) / 16);
+            auto lerpedDir = Vector2f::lerp(prevDir, m_dir, float(i) / 16).normalized();
+            calcBeamSegment(m_beam, lerpedPos, lerpedDir);;
+            m_beamPrevs.push_back({0, m_beam});
+        }
+        calcBeamSegment(m_beam, m_pos, m_dir);
     } else {
         m_beam.segments.clear();
+    }
+
+    m_beamPrevs.push_back({0, m_beam});
+    for (auto it = m_beamPrevs.begin(); it != m_beamPrevs.end();) {
+        it->first += dt;
+
+        if (it->first >= m_beamTrailDuration) {
+            it = m_beamPrevs.erase(it);
+        } else {
+            ++it;
+        }
     }
 }
 
@@ -178,6 +202,17 @@ void Player::render(const Camera &cam) {
     const float playerRadius = 0.22f;
     DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, WHITE);
     DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
+
+    for (const auto &[t, beam] : m_beamPrevs) {
+        for (const auto &it : beam.segments) {
+            if (it.prop.color == BeamColor::Black) {
+                break;
+            }
+            auto color = getColorForBeam(it.prop.color);
+            color.a = 0.1f * (1 - t / m_beamTrailDuration);
+            DrawLineEx(it.start, it.end, BEAM_THICKNESS, color);
+        }
+    }
 
     for (const auto &it : m_beam.segments) {
         if (it.prop.color == BeamColor::Black) {
