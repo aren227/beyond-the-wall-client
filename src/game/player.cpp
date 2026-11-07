@@ -195,7 +195,9 @@ void Player::teleport(const Vector2f &dst) {
 }
 
 void Player::takeDamage(float damage) {
-    m_health = std::max(m_health - damage, 0.0f);
+    if (isDashing() == false) {
+        m_health = std::max(m_health - damage, 0.0f);
+    }
 }
 
 } // namespace aren
