@@ -944,7 +944,7 @@ std::unique_ptr<World> World::load(const std::string &name) {
                         int c; is >> c;
 
                         wave.zones.resize(c);
-                        for (int j = 0; j < count; j++) {
+                        for (int j = 0; j < c; j++) {
                             unescapeIs(is, wave.zones[j]);
                         }
                     } else if (tok == "monster_name") {
