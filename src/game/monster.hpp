@@ -14,7 +14,32 @@ struct MonsterDefinition {
     float bulletSpeed = 8.0f;
     float bulletFireCooldown = 0.5f;
     int bulletSpreadCount = 1; // zero means does not shoot
+    float meleeCooldown = 1;
     BeamColor color = BeamColor::White;
+};
+
+struct MonsterMelee {
+    float duration = 0.6f;
+    float time = 0;
+    float damage = 10;
+    Vector2f fromPos = V2F_ZERO;
+    Vector2f targetPos = V2F_ZERO;
+    bool hitPlayer = false;
+
+    inline float easeInOutBack(float x) const {
+        const float c1 = 1.70158f;
+        const float c2 = c1 * 1.525f;
+
+        return x < 0.5f
+        ? (std::pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+        : (std::pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+    }
+
+    inline Vector2f currPos() const {
+        float eased = easeInOutBack(time / duration);
+        if (eased <= 0.5f) return Vector2f::lerp(fromPos, targetPos, eased * 2);
+        return Vector2f::lerp(targetPos, fromPos, eased * 2 - 1);
+    }
 };
 
 class Monster {
@@ -56,6 +81,11 @@ private:
 
     float m_bulletFireDelay = 1.0f;
     float m_bulletFireCooldown = 0.5f;
+
+    std::optional<MonsterMelee> m_melee;
+    float m_meleeDelay = 0.0f;
+    float m_meleeCooldown = 1.0f;
+    float m_meleeLength = 2.0f;
 };
 
 } // namespace aren;

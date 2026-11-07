@@ -19,6 +19,7 @@ static void registerDefs() {
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,
+        .meleeCooldown = 1,
     };
     tmp["dumb_fast"] = {
         .maxHealth = 100.0f,
@@ -26,6 +27,7 @@ static void registerDefs() {
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,
+        .meleeCooldown = 1,
     };
     tmp["shooter"] = {
         .maxHealth = 100.0f,
@@ -33,6 +35,7 @@ static void registerDefs() {
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 1,
+        .meleeCooldown = 0,
     };
     tmp["shooter_hard"] = {
         .maxHealth = 100.0f,
@@ -40,6 +43,7 @@ static void registerDefs() {
         .bulletSpeed = 15.0f,
         .bulletFireCooldown = 1.0f,
         .bulletSpreadCount = 3,
+        .meleeCooldown = 0,
     };
 
     for (const auto &[k, v] : tmp) {
@@ -72,6 +76,7 @@ Monster::Monster(World *world, const std::string &typeName, const Vector2f &pos)
     m_bulletFireCooldown = def.bulletFireCooldown;
     m_bulletSpreadCount = def.bulletSpreadCount;
     m_color = def.color;
+    m_meleeCooldown = def.meleeCooldown;
 }
 
 Monster::~Monster() {}
@@ -132,6 +137,10 @@ void Monster::update(const PathQuery *query, float dt) {
     if (s_queryRes.size() >= 2) {
         auto dir = (s_queryRes[1] - s_queryRes[0]).normalized();
 
+        if (m_melee.has_value() || m_meleeDelay > 0) {
+            dir = V2F_ZERO;
+        }
+
         Vector2f velocityTarget = dir * m_speed;
         Vector2f velocityNext = Vector2f::moveTorwards(m_velocity, velocityTarget, ((velocityTarget.lengthSqr() == 0) ? m_brakeRate : m_accelRate) * dt);
 
@@ -161,6 +170,38 @@ void Monster::update(const PathQuery *query, float dt) {
             float rad = (radHi - radLo) * i / std::max(float(m_bulletSpreadCount-1), 1.0f) + radLo;
 
             m_world->addBullet(std::make_unique<Bullet>(m_pos, targetDir.rotated(rad) * m_bulletSpeed));
+        }
+    }
+
+    if (m_melee.has_value()) {
+        auto &melee = m_melee.value();
+
+        auto prevPos = melee.currPos();
+        melee.time += dt;
+        auto currPos = melee.currPos();
+
+        if (melee.hitPlayer == false && Vector2f::segmentDist(prevPos, currPos, m_world->player()->pos()) < m_hitRadius) {
+            melee.hitPlayer = true;
+            m_world->player()->takeDamage(melee.damage);
+        }
+
+        if (melee.time >= melee.duration) {
+            m_melee.reset();
+            m_pos = melee.fromPos;
+        } else {
+            m_pos = melee.currPos();
+        }
+    } else {
+        m_meleeDelay = std::max(m_meleeDelay - dt, 0.0f);
+
+        auto playerDelta = m_world->player()->pos() - m_pos;
+        if (m_melee.has_value() == false && m_meleeCooldown > 0 && m_meleeDelay <= 0 && playerDelta.lengthSqr() < std::pow(m_meleeLength * 0.8f, 2)) {
+            m_meleeDelay += m_meleeCooldown;
+
+            m_melee = {
+                .fromPos = m_pos,
+                .targetPos = m_world->player()->pos(),
+            };
         }
     }
 }
@@ -197,6 +238,16 @@ void Monster::render(const Camera &cam) {
     const float playerRadius = 0.22f;
     DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, color);
     DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
+
+    // if (m_melee.has_value()) {
+    //     auto melee = m_melee.value();
+    //     auto currDir = melee.currDir();
+    //     for (int i = 0; i < 8; i++) {
+    //         auto lerpedDir = currDir.rotated(-10 * i * DEG2RAD);
+    //         auto opacity = uint8_t((1 - float(i) / 8) * 255);
+    //         DrawLineEx(m_pos, m_pos + lerpedDir * m_meleeLength, 0.1f, {255, 255, 255, opacity});
+    //     }
+    // }
 }
 
 void Monster::moveDelta(Vector2f delta) {
