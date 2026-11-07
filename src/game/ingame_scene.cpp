@@ -52,6 +52,8 @@ void IngameScene::update(float dt) {
             Game::addScene<PauseScene>();
         }
     }
+
+    m_cam.update(dt);
 }
 
 void IngameScene::render() {

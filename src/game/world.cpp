@@ -135,7 +135,7 @@ void World::activateWave(const MonsterWave &wave) {
     }
 }
 
-void World::update(const Camera &cam, float dt) {
+void World::update(Camera &cam, float dt) {
     m_time += dt;
 
     updateBounds();
@@ -180,6 +180,7 @@ void World::update(const Camera &cam, float dt) {
                 .size = 0.5f,
             });
             it = m_monsters.erase(it);
+            cam.shake(5.0f, 0.15f);
         } else {
             ++it;
         }

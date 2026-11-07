@@ -20,7 +20,7 @@ public:
     explicit World(const World *world);
     virtual ~World();
 
-    void update(const Camera &cam, float dt);
+    void update(Camera &cam, float dt);
     void updateBounds();
 
     std::unordered_map<Vector2i, Tile> &tiles() { return m_tiles; }
