@@ -221,12 +221,18 @@ struct Color4f {
     inline constexpr bool operator!=(Color4f v) const { return !(*this == v); }
 
     inline constexpr Color4f brighten(float intensity) const { return { r * intensity, g * intensity, b * intensity, a}; }
+
+    inline constexpr Color4b byte() const;
 };
 
 static constexpr Color4f C4F_WHITE = Color4f(1, 1, 1, 1);
 static constexpr Color4f C4F_BLACK = Color4f(0, 0, 0, 1);
 
 inline constexpr Color4f Color4b::f() const { return Color4f(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f); }
+
+inline constexpr Color4b Color4f::byte() const {
+    return { uint8_t(r * 255), uint8_t(g * 255), uint8_t(b * 255), uint8_t(a * 255) };
+}
 
 } // namespace aren
 

@@ -114,11 +114,22 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 if (Vector2i *pos = std::get_if<Vector2i>(&hit)) {
                     if (world->contains(*pos)) {
                         world->at(*pos).takeDamage(dt, damage);
+                        auto particleColor = getColorForBeam(prevColor);
+                        particleColor.a = 0.2f;
+                        world->particles()->emit(segment.end, 2, {
+                            .color = particleColor.byte(),
+                            .normal = normal,
+                            .angle = 90.0f,
+                        });
                     }
                 } else if (Monster **monster = std::get_if<Monster *>(&hit)) {
                     if ((*monster)->m_color == prevColor) {
                         (*monster)->takeDamage(damage);
-                        world->particles()->emit((*monster)->pos(), 5, {});
+                        auto particleColor = getColorForBeam(prevColor);
+                        particleColor.a = 0.5f;
+                        world->particles()->emit(segment.end, 5, {
+                            .color = particleColor.byte(),
+                        });
                     }
                 }
             } else {

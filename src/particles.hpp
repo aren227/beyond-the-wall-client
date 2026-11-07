@@ -8,6 +8,8 @@ struct ParticleDef {
     float damping = 0.5f;
     float life = 0.25f;
     float size = 0.25f;
+    Vector2f normal = V2f(1, 0);
+    float angle = 360.0f;
 };
 
 class Particles {

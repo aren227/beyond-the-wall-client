@@ -9,7 +9,9 @@ Particles::Particles() {
 
 void Particles::emit(Vector2f pos, int count, const ParticleDef &def) {
     for (int i = 0; i < count; i++) {
-        auto velocity = Random::onUnitCircle() * Random::rangeFloat(0.5f, 1.0f) * def.speed;
+        auto randAngle = Random::rangeFloat(-def.angle * 0.5f, def.angle * 0.5f);
+        auto velDir = def.normal.rotated(randAngle * DEG2RAD);
+        auto velocity = velDir * Random::rangeFloat(0.5f, 1.0f) * def.speed;
         m_particles.push_back({
             .pos = pos,
             .velocity = velocity,
