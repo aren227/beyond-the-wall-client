@@ -1,10 +1,10 @@
 version 1
-name ;treasure_hunt
+name ;Treasure\_Hunt
 comment ;remove\_sands\_as\_fast\_as\_possible
 balance
-beam_bounces 2
+beam_bounces 1
 exit
-tiles 531
+tiles 535
 pos 1 1
 type 4
 color 7
@@ -155,6 +155,12 @@ color 7
 mult 1
 name ;
 exit
+pos 2 2
+type 7
+color 7
+mult 1
+name ;
+exit
 pos 2 3
 type 4
 color 7
@@ -226,6 +232,12 @@ type 4
 color 7
 mult 1
 name ;
+exit
+pos 2 16
+type 5
+color 7
+mult 1
+name ;a
 exit
 pos 2 18
 type 4
@@ -2951,6 +2963,12 @@ color 7
 mult 1
 name ;
 exit
+pos 26 2
+type 5
+color 7
+mult 1
+name ;b
+exit
 pos 26 4
 type 4
 color 7
@@ -3070,6 +3088,12 @@ type 4
 color 7
 mult 1
 name ;
+exit
+pos 26 26
+type 5
+color 7
+mult 1
+name ;c
 exit
 pos 27 4
 type 4
@@ -3191,4 +3215,19 @@ color 7
 mult 1
 name ;
 exit
-waves 0
+waves 3
+zones 1 ;a
+monster_name ;shooter_easy_g
+condition_type 0
+condition_value ;
+exit
+zones 1 ;b
+monster_name ;shooter_easy_b
+condition_type 0
+condition_value ;
+exit
+zones 1 ;c
+monster_name ;shooter_easy_r
+condition_type 0
+condition_value ;
+exit

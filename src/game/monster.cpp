@@ -21,6 +21,30 @@ static void registerDefs() {
         .bulletSpreadCount = 0,
         .meleeCooldown = 1,
     };
+    tmp["dumb_slow"] = {
+        .maxHealth = 100.0f,
+        .speed = 0.1f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 0,
+        .meleeCooldown = 1,
+    };
+    tmp["dumb_oneshot"] = {
+        .maxHealth = 10.0f,
+        .speed = 0.5f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 0,
+        .meleeCooldown = 1,
+    };
+    tmp["dumb_stop"] = {
+        .maxHealth = 100.0f,
+        .speed = 0.5f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 0,
+        .meleeCooldown = 1,
+    };
     tmp["dumb_fast"] = {
         .maxHealth = 100.0f,
         .speed = 6.0f,
@@ -34,6 +58,14 @@ static void registerDefs() {
         .speed = 1.0f,
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 1,
+        .meleeCooldown = 0,
+    };
+    tmp["shooter_easy"] = {
+        .maxHealth = 100.0f,
+        .speed = 1.0f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 1.5f,
         .bulletSpreadCount = 1,
         .meleeCooldown = 0,
     };
