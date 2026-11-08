@@ -475,7 +475,7 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
         for (int y = m_min.y; y <= m_max.y; y++) {
             auto v = V2i(x, y);
             const auto &tile = getTile(v);
-            if (tile.m_type == TileType::Zone || tile.m_type == TileType::PlayerSpawn || tile.m_type == TileType::WorldPortal || tile.m_type == TileType::Consumable) {
+            if (tile.m_type == TileType::Zone || tile.m_type == TileType::PlayerSpawn || tile.m_type == TileType::WorldPortal || tile.m_type == TileType::Consumable || tile.m_type == TileType::InvisibleBarrier) {
                 auto a = cam.worldToScreen(v.f());
                 auto b = cam.worldToScreen((v + V2I_ONE).f());
                 auto rect = Rect(a.x, a.y, b.x-a.x, b.y-a.y);
@@ -494,6 +494,9 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
                 } else if (tile.m_type == TileType::Consumable) {
                     color = {255, 0, 255, 128};
                     label = tile.m_name.c_str();
+                } else if (tile.m_type == TileType::InvisibleBarrier) {
+                    color = {255, 0, 0, 128};
+                    label = "";
                 }
 
                 DrawRectangleRec(rect, color);

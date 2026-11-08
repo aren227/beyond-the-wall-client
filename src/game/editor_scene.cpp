@@ -20,6 +20,7 @@ enum class EditorBrush {
     End,
     WorldPortal,
     Consumable,
+    InvisibleBarrier,
     White,
     Red,
     Green,
@@ -41,6 +42,7 @@ static const char *getBrushName(EditorBrush type) {
         case EditorBrush::End: return "End";
         case EditorBrush::WorldPortal: return "World Portal";
         case EditorBrush::Consumable: return "Consumable";
+        case EditorBrush::InvisibleBarrier: return "Invisible Barrier";
         case EditorBrush::White: return "White";
         case EditorBrush::Red: return "Red";
         case EditorBrush::Green: return "Green";
@@ -63,6 +65,7 @@ static TileType getTileTypeFromBrush(EditorBrush type) {
         case EditorBrush::End: return TileType::End;
         case EditorBrush::WorldPortal: return TileType::WorldPortal;
         case EditorBrush::Consumable: return TileType::Consumable;
+        case EditorBrush::InvisibleBarrier: return TileType::InvisibleBarrier;
         default: return TileType::Empty;
     }
 }

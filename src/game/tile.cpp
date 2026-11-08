@@ -59,6 +59,7 @@ bool Tile::isTransparent() const {
         case TileType::Zone:
         case TileType::PlayerSpawn:
         case TileType::Consumable:
+        case TileType::InvisibleBarrier:
             return true;
         default:
             return false;
