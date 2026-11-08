@@ -40,6 +40,10 @@ void Player::update(const Camera &cam, World *world, float dt) {
         });
     }
 
+    if (m_immortalTime > 0) {
+        m_immortalTime = std::max(m_immortalTime - dt, 0.0f);
+    }
+
     m_velocity = velocityNext;
 
     auto delta = m_velocity * dt;
@@ -151,6 +155,11 @@ void Player::render(const Camera &cam) {
         return;
     }
 
+    // NOTE(aren): changing opacity is too weak..
+    if ((m_immortalTime > 0) && (int(m_immortalTime * 24) % 2 == 0)) {
+        return;
+    }
+
     const float worldToScreenScale = cam.worldToScreen(V2f(1, 0)).x - cam.worldToScreen(V2f(0, 0)).x;
 
     float thickness = PIXEL_SCALER / worldToScreenScale;
@@ -195,8 +204,9 @@ void Player::teleport(const Vector2f &dst) {
 }
 
 void Player::takeDamage(float damage) {
-    if (isDashing() == false) {
+    if (isDashing() == false && m_immortalTime == 0) {
         m_health = std::max(m_health - damage, 0.0f);
+        m_immortalTime = m_hitImmortalDuration;
     }
 }
 

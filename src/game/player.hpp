@@ -55,6 +55,9 @@ private:
     Vector2f m_dashDir = V2F_ZERO;
     float m_dashTime = 0;
 
+    float m_immortalTime = 0;
+    const float m_hitImmortalDuration = 1.0f;
+
     Vector2f m_dir = V2f(1, 0);
 
     Beam m_beam;
