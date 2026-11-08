@@ -6,6 +6,7 @@ enum class MonsterWaveCondition : int {
     Always = 0,
     MonsterCleared,
     EnterZone,
+    ConsumedConsumable,
 };
 
 struct MonsterWave {

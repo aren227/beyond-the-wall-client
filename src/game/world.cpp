@@ -116,12 +116,26 @@ World::~World() {}
 bool World::checkWaveCondition(const MonsterWave &wave) {
     switch (wave.conditionType) {
         case MonsterWaveCondition::Always:
+        {
             return true;
+        }
         case MonsterWaveCondition::MonsterCleared:
+        {
             return m_monsters.size() == 0;
+        }
         case MonsterWaveCondition::EnterZone:
+        {
             auto tile = getTile(m_player->pos().floor());
             return (tile.m_type == TileType::Zone && tile.m_name == wave.conditionValue);
+        }
+        case MonsterWaveCondition::ConsumedConsumable:
+        {
+            return m_player->m_consumedConsumable;
+        }
+        default:
+        {
+            UNREACHABLE();
+        }
     }
     return true;
 }
@@ -589,6 +603,12 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     m_particles->render();
 
     Render::end2DCam();
+
+    // XXX(aren): World specific logic
+    if (m_name == "" && m_player->m_consumedConsumable) {
+        auto a = cam.worldToScreen(V2f(11.5f, -5));
+        Render::drawText(a, 60, WHITE, "Beyond The Wall", Render::TextAlignH::Center, Render::TextAlignV::Center);
+    }
 }
 
 Vector2f World::moveRect(const Rect &rect, const Vector2f &delta, ObjectLayer layer) const {

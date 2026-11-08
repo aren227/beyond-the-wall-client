@@ -39,6 +39,7 @@ public:
     float m_health = m_maxHealth;
 
     bool m_beamDisabled = false;
+    bool m_consumedConsumable = false;
 
 private:
     Vector2f m_pos = V2F_ZERO;

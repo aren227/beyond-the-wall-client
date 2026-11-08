@@ -465,7 +465,7 @@ void EditorScene::renderUI() {
             // NOTE(aren): Pass 2, need to stack backward
             if (m_monsterWaveProps[i].conditionTypeEnabled) GuiUnlock();
 
-            if (GuiDropdownBox(conditionValueRect, "Always;MonsterCleared;EnterZone", reinterpret_cast<int *>(&waves[i].conditionType), m_monsterWaveProps[i].conditionTypeEnabled)) {
+            if (GuiDropdownBox(conditionValueRect, "Always;MonsterCleared;EnterZone;ConsumedConsumable", reinterpret_cast<int *>(&waves[i].conditionType), m_monsterWaveProps[i].conditionTypeEnabled)) {
                 m_monsterWaveProps[i].conditionTypeEnabled = !m_monsterWaveProps[i].conditionTypeEnabled;
             }
         }

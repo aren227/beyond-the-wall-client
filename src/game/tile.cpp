@@ -21,9 +21,12 @@ void Tile::update(const World *world, const Vector2i &pos, float dt) {
     } else if (m_type == TileType::Consumable) {
         if (world->player()->pos().floor() == pos) {
             m_health = 0;
+            world->player()->m_consumedConsumable = true;
 
             if (m_name == "beam") {
                 world->player()->m_beamDisabled = false;
+            } else if (m_name == "add_bounces") {
+                world->player()->m_bounces++;
             }
         }
     }
