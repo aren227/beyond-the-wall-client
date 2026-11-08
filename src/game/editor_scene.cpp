@@ -383,6 +383,9 @@ void EditorScene::renderUI() {
         }
         y += 35;
 
+        GuiCheckBox({10, y, 30, 30}, "Beam Disabled", &m_world->player()->m_beamDisabled);
+        y += 35;
+
         // NOTE(aren): Pass 2, need to stack backward
         if (m_loadWorldNameEnabled) GuiUnlock();
 

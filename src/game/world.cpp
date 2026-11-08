@@ -95,6 +95,7 @@ World::World(const World *world) : World() {
     m_monsterWaves = world->m_monsterWaves;
 
     m_player->m_bounces = world->m_player->m_bounces;
+    m_player->m_beamDisabled = world->m_player->m_beamDisabled;
 
     m_name = world->m_name;
     m_comment = world->m_comment;
@@ -538,6 +539,13 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
                     break;
                 }
             }
+        } else if (tile.m_type == TileType::Consumable) {
+            auto a = cam.worldToScreen(v.f());
+            auto b = cam.worldToScreen(v.f() + V2F_ONE);
+
+            Render::pushColor(C4F_WHITE.brighten(2 + std::sin(m_time * 2)));
+            spriteSet.star.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), 0, 0, PIXEL_SCALER, WHITE);
+            Render::popColor();
         }
     }
 
@@ -869,6 +877,7 @@ void World::save(const std::string &name) {
     os << "balance" << std::endl;
     {
         os << "beam_bounces " << m_player->m_bounces << std::endl;
+        os << "beam_disabled " << int(m_player->m_beamDisabled) << std::endl;
         os << "exit" << std::endl;
     }
 
@@ -926,6 +935,9 @@ std::unique_ptr<World> World::load(const std::string &name) {
                 if (tok == "beam_bounces") {
                     int c; is >> c;
                     world->m_player->m_bounces = c;
+                } else if (tok == "beam_disabled") {
+                    int b; is >> b;
+                    world->m_player->m_beamDisabled = (b != 0);
                 } else if (tok == "exit") {
                     break;
                 }

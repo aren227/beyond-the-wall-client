@@ -1,8 +1,9 @@
 version 1
-name ;TAKE\_THIS.
+name ;TAKE\_THIS
 comment ;needs\_to\_remake
 balance
 beam_bounces 0
+beam_disabled 1
 exit
 tiles 212
 pos -4 5
