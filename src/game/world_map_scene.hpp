@@ -28,6 +28,8 @@ private:
 
     const float m_hudHeight = 16;
     float m_hudWidth = 0;
+
+    std::vector<std::string> m_worldNames;
 };
 
 } // namespace aren

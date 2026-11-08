@@ -6,6 +6,7 @@
 #include "ingame_scene.hpp"
 #include "title_scene.hpp"
 #include "player.hpp"
+#include <map>
 
 namespace aren {
 
@@ -26,6 +27,22 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
             Game::addScene<TransitionScene>(true);
         });
     };
+
+    std::map<int, std::string> sorted;
+    for (const auto &[k, tile] : m_world->tiles()) {
+        // TODO(aren): Basically copied from world.cpp
+        if (tile.m_type == TileType::WorldPortal) {
+            auto idx = tile.m_name.find(',');
+            if (idx != std::string::npos) {
+                int num = std::stoi(tile.m_name.substr(0, idx));
+                sorted[num] = tile.m_name.substr(idx+1);
+            }
+        }
+    }
+
+    for (auto it = sorted.begin(); it != sorted.end(); ++it) {
+        m_worldNames.push_back(it->second);
+    }
 
     m_spriteSet.load();
 }
