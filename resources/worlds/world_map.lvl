@@ -3,6 +3,7 @@ name ;
 comment ;
 balance
 beam_bounces 2
+beam_disabled 1
 exit
 tiles 49
 pos -6 -6
