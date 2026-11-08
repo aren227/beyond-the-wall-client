@@ -1,16 +1,10 @@
 version 1
-name ;run
+name ;Dashing\_and\_Dashing
 comment ;
 balance
-beam_bounces 2
+beam_bounces 1
 exit
-tiles 179
-pos 1 0
-type 1
-color 7
-mult 1
-name ;
-exit
+tiles 141
 pos 1 1
 type 1
 color 7
@@ -137,18 +131,6 @@ color 7
 mult 1
 name ;
 exit
-pos 1 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 2 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 2 1
 type 1
 color 7
@@ -161,49 +143,37 @@ color 7
 mult 1
 name ;
 exit
-pos 2 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 3 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 3 1
 type 1
 color 7
 mult 1
 name ;
 exit
+pos 3 3
+type 5
+color 7
+mult 1
+name ;b
+exit
 pos 3 5
 type 5
 color 7
 mult 1
-name ;3
+name ;a
 exit
 pos 3 17
 type 5
 color 7
 mult 1
-name ;4
+name ;a
+exit
+pos 3 19
+type 5
+color 7
+mult 1
+name ;b
 exit
 pos 3 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 3 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 4 0
 type 1
 color 7
 mult 1
@@ -221,18 +191,6 @@ color 7
 mult 1
 name ;
 exit
-pos 4 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 5 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 5 1
 type 1
 color 7
@@ -243,7 +201,7 @@ pos 5 3
 type 5
 color 7
 mult 1
-name ;1
+name ;a
 exit
 pos 5 5
 type 1
@@ -327,21 +285,9 @@ pos 5 19
 type 5
 color 7
 mult 1
-name ;5
+name ;a
 exit
 pos 5 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 5 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 6 0
 type 1
 color 7
 mult 1
@@ -371,18 +317,6 @@ color 7
 mult 1
 name ;
 exit
-pos 6 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 7 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 7 1
 type 1
 color 7
@@ -402,18 +336,6 @@ mult 1
 name ;
 exit
 pos 7 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 7 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 8 0
 type 1
 color 7
 mult 1
@@ -443,18 +365,6 @@ color 7
 mult 1
 name ;
 exit
-pos 8 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 9 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 9 1
 type 1
 color 7
@@ -479,18 +389,6 @@ color 7
 mult 1
 name ;
 exit
-pos 9 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 10 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 10 1
 type 1
 color 7
@@ -510,18 +408,6 @@ mult 1
 name ;
 exit
 pos 10 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 10 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 11 0
 type 1
 color 7
 mult 1
@@ -557,18 +443,6 @@ color 7
 mult 1
 name ;
 exit
-pos 11 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 12 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 12 1
 type 1
 color 7
@@ -588,18 +462,6 @@ mult 1
 name ;
 exit
 pos 12 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 12 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 13 0
 type 1
 color 7
 mult 1
@@ -629,18 +491,6 @@ color 7
 mult 1
 name ;
 exit
-pos 13 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 14 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 14 1
 type 1
 color 7
@@ -660,18 +510,6 @@ mult 1
 name ;
 exit
 pos 14 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 14 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 15 0
 type 1
 color 7
 mult 1
@@ -701,18 +539,6 @@ color 7
 mult 1
 name ;
 exit
-pos 15 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 16 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 16 1
 type 1
 color 7
@@ -737,18 +563,6 @@ color 7
 mult 1
 name ;
 exit
-pos 16 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 17 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 17 1
 type 1
 color 7
@@ -759,7 +573,7 @@ pos 17 3
 type 5
 color 7
 mult 1
-name ;2
+name ;a
 exit
 pos 17 5
 type 1
@@ -843,21 +657,9 @@ pos 17 19
 type 5
 color 7
 mult 1
-name ;8
+name ;a
 exit
 pos 17 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 17 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 18 0
 type 1
 color 7
 mult 1
@@ -875,49 +677,37 @@ color 7
 mult 1
 name ;
 exit
-pos 18 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 19 0
-type 1
-color 7
-mult 1
-name ;
-exit
 pos 19 1
 type 1
 color 7
 mult 1
 name ;
 exit
+pos 19 3
+type 5
+color 7
+mult 1
+name ;b
+exit
 pos 19 5
 type 5
 color 7
 mult 1
-name ;6
+name ;a
 exit
 pos 19 17
 type 5
 color 7
 mult 1
-name ;7
+name ;a
+exit
+pos 19 19
+type 5
+color 7
+mult 1
+name ;b
 exit
 pos 19 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 19 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 20 0
 type 1
 color 7
 mult 1
@@ -930,18 +720,6 @@ mult 1
 name ;
 exit
 pos 20 21
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 20 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 21 0
 type 1
 color 7
 mult 1
@@ -1073,10 +851,14 @@ color 7
 mult 1
 name ;
 exit
-pos 21 22
-type 1
-color 7
-mult 1
-name ;
+waves 2
+zones 1 ;a
+monster_name ;shooter
+condition_type 0
+condition_value ;
 exit
-waves 0
+zones 1 ;b
+monster_name ;shooter_hard
+condition_type 1
+condition_value ;
+exit

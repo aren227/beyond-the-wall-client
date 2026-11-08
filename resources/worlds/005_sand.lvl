@@ -1,138 +1,288 @@
 version 1
-name ;005_sand
+name ;Sand
 comment ;
 balance
-beam_bounces 2
+beam_bounces 1
 exit
-tiles 241
-pos 1 16
+tiles 116
+pos -1 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 2 16
+pos -1 0
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 3 16
+pos -1 1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 3 20
+pos -1 2
+type 1
+color 7
+mult 1
+name ;
+exit
+pos -1 3
+type 1
+color 7
+mult 1
+name ;
+exit
+pos -1 4
+type 1
+color 7
+mult 1
+name ;
+exit
+pos -1 5
+type 1
+color 7
+mult 1
+name ;
+exit
+pos -1 6
+type 1
+color 7
+mult 1
+name ;
+exit
+pos -1 7
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 0 -1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 0 7
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 1 -1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 1 7
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 2 -1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 2 3
 type 6
 color 7
 mult 1
 name ;
 exit
-pos 4 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 4 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 4 16
+pos 2 7
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 5 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 5 12
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 5 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 5 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 5 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 5 16
+pos 3 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 6 8
+pos 3 7
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 6 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 6 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 6 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 6 12
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 6 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 6 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 6 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 6 16
+pos 4 -1
 type 1
+color 7
+mult 1
+name ;
+exit
+pos 4 0
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 4 6
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 4 7
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 5 -1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 5 0
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 5 1
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 5 2
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 5 3
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 5 4
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 5 5
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 5 6
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 5 7
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 6 -1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 6 0
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 6 1
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 6 2
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 6 3
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 6 4
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 6 5
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 6 6
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 6 7
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 7 -1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 7 0
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 7 1
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 7 2
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 7 3
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 7 4
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 7 5
+type 4
 color 7
 mult 1
 name ;
@@ -144,66 +294,48 @@ mult 1
 name ;
 exit
 pos 7 7
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 7 8
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 7 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 7 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 7 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 7 12
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 7 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 7 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 7 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 7 16
+pos 8 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 7 23
+pos 8 0
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 8 1
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 8 2
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 8 3
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 8 4
+type 4
+color 7
+mult 1
+name ;
+exit
+pos 8 5
 type 4
 color 7
 mult 1
@@ -216,84 +348,36 @@ mult 1
 name ;
 exit
 pos 8 7
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 8 8
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 8 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 8 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 8 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 8 12
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 8 13
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 8 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 8 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 8 16
+pos 9 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 8 20
+pos 9 0
 type 4
 color 7
 mult 1
 name ;
 exit
-pos 8 21
+pos 9 1
 type 4
 color 7
 mult 1
 name ;
 exit
-pos 8 22
+pos 9 2
 type 4
 color 7
 mult 1
 name ;
 exit
-pos 8 23
+pos 9 3
 type 4
 color 7
 mult 1
@@ -318,102 +402,18 @@ mult 1
 name ;
 exit
 pos 9 7
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 8
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 9 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 12
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 9 13
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 9 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 16
+pos 10 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 9 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 9 23
+pos 10 0
 type 4
 color 7
 mult 1
@@ -432,126 +432,42 @@ mult 1
 name ;
 exit
 pos 10 3
-type 4
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 10 4
-type 4
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 10 5
-type 4
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 10 6
-type 4
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 10 7
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 8
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 10 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 11
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 10 12
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 10 13
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 10 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 16
+pos 11 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 10 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 10 23
+pos 11 0
 type 4
 color 7
 mult 1
@@ -594,103 +510,25 @@ mult 1
 name ;
 exit
 pos 11 7
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 8
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 11 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 11
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 11 12
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 11 13
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 11 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 16
+pos 12 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 11 17
+pos 12 0
 type 4
 color 7
 mult 1
 name ;
 exit
-pos 11 18
+pos 12 1
 type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 11 22
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 11 23
-type 1
 color 7
 mult 1
 name ;
@@ -726,102 +564,18 @@ mult 1
 name ;
 exit
 pos 12 7
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 8
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 12
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 12 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 16
+pos 13 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 18
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 12 19
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 12 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 12 23
+pos 13 0
 type 4
 color 7
 mult 1
@@ -834,618 +588,114 @@ mult 1
 name ;
 exit
 pos 13 7
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 8
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 13 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 12
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 16
+pos 14 -1
 type 1
-color 7
-mult 1
-name ;
-exit
-pos 13 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 13 23
-type 4
 color 7
 mult 1
 name ;
 exit
 pos 14 7
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 8
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 14 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 12
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 16
+pos 15 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 14 17
+pos 15 3
+type 7
+color 7
+mult 1
+name ;
+exit
+pos 15 7
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 14 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 21
+pos 16 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 14 22
+pos 16 7
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 14 23
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 8
+pos 17 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 15 9
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 10
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 12
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 16
+pos 17 7
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 15 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 15 23
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 8
+pos 18 -1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 12
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 16
+pos 18 0
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 19
+pos 18 1
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 20
+pos 18 2
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 16 23
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 8
+pos 18 3
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 17 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 16
+pos 18 4
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 17 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 18
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 23
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 18 8
+pos 18 5
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 18 16
+pos 18 6
 type 1
 color 7
 mult 1
 name ;
 exit
-pos 18 19
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 18 20
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 18 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 18 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 18 23
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 19 3
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 19 4
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 19 5
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 19 8
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 19 21
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 19 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 19 23
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 20 3
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 20 5
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 20 8
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 20 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 20 23
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 21 3
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 21 4
-type 3
-color 7
-mult 1
-name ;
-exit
-pos 21 5
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 21 8
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 21 22
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 21 23
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 22 8
-type 1
-color 7
-mult 1
-name ;
-exit
-pos 22 23
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 23 8
+pos 18 7
 type 1
 color 7
 mult 1
