@@ -237,9 +237,17 @@ inline constexpr Color4b Color4f::byte() const {
 } // namespace aren
 
 // hashing
+template <class T>
+inline void hash_combine(std::size_t& seed, T const& v) {
+    seed ^= std::hash<T>()(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+}
+
 template <>
 struct std::hash<aren::Vector2i> {
     std::size_t operator()(const aren::Vector2i &r) const noexcept {
-        return std::hash<int>()(r.x) | (std::hash<int>()(r.y) << 1);
+        size_t seed = 0;
+        hash_combine(seed, r.x);
+        hash_combine(seed, r.y);
+        return seed;
     }
 };
