@@ -9,6 +9,7 @@ Texture::Texture(const char *path, int filter) : Texture(LoadImage(path), filter
 Texture::Texture(::Image image, int filter) {
     m_texture = LoadTextureFromImage(image);
     SetTextureFilter(m_texture, filter);
+    SetTextureWrap(m_texture, TEXTURE_WRAP_REPEAT);
     UnloadImage(image);
 }
 
