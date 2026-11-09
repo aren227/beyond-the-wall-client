@@ -20,7 +20,7 @@ void UI::endInput() {
     ASSERT(s_enableInput >= 0);
 }
 
-bool UI::textButton(Vector2f origin, float size, const char *text, Render::TextAlignH alignH, Render::TextAlignV alignV) {
+bool UI::textButton(Vector2f origin, float size, const char *text, Render::TextAlignH alignH, Render::TextAlignV alignV, Color4b tint) {
     auto dimension = Render::measureText(text, size);
 
     if (alignH == Render::TextAlignH::Center) origin.x -= dimension.x * 0.5f;
@@ -33,7 +33,7 @@ bool UI::textButton(Vector2f origin, float size, const char *text, Render::TextA
     bool selected = hovered && Input::mouseButtonDown(MOUSE_BUTTON_LEFT);
     bool clicked = hovered && Input::mouseButtonReleased(MOUSE_BUTTON_LEFT);
 
-    auto color = selected ? SELECTED : hovered ? SECONDARY : PRIMARY;
+    auto color = (tint.f() * (selected ? SELECTED : hovered ? SECONDARY : PRIMARY).f());
 
     auto font = Render::getCurrentFontBySize(size);
     DrawTextEx(font, text, origin, size, 1.0f, color);

@@ -37,6 +37,7 @@ public:
     // TODO(aren): Very tile specific code..
     float m_progress = 0;
     float m_life = 0;
+    bool m_completed = false;
 
 public:
     explicit Tile() = default;

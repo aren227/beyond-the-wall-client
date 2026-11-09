@@ -7,6 +7,8 @@
 #include "title_scene.hpp"
 #include "player.hpp"
 #include <map>
+#include "../storage.hpp"
+#include "consts.hpp"
 
 namespace aren {
 
@@ -28,14 +30,19 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
         });
     };
 
+    auto compNames = Storage::getList(COMPLETED_WORLD_KEYS);
+
     std::map<int, std::string> sorted;
-    for (const auto &[k, tile] : m_world->tiles()) {
+    for (auto &[k, tile] : m_world->tiles()) {
         // TODO(aren): Basically copied from world.cpp
         if (tile.m_type == TileType::WorldPortal) {
             auto idx = tile.m_name.find(',');
             if (idx != std::string::npos) {
                 int num = std::stoi(tile.m_name.substr(0, idx));
-                sorted[num] = tile.m_name.substr(idx+1);
+                auto filename = tile.m_name.substr(idx+1);
+                sorted[num] = filename;
+
+                tile.m_completed = (std::find(compNames.begin(), compNames.end(), filename) != compNames.end());
             }
         }
     }

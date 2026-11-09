@@ -204,6 +204,9 @@ struct Color4b {
     inline constexpr Color4f f() const;
 };
 
+static constexpr Color4b C4B_WHITE = Color4b(255, 255, 255, 255);
+static constexpr Color4b C4B_BLACK = Color4b(0, 0, 0, 255);
+
 struct Color4f {
     float r = 0, g = 0, b = 0, a = 0;
 

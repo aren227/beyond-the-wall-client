@@ -299,6 +299,11 @@ TileType World::getTileType(const Vector2i &pos) const {
 }
 
 Color4f World::getColor(const Vector2i &pos) const {
+    const auto &tile = getTile(pos);
+    if (tile.m_type == TileType::WorldPortal) {
+        return tile.m_completed ? GOLD2.f() : C4F_WHITE;
+    }
+
     auto color = getColorForBeam(getTile(pos).beamColor());
     if (color == C4F_BLACK) {
         // XXX(aren): black has dedicated sprite..
@@ -553,7 +558,7 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
             auto idx = tile.m_name.find(',');
             if (idx != std::string::npos) {
                 auto a = cam.worldToScreen(v.f() + V2f(0.5f, 0.5f));
-                if (UI::textButton(a, 40, tile.m_name.substr(0, idx).c_str(), Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+                if (UI::textButton(a, 40, tile.m_name.substr(0, idx).c_str(), Render::TextAlignH::Center, Render::TextAlignV::Center, tile.m_completed ? GOLD2 : C4B_WHITE)) {
                     if (m_onWorldPortalClick) {
                         m_onWorldPortalClick(tile.m_name.substr(idx+1));
                     }
