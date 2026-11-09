@@ -1,3 +1,5 @@
+#if DEBUG
+
 #include "editor_scene.hpp"
 #include "../render.hpp"
 #include "game.hpp"
@@ -507,3 +509,5 @@ void EditorScene::refreshScannedWorldNames() {
 }
 
 }
+
+#endif

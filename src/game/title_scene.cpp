@@ -1,10 +1,13 @@
 #include "title_scene.hpp"
-#include "editor_scene.hpp"
 #include "game.hpp"
 #include "../ui.hpp"
 #include "../render.hpp"
 #include "settings_scene.hpp"
 #include "world_map_scene.hpp"
+
+#if DEBUG
+#include "editor_scene.hpp"
+#endif
 
 namespace aren {
 
@@ -13,10 +16,12 @@ static void startGame() {
     Game::addScene<WorldMapScene>();
 }
 
+#if DEBUG
 static void startEditor() {
     Game::removeScene<TitleScene>();
     Game::addScene<EditorScene>();
 }
+#endif
 
 static void startSettings() {
     Game::removeScene<TitleScene>();
@@ -52,11 +57,13 @@ void TitleScene::renderUI() {
     }
     c.y += 60;
 
+#if DEBUG
     if (UI::textButton(c, 40, "Editor", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
         startEditor();
         return;
     }
     c.y += 60;
+#endif
 
     if (UI::textButton(c, 40, "Settings", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
         startSettings();

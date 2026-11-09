@@ -505,6 +505,7 @@ void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
     }
 }
 
+#if DEBUG
 void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
     for (int x = m_min.x; x <= m_max.x; x++) {
         for (int y = m_min.y; y <= m_max.y; y++) {
@@ -544,6 +545,7 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
         }
     }
 }
+#endif
 
 void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     for (const auto &[v, tile] : m_tiles) {

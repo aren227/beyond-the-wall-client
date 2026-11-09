@@ -33,7 +33,9 @@ public:
     void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category);
     void renderDecos(const Camera &cam, const SpriteSet &spriteSet);
     void renderMisc(const Camera &cam, const SpriteSet &spriteSet);
+#if DEBUG
     void renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet);
+#endif
 
     Vector2f moveRect(const Rect &rect, const Vector2f &delta, ObjectLayer layer) const;
 

@@ -61,9 +61,11 @@ int main() {
     Settings::init();
     s_game.init();
 
+#if DEBUG
     // NOTE(aren): Set default ui styles
     GuiSetFont(Render::getFontBySize("editor", 16));
     GuiSetStyle(DEFAULT, TEXT_SIZE, 16);
+#endif
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 0, 1);

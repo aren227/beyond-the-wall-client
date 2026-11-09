@@ -2,12 +2,15 @@
 #include "game.hpp"
 #include "world.hpp"
 #include "player.hpp"
-#include "editor_scene.hpp"
 #include "pause_scene.hpp"
 #include "transition_scene.hpp"
 #include "ingame_scene.hpp"
 #include "world_map_scene.hpp"
 #include "../render.hpp"
+
+#if DEBUG
+#include "editor_scene.hpp"
+#endif
 
 namespace aren {
 
@@ -19,6 +22,14 @@ IngameScene::IngameScene(std::unique_ptr<World> world) : Scene(TYPE) {
 }
 
 IngameScene::~IngameScene() {}
+
+static bool isEditorActive() {
+#if DEBUG
+    return Game::getScene<EditorScene>() != nullptr;
+#else
+    return false;
+#endif
+}
 
 void IngameScene::update(float dt) {
     if (Game::getScene<PauseScene>() == nullptr) {
@@ -35,7 +46,7 @@ void IngameScene::update(float dt) {
                 auto initCopiedWorld = std::move(Game::getScene<IngameScene>()->m_worldInitCoied);
                 Game::removeScene<IngameScene>();
 
-                if (Game::getScene<EditorScene>() == nullptr) {
+                if (isEditorActive() == false) {
                     if (win) {
                         Game::addScene<WorldMapScene>();
                         Game::getScene<WorldMapScene>()->gotoNextImmediately(currentWorldName);
@@ -48,7 +59,7 @@ void IngameScene::update(float dt) {
     }
 
     if (Input::keyPressed(KEY_ESCAPE)) {
-        if (Game::getScene<EditorScene>() != nullptr) {
+        if (isEditorActive()) {
             Game::removeScene<IngameScene>();
         } else if (Game::getScene<PauseScene>() == nullptr) {
             Game::addScene<PauseScene>();

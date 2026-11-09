@@ -1,5 +1,7 @@
 #pragma once
 
+#if DEBUG
+
 #include "scene.hpp"
 #include "../camera.hpp"
 #include "sprite_set.hpp"
@@ -83,3 +85,5 @@ private:
 };
 
 } // namespace aren
+
+#endif
