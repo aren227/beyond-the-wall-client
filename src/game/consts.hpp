@@ -11,12 +11,12 @@ static const auto _evalBaseResourcePath = []() {
     if (ptr) {
         return std::string(ptr);
     } else {
-        return std::string("./");
+        return std::string("resources/");
     }
 };
 #else
 static const auto _evalBaseResourcePath = []() {
-    return std::string("./");
+    return std::string("resources/");
 };
 #endif
 
