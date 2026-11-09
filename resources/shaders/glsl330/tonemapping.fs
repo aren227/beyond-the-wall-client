@@ -24,7 +24,7 @@ void main()
 {
     vec4 col = texture(texture0, fragTexCoord);
     col.rgb = ACESFilm(col.rgb);
-    col.rgb = pow(max(col.rgb, 0.0), vec3(1 / 2.2));
+    col.rgb = pow(max(col.rgb, 0.0), vec3(1.0 / 2.2));
 
     finalColor = col;
 }

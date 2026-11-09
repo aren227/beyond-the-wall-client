@@ -1,0 +1,25 @@
+#version 100
+
+precision mediump float;
+
+// Input vertex attributes (from vertex shader)
+varying vec2 fragTexCoord;
+varying vec4 fragColor;
+
+// Input uniform values
+uniform sampler2D texture0;
+uniform vec4 colDiffuse;
+uniform vec4 textureSize;
+
+void main()
+{
+    vec3 sum = vec3(0);
+
+    for (int x = -1; x <= 1; x++) {
+        for (int y = -1; y <= 1; y++) {
+            sum += texture2D(texture0, fragTexCoord + textureSize.zw * vec2(x, y)).rgb;
+        }
+    }
+
+    gl_FragColor = vec4(sum / 9.0, 1.0) * colDiffuse * fragColor;
+}
