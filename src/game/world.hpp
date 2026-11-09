@@ -80,6 +80,14 @@ private:
     std::unique_ptr<PathQuery> m_pathQuery;
     std::unique_ptr<Particles> m_particles;
     std::vector<std::unique_ptr<Bullet>> m_bullets;
+
+    struct MonsterSpawnAnimation {
+        Vector2f pos;
+        std::string name;
+
+        float timeLeft = 3;
+    };
+    std::vector<MonsterSpawnAnimation> m_monsterSpawnAnims;
 };
 
 } // namespace aren

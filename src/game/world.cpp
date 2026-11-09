@@ -122,7 +122,7 @@ bool World::checkWaveCondition(const MonsterWave &wave) {
         }
         case MonsterWaveCondition::MonsterCleared:
         {
-            return m_monsters.size() == 0;
+            return m_monsters.size() == 0 && m_monsterSpawnAnims.size() == 0;
         }
         case MonsterWaveCondition::EnterZone:
         {
@@ -145,14 +145,17 @@ void World::activateWave(const MonsterWave &wave) {
     for (const auto &zone : wave.zones) {
         for (const auto &[pos, tile] : m_tiles) {
             if (tile.m_type == TileType::Zone && zone == tile.m_name) {
-                m_monsters.push_back(std::make_shared<Monster>(this, wave.monsterName, pos.f() + V2f(0.5f, 0.5f)));
+                m_monsterSpawnAnims.push_back({
+                    .pos = pos.f() + V2f(0.5f, 0.5f),
+                    .name = wave.monsterName,
+                });
             }
         }
     }
 }
 
 bool World::checkWorldCanBeDone() const {
-    return m_monsterWaves.empty() && m_monsters.empty();
+    return m_monsterWaves.empty() && m_monsters.empty() && m_monsterSpawnAnims.empty();
 }
 
 void World::update(Camera &cam, float dt) {
@@ -192,6 +195,22 @@ void World::update(Camera &cam, float dt) {
             it = m_monsterWaves.erase(it);
         } else {
             break;
+        }
+    }
+
+    for (auto it = m_monsterSpawnAnims.begin(); it != m_monsterSpawnAnims.end();) {
+        it->timeLeft -= dt;
+        if (it->timeLeft <= 0) {
+            m_monsters.push_back(std::make_shared<Monster>(this, it->name, it->pos));
+
+            it = m_monsterSpawnAnims.erase(it);
+        } else {
+            m_particles->emit(it->pos, 4, {
+                .color = {255, 255, 255, 32},
+                .size = 0.3f,
+            });
+
+            ++it;
         }
     }
 
