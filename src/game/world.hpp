@@ -64,6 +64,7 @@ private:
 public:
     // XXX(aren): lazy
     Vector2i m_min = V2I_ZERO, m_max = V2I_ZERO;
+    std::string m_filename;
     std::string m_name;
     std::string m_comment;
     std::vector<MonsterWave> m_monsterWaves;

@@ -109,4 +109,23 @@ void WorldMapScene::renderUI() {
     );
 }
 
+void WorldMapScene::gotoNextImmediately(const std::string &currentWorldName) {
+    auto index = std::find(m_worldNames.begin(), m_worldNames.end(), currentWorldName);
+
+    if (index == m_worldNames.end() || (index + 1) == m_worldNames.end()) {
+        return;
+    }
+
+    const auto &next = m_worldNames[index - m_worldNames.begin() + 1];
+
+    auto loaded = World::load(next);
+    ASSERT(loaded);
+    Game::removeScene<WorldMapScene>();
+    Game::addScene<IngameScene>(std::move(loaded));
+
+    Game::addScene<TransitionScene>(true);
+    auto scene = Game::getScene<TransitionScene>();
+    scene->setIsWhite(true);
+}
+
 } // namespace aren

@@ -29,14 +29,16 @@ void IngameScene::update(float dt) {
         if (prevEndFlag == false && currEndFlag) {
             Game::addScene<TransitionScene>(false);
             bool win = m_world->hasPlayerWon();
+            std::string currentWorldName = m_world->m_filename;
             Game::getScene<TransitionScene>()->setIsWhite(win);
-            Game::getScene<TransitionScene>()->setOnEnd([win]() {
+            Game::getScene<TransitionScene>()->setOnEnd([win, currentWorldName]() {
                 auto initCopiedWorld = std::move(Game::getScene<IngameScene>()->m_worldInitCoied);
                 Game::removeScene<IngameScene>();
 
                 if (Game::getScene<EditorScene>() == nullptr) {
                     if (win) {
                         Game::addScene<WorldMapScene>();
+                        Game::getScene<WorldMapScene>()->gotoNextImmediately(currentWorldName);
                     } else {
                         Game::addScene<IngameScene>(std::move(initCopiedWorld));
                     }

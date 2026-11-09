@@ -97,6 +97,7 @@ World::World(const World *world) : World() {
     m_player->m_bounces = world->m_player->m_bounces;
     m_player->m_beamDisabled = world->m_player->m_beamDisabled;
 
+    m_filename = world->m_filename;
     m_name = world->m_name;
     m_comment = world->m_comment;
 
@@ -943,6 +944,7 @@ std::unique_ptr<World> World::load(const std::string &name) {
     if (tok != std::to_string(LVL_VERSION)) return nullptr;
 
     auto world = std::make_unique<World>();
+    world->m_filename = name;
 
     while (is >> tok) {
         if (tok == "name") {
