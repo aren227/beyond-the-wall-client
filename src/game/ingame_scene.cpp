@@ -7,6 +7,8 @@
 #include "ingame_scene.hpp"
 #include "world_map_scene.hpp"
 #include "../render.hpp"
+#include "../storage.hpp"
+#include "consts.hpp"
 
 #if DEBUG
 #include "editor_scene.hpp"
@@ -48,6 +50,13 @@ void IngameScene::update(float dt) {
 
                 if (isEditorActive() == false) {
                     if (win) {
+                        // NOTE(aren): add this level to the set
+                        auto names = Storage::getList(COMPLETED_WORLD_KEYS);
+                        if (std::find(names.begin(), names.end(), currentWorldName) == names.end()) {
+                            names.push_back(currentWorldName);
+                        }
+                        Storage::setList(COMPLETED_WORLD_KEYS, names);
+
                         Game::addScene<WorldMapScene>();
                         Game::getScene<WorldMapScene>()->gotoNextImmediately(currentWorldName);
                     } else {

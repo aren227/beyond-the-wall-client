@@ -24,4 +24,6 @@ static const std::string IMAGE_BASE  = _evalBaseResourcePath() + "images";
 static const std::string SPRITE_BASE = _evalBaseResourcePath() + "sprites";
 static const std::string WORLD_BASE  = _evalBaseResourcePath() + "worlds";
 
+static constexpr const char *COMPLETED_WORLD_KEYS = "game_completed_world_keys";
+
 } // namespace aren
