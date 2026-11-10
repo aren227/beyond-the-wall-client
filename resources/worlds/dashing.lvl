@@ -3,8 +3,9 @@ name ;Dashing\_and\_Dashing
 comment ;
 balance
 beam_bounces 1
+beam_disabled 0
 exit
-tiles 141
+tiles 142
 pos 1 1
 type 1
 color 7
@@ -240,7 +241,7 @@ mult 1
 name ;
 exit
 pos 5 11
-type 1
+type 3
 color 7
 mult 1
 name ;
@@ -426,13 +427,19 @@ mult 1
 name ;
 exit
 pos 11 5
-type 1
+type 3
+color 7
+mult 1
+name ;
+exit
+pos 11 11
+type 7
 color 7
 mult 1
 name ;
 exit
 pos 11 17
-type 1
+type 3
 color 7
 mult 1
 name ;
@@ -612,7 +619,7 @@ mult 1
 name ;
 exit
 pos 17 11
-type 1
+type 3
 color 7
 mult 1
 name ;
