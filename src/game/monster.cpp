@@ -19,7 +19,7 @@ static void registerDefs() {
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,
-        .meleeCooldown = 1,
+        .meleeCooldown = 0.5f,
     };
     tmp["dumb_slow"] = {
         .maxHealth = 100.0f,
@@ -27,7 +27,7 @@ static void registerDefs() {
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,
-        .meleeCooldown = 1,
+        .meleeCooldown = 0.5f,
     };
     tmp["dumb_oneshot"] = {
         .maxHealth = 10.0f,
@@ -35,7 +35,7 @@ static void registerDefs() {
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,
-        .meleeCooldown = 1,
+        .meleeCooldown = 0.5f,
     };
     tmp["dumb_stop"] = {
         .maxHealth = 100.0f,
@@ -43,7 +43,7 @@ static void registerDefs() {
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,
-        .meleeCooldown = 1,
+        .meleeCooldown = 0.5f,
     };
     tmp["dumb_fast"] = {
         .maxHealth = 100.0f,
@@ -51,7 +51,7 @@ static void registerDefs() {
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,
-        .meleeCooldown = 1,
+        .meleeCooldown = 0.5f,
     };
     tmp["shooter"] = {
         .maxHealth = 100.0f,
