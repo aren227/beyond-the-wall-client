@@ -29,6 +29,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
     if (m_dashTime <= 0 && input.lengthSqr() > 0 && Input::keyPressed(KEY_SPACE)) {
         m_dashTime = m_dashDuration + m_dashCooldown;
         m_dashDir = input.normalized();
+        m_hasDashed = true;
     }
 
     if (m_dashTime > m_dashCooldown) {

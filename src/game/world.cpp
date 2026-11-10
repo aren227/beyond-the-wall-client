@@ -644,6 +644,10 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
         auto a = cam.worldToScreen(V2f(11.5f, -5));
         Render::drawText(a, 60, WHITE, "Beyond The Wall", Render::TextAlignH::Center, Render::TextAlignV::Center);
     }
+    if (m_name == "Encounter" && m_player->m_hasDashed == false) {
+        auto a = cam.worldToScreen(V2f(-0.5f, 1.5f));
+        Render::drawText(a, 40, WHITE, "Press Space to Dash", Render::TextAlignH::Center, Render::TextAlignV::Center);
+    }
 }
 
 Vector2f World::moveRect(const Rect &rect, const Vector2f &delta, ObjectLayer layer) const {

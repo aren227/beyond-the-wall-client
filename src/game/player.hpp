@@ -40,6 +40,7 @@ public:
 
     bool m_beamDisabled = false;
     bool m_consumedConsumable = false;
+    bool m_hasDashed = false;
 
 private:
     Vector2f m_pos = V2F_ZERO;
