@@ -2,7 +2,8 @@ version 1
 name ;Sectors
 comment ;
 balance
-beam_bounces 2
+beam_bounces 1
+beam_disabled 0
 exit
 tiles 121
 pos -11 -11
