@@ -38,6 +38,30 @@ static constexpr Color4f getColorForBeam(BeamColor color) {
     }
 }
 
+static constexpr Color4f getPureColorForBeam(BeamColor color) {
+    switch (color) {
+        case BeamColor::Black:
+            return Color4f(0, 0, 0, 1);
+        case BeamColor::Red:
+            return Color4f(1, 0, 0, 1);
+        case BeamColor::Green:
+            return Color4f(0, 1, 0, 1);
+        case BeamColor::Yellow:
+            return Color4f(1, 1, 0, 1);
+        case BeamColor::Blue:
+            return Color4f(0, 0, 1, 1);
+        case BeamColor::Magenta:
+            return Color4f(1, 0, 1, 1);
+        case BeamColor::Cyan:
+            return Color4f(0, 1, 1, 1);
+        case BeamColor::White:
+            return Color4f(1, 1, 1, 1);
+        default:
+            ASSERT(false);
+            return Color4f(1, 1, 1, 1);
+    }
+}
+
 struct BeamProp {
     BeamColor color = BeamColor::White;
     float strength = 1.0f;

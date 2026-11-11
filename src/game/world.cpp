@@ -456,11 +456,12 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
             auto v = V2i(x, y);
             if (getTile(v).isTransparent()) {
                 auto vf = v.f() + V2f(0.5f, 0.5f);
-                float light = 0;
+                Color4f light = C4F_BLACK;
                 { // player
                     float playerDist = (vf - m_player->pos()).length();
-                    if (playerDist < 4) {
-                        light = 1 - playerDist / 4;
+                    constexpr float PLAYER_LIGHT_DIST = 4;
+                    if (playerDist < PLAYER_LIGHT_DIST) {
+                        light = light + C4F_WHITE * (1 - playerDist / PLAYER_LIGHT_DIST);
                     }
                 }
                 for (const auto &it : m_player->beam().segments) {
@@ -469,18 +470,29 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                     }
 
                     float beamDist = Vector2f::segmentDist(it.start, it.end, vf);
-                    if (beamDist < 2) {
-                        light = std::max(light, 1 - beamDist / 2);
+                    const float BEAM_LIGHT_DIST = 2;
+                    if (beamDist < BEAM_LIGHT_DIST) {
+                        light = light + getPureColorForBeam(it.prop.color) * (1 - beamDist / BEAM_LIGHT_DIST);
                     }
                 }
 
-                if (light > 0) {
+                if (light != C4F_BLACK) {
+                    // light = std::min(light, 1.0f);
                     auto a = cam.worldToScreen(v.f());
                     auto b = cam.worldToScreen((v + V2I_ONE).f());
 
-                    const auto &sprite = spriteSet.ditherOpaque;
-                    const int tag = std::ceil(light * 6);
-                    sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, C4F_WHITE * 0.2f);
+                    std::array<float, 3> rgbV = { light.r, light.g, light.b };
+                    std::array<Color4f, 3> rgbC = {
+                        Color4f(0.1f, 0.0f, 0.0f, 1),
+                        Color4f(0.0f, 0.1f, 0.0f, 1),
+                        Color4f(0.0f, 0.0f, 0.1f, 1)
+                    };
+
+                    for (int i = 0; i < 3; i++) {
+                        const auto &sprite = spriteSet.ditherOpaque;
+                        const int tag = std::ceil(std::clamp(rgbV[i], 0.0f, 1.0f) * 6);
+                        sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, rgbC[i]);
+                    }
                 }
             }
         }

@@ -216,6 +216,7 @@ struct Color4f {
 
     inline constexpr operator ::Color() const { return {uint8_t(r * 255), uint8_t(g * 255), uint8_t(b * 255), uint8_t(a * 255)}; }
 
+    inline constexpr Color4f operator+(Color4f v) const { return {r + v.r, g + v.g, b + v.b, a + v.a}; }
     inline constexpr Color4f operator*(Color4f v) const { return {r * v.r, g * v.g, b * v.b, a * v.a}; }
     inline constexpr Color4f operator*(float s) const { return {r * s, g * s, b * s, a * s}; }
     inline constexpr Color4f operator/(float s) const { return {r / s, g / s, b / s, a / s}; }
