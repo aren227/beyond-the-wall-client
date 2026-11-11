@@ -122,22 +122,43 @@ void Sprite::renderEdge(Vector2f center, Vector2f dirlen, int tag, float rotatio
     if (tex) {
         float w = tex->width();
         float h = tex->height();
+        // NOTE(aren): just safe guard..
+        ASSERT(w == h);
         bool isHorizontal = (dirlen.y == 0);
 
         Rect rectD, rectS;
         if (isHorizontal) {
-            rectS = rectD = Rect(center, V2f(dirlen.x, h * scaler));
+            rectS = Rect(
+                (center.x - dirlen.x * 0.5f) / scaler,
+                0,
+                dirlen.x / scaler,
+                h * (rotation == 180 ? -1 : 1)
+            );
+            rectD = Rect(
+                center.x - dirlen.x * 0.5f,
+                center.y - h * scaler * 0.5f,
+                dirlen.x,
+                h * scaler
+            );
+            rotation = 0;
+
         } else {
-            // XXX(aren): xy was transposed due to 90 degree rotation
-            rectS = rectD = Rect(center, V2f(dirlen.y, w * scaler));
+            rectS = Rect(
+                (center.y - dirlen.y * 0.5f) / scaler,
+                0,
+                dirlen.y / scaler,
+                h * (rotation == 270 ? -1 : 1)
+            );
+            rectD = Rect(
+                center.x + h * scaler * 0.5f,
+                center.y - dirlen.y * 0.5f,
+                dirlen.y,
+                h * scaler
+            );
+            rotation = 90;
         }
 
-        rectS.x /= scaler;
-        rectS.y = 0;
-        rectS.w /= scaler;
-        rectS.h /= scaler;
-
-        DrawTexturePro(::Texture2D(*tex), rectS, rectD, V2f(rectS.w, rectS.h) * scaler * 0.5f, rotation, color);
+        DrawTexturePro(::Texture2D(*tex), rectS, rectD, V2F_ZERO, rotation, color);
     }
 }
 
