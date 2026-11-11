@@ -223,6 +223,7 @@ void World::update(Camera &cam, float dt) {
     for (auto it = m_monsters.begin(); it != m_monsters.end();) {
         if ((*it)->m_health <= 0) {
             m_particles->emit((*it)->pos(), 20, {
+                .color = getColorForBeam((*it)->m_color).byte(),
                 .speed = 10.0f,
                 .life = 0.5f,
                 .size = 0.5f,
