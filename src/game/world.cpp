@@ -320,6 +320,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 return 0;
             case TileType::Barrier:
             case TileType::Wall:
+            case TileType::End:
                 return 1;
             case TileType::Glass:
             case TileType::WorldPortal:
