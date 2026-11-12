@@ -109,6 +109,20 @@ Monster::Monster(World *world, const std::string &typeName, const Vector2f &pos)
     m_bulletSpreadCount = def.bulletSpreadCount;
     m_color = def.color;
     m_meleeCooldown = def.meleeCooldown;
+
+    m_foots[0].relative = V2f(-0.25f, -0.25f);
+    m_foots[1].relative = V2f(-0.25f, 0.25f);
+    m_foots[2].relative = V2f(0.25f, -0.25f);
+    m_foots[3].relative = V2f(0.25f, 0.25f);
+
+    m_foots[0].stopWhile = 1;
+    m_foots[1].stopWhile = 0;
+    m_foots[2].stopWhile = 0;
+    m_foots[3].stopWhile = 1;
+
+    for (auto &it : m_foots) {
+        it.world = m_pos + it.relative;
+    }
 }
 
 Monster::~Monster() {}
@@ -248,6 +262,26 @@ void Monster::update(const PathQuery *query, float dt) {
             };
         }
     }
+
+    for (auto &it : m_foots) {
+        auto target = m_pos + it.relative;
+        auto delta = target - it.world;
+        if (it.isMoving) {
+            it.t += dt;
+            float t = std::clamp(it.t / it.movingDuration, 0.0f, 1.0f);
+            it.world = Vector2f::lerp(it.prevWorld, target, t);
+            if (t >= 1.0f) {
+                it.isMoving = false;
+                it.world = target;
+                it.t = 0;
+            }
+        } else {
+            if (delta.lengthSqr() >= std::pow(it.maxDist, 2) && m_foots[it.stopWhile].isMoving == false) {
+                it.isMoving = true;
+                it.prevWorld = it.world;
+            }
+        }
+    }
 }
 
 void Monster::render(const Camera &cam) {
@@ -264,15 +298,9 @@ void Monster::render(const Camera &cam) {
         DrawRectangleV(center - half + V2F_ONE * thickness, half * 2 - V2F_ONE * thickness * 2, BLACK);
     };
 
-    auto footPoses = {
-        V2f(-0.25f, -0.25f),
-        V2f(-0.25f, 0.25f),
-        V2f(0.25f, -0.25f),
-        V2f(0.25f, 0.25f),
-    };
     const float footRadius = 0.1f;
-    for (const auto &it : footPoses) {
-        drawRect(m_pos + it, V2f(1.1f, 1.0f) * footRadius);
+    for (const auto &it : m_foots) {
+        drawRect(it.world, V2f(1.1f, 1.0f) * footRadius);
     }
 
     drawRect(m_pos, V2F_ONE * 0.25f);
