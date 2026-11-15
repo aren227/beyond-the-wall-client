@@ -459,7 +459,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
             if (getTile(v).isTransparent()) {
                 auto vf = v.f() + V2f(0.5f, 0.5f);
                 Color4f light = C4F_BLACK;
-                { // player
+                if (m_player->m_visible) { // player
                     float playerDist = (vf - m_player->pos()).length();
                     constexpr float PLAYER_LIGHT_DIST = 4;
                     if (playerDist < PLAYER_LIGHT_DIST) {
