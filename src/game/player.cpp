@@ -170,6 +170,7 @@ void Player::render(const Camera &cam) {
         DrawRectangleV(center - half + V2F_ONE * thickness, half * 2 - V2F_ONE * thickness * 2, BLACK);
     };
 
+    // NOTE(aren): player moving speed is too fast for animation...
     auto footPoses = {
         V2f(-0.25f, -0.25f),
         V2f(-0.25f, 0.25f),

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "beam.hpp"
+#include "foot.hpp"
 
 namespace aren {
 
@@ -87,16 +88,6 @@ private:
     float m_meleeCooldown = 1.0f;
     float m_meleeLength = 2.0f;
 
-    struct Foot {
-        Vector2f relative;
-        Vector2f prevWorld;
-        Vector2f world;
-        bool isMoving = false;
-        float movingDuration = 0.15f;
-        float t = 0;
-        int stopWhile = -1;
-        float maxDist = 0.2f;
-    };
     std::array<Foot, 4> m_foots;
 };
 
