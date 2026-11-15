@@ -485,9 +485,9 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
 
                     std::array<float, 3> rgbV = { light.r, light.g, light.b };
                     std::array<Color4f, 3> rgbC = {
-                        Color4f(0.1f, 0.0f, 0.0f, 1),
-                        Color4f(0.0f, 0.1f, 0.0f, 1),
-                        Color4f(0.0f, 0.0f, 0.1f, 1)
+                        Color4f(0.11f, 0.0f, 0.0f, 1),
+                        Color4f(0.0f, 0.11f, 0.0f, 1),
+                        Color4f(0.0f, 0.0f, 0.11f, 1)
                     };
 
                     for (int i = 0; i < 3; i++) {
