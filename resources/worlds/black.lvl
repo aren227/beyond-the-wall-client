@@ -835,7 +835,7 @@ condition_type 2
 condition_value ;1
 exit
 zones 1 ;b
-monster_name ;dumb
+monster_name ;shooter
 condition_type 1
 condition_value ;
 exit

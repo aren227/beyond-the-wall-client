@@ -66,7 +66,7 @@ void WorldMapScene::update(float dt) {
 }
 
 void WorldMapScene::render() {
-    ClearBackground(BLACK);
+    ClearBackground(BLACK_BG.f().linear());
 
     // camera
     {

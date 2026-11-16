@@ -27,6 +27,9 @@ enum class EditorBrush {
     Red,
     Green,
     Blue,
+    Yellow,
+    Magenta,
+    Cyan,
     x1,
     x2,
     x4,
@@ -49,6 +52,9 @@ static const char *getBrushName(EditorBrush type) {
         case EditorBrush::Red: return "Red";
         case EditorBrush::Green: return "Green";
         case EditorBrush::Blue: return "Blue";
+        case EditorBrush::Yellow: return "Yellow";
+        case EditorBrush::Magenta: return "Magenta";
+        case EditorBrush::Cyan: return "Cyan";
         case EditorBrush::x1: return "x1";
         case EditorBrush::x2: return "x2";
         case EditorBrush::x4: return "x4";
@@ -77,6 +83,9 @@ static BeamColor getBeamColorFromBrush(EditorBrush type) {
         case EditorBrush::Red: return BeamColor::Red;
         case EditorBrush::Green: return BeamColor::Green;
         case EditorBrush::Blue: return BeamColor::Blue;
+        case EditorBrush::Yellow: return BeamColor::Yellow;
+        case EditorBrush::Magenta: return BeamColor::Magenta;
+        case EditorBrush::Cyan: return BeamColor::Cyan;
         case EditorBrush::White:
         default:
             return BeamColor::White;
@@ -149,7 +158,7 @@ void EditorScene::update(float dt) {
 }
 
 void EditorScene::render() {
-    ClearBackground(BLACK);
+    ClearBackground(BLACK_BG.f().linear());
 
     Render::begin2DCam(m_cam);
 

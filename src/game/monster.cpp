@@ -39,7 +39,7 @@ static void registerDefs() {
     };
     tmp["dumb_stop"] = {
         .maxHealth = 100.0f,
-        .speed = 0.5f,
+        .speed = 0.0f,
         .bulletSpeed = 8.0f,
         .bulletFireCooldown = 0.5f,
         .bulletSpreadCount = 0,
@@ -283,7 +283,7 @@ void Monster::render(const Camera &cam) {
     const float footRadius = 0.1f;
     for (const auto &it : m_foots) {
         drawRect(it.world, V2f(1.1f, 1.0f) * footRadius);
-        DrawLineEx(it.world, m_pos, thickness, WHITE);
+        DrawLineEx(it.world, m_pos, thickness, color);
     }
 
     drawRect(m_pos, V2F_ONE * 0.25f);

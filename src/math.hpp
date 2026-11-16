@@ -227,6 +227,8 @@ struct Color4f {
     inline constexpr Color4f brighten(float intensity) const { return { r * intensity, g * intensity, b * intensity, a}; }
 
     inline constexpr Color4b byte() const;
+
+    inline constexpr Color4f linear() const { return { std::pow(r, 2.2f), std::pow(g, 2.2f), std::pow(b, 2.2f), a }; }
 };
 
 static constexpr Color4f C4F_WHITE = Color4f(1, 1, 1, 1);

@@ -3,8 +3,15 @@ name ;Oneshot
 comment ;mamke\_monster\_health\_lower
 balance
 beam_bounces 1
+beam_disabled 0
 exit
-tiles 70
+tiles 74
+pos 7 9
+type 1
+color 7
+mult 1
+name ;
+exit
 pos 7 10
 type 1
 color 7
@@ -59,98 +66,116 @@ color 7
 mult 1
 name ;
 exit
-pos 11 11
-type 4
+pos 7 19
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 11 12
-type 4
+pos 7 20
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 11 13
-type 4
+pos 7 21
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 11 14
-type 4
+pos 7 22
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 11 15
-type 4
+pos 7 23
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 11 16
-type 4
+pos 7 24
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 11 17
-type 4
+pos 7 25
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 11
-type 4
+pos 7 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 12
-type 4
+pos 8 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 13
-type 4
+pos 8 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 14
-type 4
+pos 9 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 15
-type 4
+pos 9 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 16
-type 4
+pos 10 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 12 17
-type 4
+pos 10 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 13 11
-type 4
+pos 11 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 13 12
-type 4
+pos 11 26
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 12 9
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 12 26
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 13 9
+type 1
 color 7
 mult 1
 name ;
@@ -173,26 +198,14 @@ color 7
 mult 1
 name ;
 exit
-pos 13 16
-type 4
+pos 13 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 13 17
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 11
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 12
-type 4
+pos 14 9
+type 1
 color 7
 mult 1
 name ;
@@ -210,18 +223,6 @@ mult 1
 name ;
 exit
 pos 14 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 16
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 14 17
 type 4
 color 7
 mult 1
@@ -245,14 +246,14 @@ color 7
 mult 1
 name ;
 exit
-pos 15 11
-type 4
+pos 14 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 15 12
-type 4
+pos 15 9
+type 1
 color 7
 mult 1
 name ;
@@ -275,98 +276,74 @@ color 7
 mult 1
 name ;
 exit
-pos 15 16
-type 4
+pos 15 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 15 17
-type 4
+pos 16 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 11
-type 4
+pos 16 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 12
-type 4
+pos 17 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 13
-type 4
+pos 17 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 14
-type 4
+pos 18 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 15
-type 4
+pos 18 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 16
-type 4
+pos 19 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 16 17
-type 4
+pos 19 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 17 11
-type 4
+pos 20 9
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 17 12
-type 4
+pos 20 26
+type 1
 color 7
 mult 1
 name ;
 exit
-pos 17 13
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 14
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 15
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 16
-type 4
-color 7
-mult 1
-name ;
-exit
-pos 17 17
-type 4
+pos 21 9
+type 1
 color 7
 mult 1
 name ;
@@ -420,6 +397,54 @@ mult 1
 name ;
 exit
 pos 21 18
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 19
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 20
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 21
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 22
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 23
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 24
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 25
+type 1
+color 7
+mult 1
+name ;
+exit
+pos 21 26
 type 1
 color 7
 mult 1

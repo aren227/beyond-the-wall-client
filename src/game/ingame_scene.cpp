@@ -79,7 +79,7 @@ void IngameScene::update(float dt) {
 }
 
 void IngameScene::render() {
-    ClearBackground(BLACK);
+    ClearBackground(BLACK_BG.f().linear());
 
     // camera
     {
