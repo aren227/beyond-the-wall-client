@@ -1,8 +1,9 @@
 version 1
-name ;Present\_For\_You
+name ;Presents\_For\_You
 comment ;needs\_to\_refine,\_red\_is\_relatively\_harder\_than\_green
 balance
 beam_bounces 1
+beam_disabled 0
 exit
 tiles 285
 pos 2 2

@@ -3,8 +3,9 @@ name ;Narrow\_Slit
 comment ;
 balance
 beam_bounces 1
+beam_disabled 0
 exit
-tiles 131
+tiles 133
 pos -3 -22
 type 1
 color 7
@@ -323,6 +324,12 @@ color 7
 mult 1
 name ;
 exit
+pos 4 -9
+type 1
+color 7
+mult 1
+name ;
+exit
 pos 4 -6
 type 3
 color 7
@@ -373,6 +380,12 @@ name ;
 exit
 pos 6 -16
 type 2
+color 7
+mult 1
+name ;
+exit
+pos 6 -10
+type 3
 color 7
 mult 1
 name ;
