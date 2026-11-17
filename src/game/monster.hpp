@@ -17,6 +17,7 @@ struct MonsterDefinition {
     int bulletSpreadCount = 1; // zero means does not shoot
     float meleeCooldown = 1;
     BeamColor color = BeamColor::White;
+    bool chained = false;
 };
 
 struct MonsterMelee {
@@ -65,6 +66,7 @@ public:
 
     float m_health = 100;
     BeamColor m_color = BeamColor::White;
+    bool m_chained = false;
 
 private:
     World *m_world;

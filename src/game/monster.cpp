@@ -45,6 +45,15 @@ static void registerDefs() {
         .bulletSpreadCount = 0,
         .meleeCooldown = 0.5f,
     };
+    tmp["dumb_stop_chained"] = {
+        .maxHealth = 100.0f,
+        .speed = 0.0f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 0,
+        .meleeCooldown = 0.5f,
+        .chained = true,
+    };
     tmp["dumb_fast"] = {
         .maxHealth = 100.0f,
         .speed = 6.0f,
@@ -109,6 +118,7 @@ Monster::Monster(World *world, const std::string &typeName, const Vector2f &pos)
     m_bulletSpreadCount = def.bulletSpreadCount;
     m_color = def.color;
     m_meleeCooldown = def.meleeCooldown;
+    m_chained = def.chained;
 
     m_foots[0].relative = V2f(-0.25f, -0.25f);
     m_foots[1].relative = V2f(-0.25f, 0.25f);

@@ -62,6 +62,8 @@ void Player::update(const Camera &cam, World *world, float dt) {
 
         m_beam.segments.clear();
 
+        std::vector<Monster *> chainedMonsters;
+
         for (int i = 0; i <= m_bounces; i++) {
             float minT = INFINITY;
             std::variant<std::monostate, Vector2i, Monster *> hit;
@@ -95,12 +97,17 @@ void Player::update(const Camera &cam, World *world, float dt) {
             for (const auto &monster : world->monsters()) {
                 float t = Vector2f::lineCircle(segment.start, segment.dir, monster->pos(), monster->m_hitRadius);
                 if (t >= 0 && t < minT) {
-                    minT = t;
-                    hit = monster.get();
-                    normal = V2f(1, 0);
-                    beamProp = {
-                        .color = BeamColor::Black,
-                    };
+                    if (monster->m_chained) {
+                        // NOTE(aren): pierce
+                        chainedMonsters.push_back(monster.get());
+                    } else {
+                        minT = t;
+                        hit = monster.get();
+                        normal = V2f(1, 0);
+                        beamProp = {
+                            .color = BeamColor::Black,
+                        };
+                    }
                 }
             }
 
@@ -146,6 +153,27 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 break;
             }
         }
+
+        std::sort(chainedMonsters.begin(), chainedMonsters.end());
+        chainedMonsters.erase(std::unique(chainedMonsters.begin(), chainedMonsters.end()), chainedMonsters.end());
+
+        size_t spawnedChainedCount = 0;
+        for (const auto &it : world->monsters()) {
+            if (it.get()->m_chained) spawnedChainedCount++;
+        }
+
+        if (chainedMonsters.size() == spawnedChainedCount) {
+            float damage = m_baseAttackDamage * dt;
+            for (const auto &it : chainedMonsters) {
+                it->takeDamage(damage);
+                auto particleColor = getColorForBeam(BeamColor::White);
+                particleColor.a = 0.5f;
+                world->particles()->emit(it->pos(), 5, {
+                    .color = particleColor.byte(),
+                });
+            }
+        }
+
     } else {
         m_beam.segments.clear();
     }
