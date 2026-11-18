@@ -9,6 +9,7 @@
 #include "../particles.hpp"
 #include "../render.hpp"
 #include "../ui.hpp"
+#include "../random.hpp"
 #include "raymath.h"
 #include <random>
 #include <fstream>
@@ -251,6 +252,28 @@ void World::update(Camera &cam, float dt) {
         }
 
         it->moveDelta(accumDelta);
+    }
+
+    // NOTE(aren): chained monster
+    for (const auto &it : m_monsters) {
+        if (it->m_chained) {
+            for (const auto &jt : m_monsters) {
+                if (jt->m_chained) {
+                    for (int i = 0; i < 1; i++) {
+                        auto a = it->pos();
+                        auto b = jt->pos();
+                        auto n = (b-a).normalized().perp();
+                        auto p = Vector2f::lerp(a, b, Random::value());
+                        m_particles->emit(p, 1, {
+                            .color = {255, 255, 255, 16},
+                            .size = 0.2f,
+                            // .normal = n,
+                            // .angle = 30,
+                        });
+                    }
+                }
+            }
+        }
     }
 
     m_particles->update(dt);
