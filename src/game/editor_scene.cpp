@@ -339,7 +339,7 @@ void EditorScene::renderUI() {
 
     if (m_tabEnabled) GuiLock();
 
-    GuiScrollPanel({0, 0, UI_PANEL_WIDTH, float(GetScreenHeight())}, "Tools", {0, 0, UI_PANEL_WIDTH-16, 2000}, &m_panelScroll, &m_panelView);
+    GuiScrollPanel({0, 0, UI_PANEL_WIDTH, float(GetScreenHeight())}, "Tools", {0, 0, UI_PANEL_WIDTH-16, 3000}, &m_panelScroll, &m_panelView);
 
     float y = 30;
     y += m_panelScroll.y;
