@@ -28,6 +28,9 @@ void SpriteSet::load() {
     if (Sprite::load("star", star) == false) {
         ASSERT(false);
     }
+    if (Sprite::load("bg_brick", bgBrick) == false) {
+        ASSERT(false);
+    }
 
     constexpr std::array<std::array<int, 4>, 4> DITHER_MATRIX = {{
         {0, 8, 2, 10},

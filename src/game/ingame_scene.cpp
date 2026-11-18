@@ -107,6 +107,7 @@ void IngameScene::render() {
     for (int i = 0; i < 4; i++) {
         m_world->renderTiles(m_cam, m_spriteSet, i);
     }
+    m_world->renderTilesMisc(m_cam, m_spriteSet);
 
     m_world->renderDecos(m_cam, m_spriteSet);
 

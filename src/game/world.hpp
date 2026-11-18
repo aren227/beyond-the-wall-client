@@ -13,6 +13,7 @@ class Monster;
 class PathQuery;
 class Particles;
 class Bullet;
+class Noise;
 
 class World {
 public:
@@ -31,6 +32,7 @@ public:
     Tile &at(const Vector2i &pos) { return m_tiles[pos]; }
 
     void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category);
+    void renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet);
     void renderDecos(const Camera &cam, const SpriteSet &spriteSet);
     void renderMisc(const Camera &cam, const SpriteSet &spriteSet);
 #if DEBUG
@@ -83,6 +85,7 @@ private:
     std::unique_ptr<PathQuery> m_pathQuery;
     std::unique_ptr<Particles> m_particles;
     std::vector<std::unique_ptr<Bullet>> m_bullets;
+    std::unique_ptr<Noise> m_noise;
 
     struct MonsterSpawnAnimation {
         Vector2f pos;

@@ -6,6 +6,7 @@
 #include "path_query.hpp"
 #include "consts.hpp"
 #include "bullet.hpp"
+#include "noise.hpp"
 #include "../particles.hpp"
 #include "../render.hpp"
 #include "../ui.hpp"
@@ -89,6 +90,8 @@ World::World() {
     m_pathQuery = std::make_unique<PathQuery>();
 
     m_particles = std::make_unique<Particles>();
+
+    m_noise = std::make_unique<Noise>();
 }
 
 World::World(const World *world) : World() {
@@ -456,6 +459,36 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
             }
         }
     }
+}
+
+void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
+    // NOTE(aren): random noise texture
+    for (int x = m_min.x; x <= m_max.x; x++) {
+        for (int y = m_min.y; y <= m_max.y; y++) {
+            auto v = V2i(x, y);
+            if (getTile(v).isTransparent()) {
+                const int SUBDIV = 2;
+                for (int a = 0; a < SUBDIV; a++) {
+                    for (int b = 0; b < SUBDIV; b++) {
+                        float xx = x + (1 / (SUBDIV * 2.0f)) * (a * 2 + 1);
+                        float yy = y + (1 / (SUBDIV * 2.0f)) * (b * 2 + 1);
+
+                        float noise = m_noise->sample(V2f(xx, yy) * 10, 3);
+
+                        auto v0 = V2f(xx, yy) - V2F_ONE * (1 / (SUBDIV * 2.0f));
+                        auto v1 = V2f(xx, yy) + V2F_ONE * (1 / (SUBDIV * 2.0f));
+
+                        auto aa = cam.worldToScreen(v0);
+                        auto bb = cam.worldToScreen(v1);
+
+                        if (noise > 0.6f) {
+                            spriteSet.bgBrick.render(Rect(aa.x, aa.y, bb.x-aa.x, bb.y-aa.y), 0, 0, PIXEL_SCALER, C4F_WHITE * 0.3f);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // NOTE(aren): Overlay after render all stuffs
     BeginBlendMode(BLEND_MULTIPLIED);
@@ -480,43 +513,55 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
         for (int y = m_min.y; y <= m_max.y; y++) {
             auto v = V2i(x, y);
             if (getTile(v).isTransparent()) {
-                auto vf = v.f() + V2f(0.5f, 0.5f);
-                Color4f light = C4F_BLACK;
-                if (m_player->m_visible) { // player
-                    float playerDist = (vf - m_player->pos()).length();
-                    constexpr float PLAYER_LIGHT_DIST = 4;
-                    if (playerDist < PLAYER_LIGHT_DIST) {
-                        light = light + C4F_WHITE * (1 - playerDist / PLAYER_LIGHT_DIST);
-                    }
-                }
-                for (const auto &it : m_player->beam().segments) {
-                    if (it.prop.color == BeamColor::Black) {
-                        break;
-                    }
+                const int SUBDIV = 2;
+                for (int aa = 0; aa < SUBDIV; aa++) {
+                    for (int bb = 0; bb < SUBDIV; bb++) {
+                        float xx = x + (1 / (SUBDIV * 2.0f)) * (aa * 2 + 1);
+                        float yy = y + (1 / (SUBDIV * 2.0f)) * (bb * 2 + 1);
+                        auto vf = V2f(xx, yy);
 
-                    float beamDist = Vector2f::segmentDist(it.start, it.end, vf);
-                    const float BEAM_LIGHT_DIST = 2;
-                    if (beamDist < BEAM_LIGHT_DIST) {
-                        light = light + getPureColorForBeam(it.prop.color) * (1 - beamDist / BEAM_LIGHT_DIST);
-                    }
-                }
+                        Color4f light = C4F_BLACK;
 
-                if (light != C4F_BLACK) {
-                    // light = std::min(light, 1.0f);
-                    auto a = cam.worldToScreen(v.f());
-                    auto b = cam.worldToScreen((v + V2I_ONE).f());
+                        if (m_player->m_visible) { // player
+                            float playerDist = (vf - m_player->pos()).length();
+                            constexpr float PLAYER_LIGHT_DIST = 4;
+                            if (playerDist < PLAYER_LIGHT_DIST) {
+                                light = light + C4F_WHITE * (1 - playerDist / PLAYER_LIGHT_DIST);
+                            }
+                        }
+                        for (const auto &it : m_player->beam().segments) {
+                            if (it.prop.color == BeamColor::Black) {
+                                break;
+                            }
 
-                    std::array<float, 3> rgbV = { light.r, light.g, light.b };
-                    std::array<Color4f, 3> rgbC = {
-                        Color4f(0.11f, 0.0f, 0.0f, 1),
-                        Color4f(0.0f, 0.11f, 0.0f, 1),
-                        Color4f(0.0f, 0.0f, 0.11f, 1)
-                    };
+                            float beamDist = Vector2f::segmentDist(it.start, it.end, vf);
+                            const float BEAM_LIGHT_DIST = 2;
+                            if (beamDist < BEAM_LIGHT_DIST) {
+                                light = light + getPureColorForBeam(it.prop.color) * (1 - beamDist / BEAM_LIGHT_DIST);
+                            }
+                        }
 
-                    for (int i = 0; i < 3; i++) {
-                        const auto &sprite = spriteSet.ditherOpaque;
-                        const int tag = std::ceil(std::clamp(rgbV[i], 0.0f, 1.0f) * 6);
-                        sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, rgbC[i]);
+                        if (light != C4F_BLACK) {
+                            // light = std::min(light, 1.0f);
+                            auto v0 = V2f(xx, yy) - V2F_ONE * (1 / (SUBDIV * 2.0f));
+                            auto v1 = V2f(xx, yy) + V2F_ONE * (1 / (SUBDIV * 2.0f));
+
+                            auto a = cam.worldToScreen(v0);
+                            auto b = cam.worldToScreen(v1);
+
+                            std::array<float, 3> rgbV = { light.r, light.g, light.b };
+                            std::array<Color4f, 3> rgbC = {
+                                Color4f(0.2f, 0.0f, 0.0f, 1),
+                                Color4f(0.0f, 0.2f, 0.0f, 1),
+                                Color4f(0.0f, 0.0f, 0.2f, 1)
+                            };
+
+                            for (int i = 0; i < 3; i++) {
+                                const auto &sprite = spriteSet.ditherOpaque;
+                                const int tag = std::ceil(std::clamp(rgbV[i], 0.0f, 1.0f) * 6);
+                                sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, rgbC[i]);
+                            }
+                        }
                     }
                 }
             }

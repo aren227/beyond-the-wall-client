@@ -18,6 +18,7 @@ public:
     std::array<Sprite, int(TileType::__MAX__)> tiles;
     Sprite deco;
     Sprite star;
+    Sprite bgBrick;
     Sprite dither;
     Sprite ditherOpaque;
     Sprite ditherBlack;
