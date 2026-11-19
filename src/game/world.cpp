@@ -309,7 +309,7 @@ const Tile &World::getTile(const Vector2i &pos) const {
     static Tile s_tile;
 
     if (pos.x < m_min.x || pos.x > m_max.x || pos.y < m_min.y || pos.y > m_max.y) {
-        s_tile = Tile(TileType::Barrier);
+        s_tile = Tile(TileType::Void);
         return s_tile;
     }
 
@@ -347,6 +347,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
             case TileType::Barrier:
             case TileType::Wall:
             case TileType::End:
+            case TileType::Void:
                 return 1;
             case TileType::Glass:
             case TileType::WorldPortal:
@@ -505,25 +506,42 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
                 sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, WHITE);
             }
 
-            if (x == m_min.x || x == m_max.x || y == m_min.y || y == m_max.y) {
+            bool vl = getTile(V2i(x - 1, y)).m_type == TileType::Void;
+            bool vr = getTile(V2i(x + 1, y)).m_type == TileType::Void;
+            bool vt = getTile(V2i(x, y - 1)).m_type == TileType::Void;
+            bool vb = getTile(V2i(x, y + 1)).m_type == TileType::Void;
+
+            bool vlb = getTile(V2i(x - 1, y - 1)).m_type == TileType::Void;
+            bool vrb = getTile(V2i(x + 1, y - 1)).m_type == TileType::Void;
+            bool vlt = getTile(V2i(x - 1, y + 1)).m_type == TileType::Void;
+            bool vrt = getTile(V2i(x + 1, y + 1)).m_type == TileType::Void;
+
+            if (vl || vr || vt || vb || vlb || vrb || vlt || vrt) {
                 const int SUBDIV = 4;
                 for (int a = 0; a < SUBDIV; a++) {
                     for (int b = 0; b < SUBDIV; b++) {
-                        float xx = x + (1 / (SUBDIV * 2.0f)) * (a * 2 + 1);
-                        float yy = y + (1 / (SUBDIV * 2.0f)) * (b * 2 + 1);
+                        float fx = (1 / (SUBDIV * 2.0f)) * (a * 2 + 1);
+                        float fy = (1 / (SUBDIV * 2.0f)) * (b * 2 + 1);
 
-                        float t0 = m_min.x, t1 = m_max.x + 1;
-                        float t2 = m_min.y, t3 = m_max.y + 1;
-                        float xDist = std::min(std::abs(t0 - xx), std::abs(t1 - xx));
-                        float yDist = std::min(std::abs(t2 - yy), std::abs(t3 - yy));
-                        float dist = std::min(xDist, yDist);
+                        float dist = 1.0f;
+                        if (vl) dist = std::min(dist, fx);
+                        if (vr) dist = std::min(dist, 1 - fx);
+                        if (vt) dist = std::min(dist, fy);
+                        if (vb) dist = std::min(dist, 1 - fy);
+                        if (vlb) dist = std::min(dist, fx + fy);
+                        if (vrb) dist = std::min(dist, (1 - fx) + fy);
+                        if (vlt) dist = std::min(dist, fx + (1 - fy));
+                        if (vrt) dist = std::min(dist, (1 - fx) + (1 - fy));
 
                         // NOTE(aren): Outmost region
                         if (dist > 1 - 1.0f / SUBDIV) {
                             continue;
                         }
 
-                        float noise = m_noise->sample(V2f(xx, yy) * 10, 3);
+                        float xx = x + fx;
+                        float yy = y + fy;
+
+                        // float noise = m_noise->sample(V2f(xx, yy) * 10, 3);
 
                         auto v0 = V2f(xx, yy) - V2F_ONE * (1 / (SUBDIV * 2.0f));
                         auto v1 = V2f(xx, yy) + V2F_ONE * (1 / (SUBDIV * 2.0f));

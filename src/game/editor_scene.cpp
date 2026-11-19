@@ -15,6 +15,7 @@ namespace aren {
 enum class EditorBrush {
     Wall = 0,
     Barrier,
+    Void,
     Glass,
     Sand,
     Zone,
@@ -40,6 +41,7 @@ static const char *getBrushName(EditorBrush type) {
     switch (type) {
         case EditorBrush::Wall: return "Wall";
         case EditorBrush::Barrier: return "Barrier";
+        case EditorBrush::Void: return "Void";
         case EditorBrush::Glass: return "Glass";
         case EditorBrush::Sand: return "Sand";
         case EditorBrush::Zone: return "Zone";
@@ -66,6 +68,7 @@ static TileType getTileTypeFromBrush(EditorBrush type) {
     switch (type) {
         case EditorBrush::Wall: return TileType::Wall;
         case EditorBrush::Barrier: return TileType::Barrier;
+        case EditorBrush::Void: return TileType::Void;
         case EditorBrush::Glass: return TileType::Glass;
         case EditorBrush::Sand: return TileType::Sand;
         case EditorBrush::Zone: return TileType::Zone;
@@ -397,6 +400,23 @@ void EditorScene::renderUI() {
 
         GuiCheckBox({10, y, 30, 30}, "Beam Disabled", &m_world->player()->m_beamDisabled);
         y += 35;
+
+        if (GuiButton({10, y, 180, 30}, "Auto Void Fill")) {
+            for (int x = m_world->m_min.x; x <= m_world->m_max.x; x++) {
+                for (int y = m_world->m_min.y; y <= m_world->m_max.y; y++) {
+                    int cnt = 0;
+                    for (int i = -1; i <= 1; i++) {
+                        for (int j = -1; j <= 1; j++) {
+                            cnt += m_world->getTile(V2i(x + i, y + j)).isSolid();
+                        }
+                    }
+
+                    if (cnt >= 3 * 3) {
+                        m_world->at(V2i(x, y)) = Tile(TileType::Void);
+                    }
+                }
+            }
+        }
 
         // NOTE(aren): Pass 2, need to stack backward
         if (m_loadWorldNameEnabled) GuiUnlock();

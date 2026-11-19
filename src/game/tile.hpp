@@ -19,6 +19,7 @@ enum class TileType {
     WorldPortal,
     Consumable,
     InvisibleBarrier,
+    Void,
     __MAX__
 };
 

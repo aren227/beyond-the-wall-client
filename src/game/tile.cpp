@@ -46,7 +46,7 @@ BeamProp Tile::beamProp() const {
 }
 
 BeamColor Tile::beamColor() const {
-    if (m_type == TileType::Barrier) {
+    if (m_type == TileType::Barrier || m_type == TileType::Void) {
         return BeamColor::Black;
     }
     if (m_type == TileType::End) {
