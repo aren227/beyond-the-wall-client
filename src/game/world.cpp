@@ -504,6 +504,39 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
                 const int tag = std::floor((health / TILE_MAX_HEALTH) * 15) + 1;
                 sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, WHITE);
             }
+
+            if (x == m_min.x || x == m_max.x || y == m_min.y || y == m_max.y) {
+                const int SUBDIV = 4;
+                for (int a = 0; a < SUBDIV; a++) {
+                    for (int b = 0; b < SUBDIV; b++) {
+                        float xx = x + (1 / (SUBDIV * 2.0f)) * (a * 2 + 1);
+                        float yy = y + (1 / (SUBDIV * 2.0f)) * (b * 2 + 1);
+
+                        float t0 = m_min.x, t1 = m_max.x + 1;
+                        float t2 = m_min.y, t3 = m_max.y + 1;
+                        float xDist = std::min(std::abs(t0 - xx), std::abs(t1 - xx));
+                        float yDist = std::min(std::abs(t2 - yy), std::abs(t3 - yy));
+                        float dist = std::min(xDist, yDist);
+
+                        // NOTE(aren): Outmost region
+                        if (dist > 1 - 1.0f / SUBDIV) {
+                            continue;
+                        }
+
+                        float noise = m_noise->sample(V2f(xx, yy) * 10, 3);
+
+                        auto v0 = V2f(xx, yy) - V2F_ONE * (1 / (SUBDIV * 2.0f));
+                        auto v1 = V2f(xx, yy) + V2F_ONE * (1 / (SUBDIV * 2.0f));
+
+                        auto aa = cam.worldToScreen(v0);
+                        auto bb = cam.worldToScreen(v1);
+
+                        const auto &sprite = spriteSet.ditherOpaque;
+                        const int tag = std::floor(dist * 15) + 1;
+                        sprite.render(Rect(aa.x, aa.y, bb.x-aa.x, bb.y-aa.y), tag, 0, PIXEL_SCALER, WHITE);
+                    }
+                }
+            }
         }
     }
     EndBlendMode();

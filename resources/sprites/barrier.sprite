@@ -1,24 +1,30 @@
-layers 4
+layers 5
 
 layer 0
+    filename barrier01
+    tag 0
+    render 0
+exit
+
+layer 1
     filename edge03_corner01
     tag 1
     render 0
 exit
 
-layer 1
+layer 2
     filename edge03_corner02
     tag 2
     render 0
 exit
 
-layer 2
+layer 3
     filename edge03_corner03
     tag 3
     render 0
 exit
 
-layer 3
+layer 4
     filename edge03_edge01
     tag 4
     render 0
