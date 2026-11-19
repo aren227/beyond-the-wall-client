@@ -407,7 +407,8 @@ void EditorScene::renderUI() {
                     int cnt = 0;
                     for (int i = -1; i <= 1; i++) {
                         for (int j = -1; j <= 1; j++) {
-                            cnt += m_world->getTile(V2i(x + i, y + j)).isSolid();
+                            const auto &tile = m_world->getTile(V2i(x + i, y + j));
+                            cnt += tile.isSolid() && tile.isTransparent() == false && tile.isDamagable() == false;
                         }
                     }
 
