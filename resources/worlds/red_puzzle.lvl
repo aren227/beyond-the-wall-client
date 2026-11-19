@@ -5,7 +5,7 @@ balance
 beam_bounces 1
 beam_disabled 0
 exit
-tiles 89
+tiles 109
 pos -1 -15
 type 2
 color 7
@@ -535,6 +535,126 @@ mult 1
 name ;
 exit
 pos 16 4
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -15
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -14
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -13
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -12
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -11
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -10
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -9
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -8
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -7
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -6
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -5
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -4
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -3
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -2
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 -1
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 0
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 1
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 2
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 3
+type 2
+color 7
+mult 1
+name ;
+exit
+pos 17 4
 type 2
 color 7
 mult 1

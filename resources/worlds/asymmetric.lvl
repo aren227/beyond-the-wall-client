@@ -5,579 +5,579 @@ balance
 beam_bounces 1
 beam_disabled 0
 exit
-tiles 526
+tiles 518
 pos -5 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -7
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -7
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 0
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -4 1
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -4 2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -4 3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -4 4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -4 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -7
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -3 -2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -3 -1
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -3 0
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -3 4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -3 5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -3 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -7
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -2 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -2 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -2 -2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -2 5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -2 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -7
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -1 -6
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -1 -5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -1 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -595,79 +595,79 @@ mult 1
 name ;
 exit
 pos -1 5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos -1 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 0 -8
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 0 -7
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 0 -6
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -679,67 +679,67 @@ mult 1
 name ;1
 exit
 pos 0 5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 0 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 1 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 1 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 1 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 1 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 1 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 1 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 1 -10
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 1 -9
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 1 -8
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -757,61 +757,61 @@ mult 1
 name ;1
 exit
 pos 1 4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 1 5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 1 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 2 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 2 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 2 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 2 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 2 -12
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 2 -11
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 2 -10
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -823,43 +823,43 @@ mult 1
 name ;1
 exit
 pos 2 2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 2 3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 2 4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 2 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 2 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 3 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 3 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -871,13 +871,13 @@ mult 1
 name ;
 exit
 pos 3 -13
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 3 -12
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -889,55 +889,55 @@ mult 1
 name ;1
 exit
 pos 3 0
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 3 1
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 3 2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 3 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 3 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 3 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 3 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 4 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 4 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -949,67 +949,67 @@ mult 1
 name ;
 exit
 pos 4 -2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 4 -1
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 4 0
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 4 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 4 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 4 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 4 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 4 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 4 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1021,79 +1021,79 @@ mult 1
 name ;
 exit
 pos 5 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 5 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 5 -2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 5 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 5 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 6 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 6 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1104,20 +1104,8 @@ color 7
 mult 1
 name ;
 exit
-pos 6 -4
-type 2
-color 7
-mult 1
-name ;
-exit
-pos 6 -3
-type 2
-color 7
-mult 1
-name ;
-exit
 pos 6 -2
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1135,49 +1123,49 @@ mult 1
 name ;
 exit
 pos 6 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 6 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 6 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 6 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 6 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 6 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 7 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 7 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1189,25 +1177,19 @@ mult 1
 name ;
 exit
 pos 7 -13
-type 2
-color 7
-mult 1
-name ;
-exit
-pos 7 -2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 7 -1
-type 2
+type 5
 color 7
 mult 1
-name ;
+name ;2
 exit
 pos 7 0
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1225,61 +1207,61 @@ mult 1
 name ;
 exit
 pos 7 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 7 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 7 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 7 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 8 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 8 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 8 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 8 -13
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 8 -12
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 8 -11
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1296,20 +1278,8 @@ color 7
 mult 1
 name ;2
 exit
-pos 8 0
-type 2
-color 7
-mult 1
-name ;
-exit
-pos 8 1
-type 2
-color 7
-mult 1
-name ;
-exit
 pos 8 2
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1327,61 +1297,61 @@ mult 1
 name ;
 exit
 pos 8 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 8 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 9 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 9 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 9 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 9 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 9 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 9 -11
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 9 -10
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 9 -9
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1398,18 +1368,6 @@ color 7
 mult 1
 name ;2
 exit
-pos 9 2
-type 2
-color 7
-mult 1
-name ;
-exit
-pos 9 3
-type 2
-color 7
-mult 1
-name ;
-exit
 pos 9 4
 type 1
 color 7
@@ -1423,67 +1381,67 @@ mult 1
 name ;
 exit
 pos 9 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 10 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 10 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 10 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 10 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 10 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 10 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 10 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 10 -9
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 10 -8
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 10 -7
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1500,12 +1458,6 @@ color 7
 mult 1
 name ;2
 exit
-pos 10 4
-type 2
-color 7
-mult 1
-name ;
-exit
 pos 10 5
 type 1
 color 7
@@ -1513,79 +1465,79 @@ mult 1
 name ;
 exit
 pos 10 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 -7
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 11 -6
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 11 -5
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1597,91 +1549,91 @@ mult 1
 name ;2
 exit
 pos 11 5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 11 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -7
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 -5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 12 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1711,91 +1663,91 @@ mult 1
 name ;
 exit
 pos 12 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -7
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 13 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1825,67 +1777,67 @@ mult 1
 name ;
 exit
 pos 13 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -8
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 -7
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1897,13 +1849,13 @@ mult 1
 name ;
 exit
 pos 14 -5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 14 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -1933,121 +1885,121 @@ mult 1
 name ;
 exit
 pos 14 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -10
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -9
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -8
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 15 -7
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 15 -6
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 15 5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 15 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 -12
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 -11
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -2059,25 +2011,25 @@ mult 1
 name ;
 exit
 pos 16 -9
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 16 -8
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 16 3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 16 4
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -2089,199 +2041,199 @@ mult 1
 name ;
 exit
 pos 16 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -13
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -12
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 17 -11
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 17 -10
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 17 1
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 17 2
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 17 3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 17 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 -13
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 18 -12
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 18 -1
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 18 0
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 18 1
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 18 2
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 -14
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 19 -13
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 19 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 19 -2
-type 2
+type 1
 color 7
 mult 1
 name ;
@@ -2293,55 +2245,55 @@ mult 1
 name ;
 exit
 pos 19 0
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 19 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -2353,85 +2305,85 @@ mult 1
 name ;
 exit
 pos 20 -5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 20 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 20 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 20 -2
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 20 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -2443,91 +2395,91 @@ mult 1
 name ;
 exit
 pos 21 -6
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 21 -5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 21 -4
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 -3
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 -2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 21 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -2557,97 +2509,97 @@ mult 1
 name ;b
 exit
 pos 22 -7
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 22 -6
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 22 -5
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 -4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 -3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 -2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 22 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -2677,97 +2629,97 @@ mult 1
 name ;b
 exit
 pos 23 -7
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 23 -6
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 23 -5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 23 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 23 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 23 -2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 23 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -2797,73 +2749,73 @@ mult 1
 name ;b
 exit
 pos 24 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 24 -2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 24 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -2881,73 +2833,73 @@ mult 1
 name ;
 exit
 pos 25 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 25 -2
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 25 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -2959,205 +2911,205 @@ mult 1
 name ;
 exit
 pos 26 -13
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 26 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 26 -2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 26 6
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 -15
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 -14
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 -13
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -12
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -11
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -10
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -9
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -8
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -7
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -6
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -5
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -4
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -3
-type 2
+type 1
 color 7
 mult 1
 name ;
 exit
 pos 27 -2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 -1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 0
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 1
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 27 6
-type 1
+type 11
 color 7
 mult 1
 name ;

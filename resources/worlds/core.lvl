@@ -7,25 +7,25 @@ beam_disabled 0
 exit
 tiles 258
 pos -7 -19
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -7 -18
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -7 -17
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -7 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -133,37 +133,37 @@ mult 1
 name ;
 exit
 pos -7 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -7 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -7 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -7 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -6 -19
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -6 -18
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -205,19 +205,19 @@ mult 1
 name ;
 exit
 pos -6 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -6 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -5 -19
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -247,13 +247,13 @@ mult 1
 name ;
 exit
 pos -5 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos -4 -19
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -277,7 +277,7 @@ mult 1
 name ;
 exit
 pos -4 5
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1285,7 +1285,7 @@ mult 1
 name ;
 exit
 pos 14 -19
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1303,13 +1303,13 @@ mult 1
 name ;
 exit
 pos 14 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 -19
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1339,19 +1339,19 @@ mult 1
 name ;
 exit
 pos 15 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 -19
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 -18
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1393,37 +1393,37 @@ mult 1
 name ;
 exit
 pos 16 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 5
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -19
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -18
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -17
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 -16
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -1531,25 +1531,25 @@ mult 1
 name ;
 exit
 pos 17 2
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 3
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 4
-type 1
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 5
-type 1
+type 11
 color 7
 mult 1
 name ;

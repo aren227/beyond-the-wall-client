@@ -3,6 +3,7 @@ name ;Hourglass
 comment ;
 balance
 beam_bounces 1
+beam_disabled 0
 exit
 tiles 230
 pos -1 5
@@ -294,7 +295,7 @@ mult 1
 name ;
 exit
 pos 10 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -348,13 +349,13 @@ mult 1
 name ;
 exit
 pos 10 23
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 11 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -432,13 +433,13 @@ mult 1
 name ;
 exit
 pos 11 23
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 12 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -528,13 +529,13 @@ mult 1
 name ;
 exit
 pos 12 23
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 13 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -636,13 +637,13 @@ mult 1
 name ;
 exit
 pos 13 23
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 14 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -744,13 +745,13 @@ mult 1
 name ;
 exit
 pos 14 23
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 15 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -852,13 +853,13 @@ mult 1
 name ;
 exit
 pos 15 23
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 16 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -948,13 +949,13 @@ mult 1
 name ;
 exit
 pos 16 23
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 17 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -1032,13 +1033,13 @@ mult 1
 name ;
 exit
 pos 17 23
-type 2
+type 11
 color 7
 mult 1
 name ;
 exit
 pos 18 5
-type 2
+type 11
 color 7
 mult 1
 name ;
@@ -1092,7 +1093,7 @@ mult 1
 name ;
 exit
 pos 18 23
-type 2
+type 11
 color 7
 mult 1
 name ;

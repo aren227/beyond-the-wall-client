@@ -3,6 +3,7 @@ name ;Tower\_Defense
 comment ;
 balance
 beam_bounces 0
+beam_disabled 0
 exit
 tiles 157
 pos -11 -10
