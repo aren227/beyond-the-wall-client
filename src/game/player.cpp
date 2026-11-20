@@ -14,45 +14,47 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::update(const Camera &cam, World *world, float dt) {
-    Vector2f input = V2F_ZERO;
+    if (m_controlDisabled == false) {
+        Vector2f input = V2F_ZERO;
 
-    if (Input::keyDown(KEY_W)) input += V2f(0, -1);
-    if (Input::keyDown(KEY_S)) input += V2f(0, 1);
-    if (Input::keyDown(KEY_A)) input += V2f(-1, 0);
-    if (Input::keyDown(KEY_D)) input += V2f(1, 0);
+        if (Input::keyDown(KEY_W)) input += V2f(0, -1);
+        if (Input::keyDown(KEY_S)) input += V2f(0, 1);
+        if (Input::keyDown(KEY_A)) input += V2f(-1, 0);
+        if (Input::keyDown(KEY_D)) input += V2f(1, 0);
 
-    Vector2f velocityTarget = ((input == V2F_ZERO) ? V2F_ZERO : input.normalized()) * m_speed;
-    Vector2f velocityNext = Vector2f::moveTorwards(m_velocity, velocityTarget, ((input == V2F_ZERO) ? m_brakeRate : m_accelRate) * dt);
+        Vector2f velocityTarget = ((input == V2F_ZERO) ? V2F_ZERO : input.normalized()) * m_speed;
+        Vector2f velocityNext = Vector2f::moveTorwards(m_velocity, velocityTarget, ((input == V2F_ZERO) ? m_brakeRate : m_accelRate) * dt);
 
-    m_dashTime = std::max(m_dashTime - dt, 0.0f);
+        m_dashTime = std::max(m_dashTime - dt, 0.0f);
 
-    if (m_dashTime <= 0 && input.lengthSqr() > 0 && Input::keyPressed(KEY_SPACE)) {
-        m_dashTime = m_dashDuration + m_dashCooldown;
-        m_dashDir = input.normalized();
-        m_hasDashed = true;
+        if (m_dashTime <= 0 && input.lengthSqr() > 0 && Input::keyPressed(KEY_SPACE)) {
+            m_dashTime = m_dashDuration + m_dashCooldown;
+            m_dashDir = input.normalized();
+            m_hasDashed = true;
+        }
+
+        if (m_dashTime > m_dashCooldown) {
+            velocityNext = m_dashDir * m_dashSpeed;
+
+            world->particles()->emit(m_pos, 2, {
+                .color = {255, 255, 255, 20},
+                .size = 0.4f,
+            });
+        }
+
+        if (m_immortalTime > 0) {
+            m_immortalTime = std::max(m_immortalTime - dt, 0.0f);
+        }
+
+        m_velocity = velocityNext;
+
+        auto delta = m_velocity * dt;
+        delta = world->moveRect(Rect(m_pos - V2F_ONE * m_collExtents, 2 * m_collExtents * V2F_ONE), delta, ObjectLayer::Player);
+        m_pos += delta;
+
+        auto camPos = cam.screenToWorld(Input::mousePosition());
+        m_dir = (camPos - m_pos).normalized();
     }
-
-    if (m_dashTime > m_dashCooldown) {
-        velocityNext = m_dashDir * m_dashSpeed;
-
-        world->particles()->emit(m_pos, 2, {
-            .color = {255, 255, 255, 20},
-            .size = 0.4f,
-        });
-    }
-
-    if (m_immortalTime > 0) {
-        m_immortalTime = std::max(m_immortalTime - dt, 0.0f);
-    }
-
-    m_velocity = velocityNext;
-
-    auto delta = m_velocity * dt;
-    delta = world->moveRect(Rect(m_pos - V2F_ONE * m_collExtents, 2 * m_collExtents * V2F_ONE), delta, ObjectLayer::Player);
-    m_pos += delta;
-
-    auto camPos = cam.screenToWorld(Input::mousePosition());
-    m_dir = (camPos - m_pos).normalized();
 
     // beam raycast
     if (isDashing() == false && m_beamDisabled == false) {
@@ -231,6 +233,10 @@ void Player::render(const Camera &cam) {
 void Player::teleport(const Vector2f &dst) {
     m_pos = dst;
     m_velocity = V2F_ZERO;
+}
+
+void Player::look(const Vector2f &dst) {
+    m_dir = (dst - m_pos).normalized();
 }
 
 void Player::takeDamage(float damage) {

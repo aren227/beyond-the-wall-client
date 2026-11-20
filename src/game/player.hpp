@@ -18,6 +18,7 @@ public:
     inline const Vector2f &pos() const { return m_pos; }
     inline const Vector2f &vel() const { return m_velocity; }
     void teleport(const Vector2f &dst);
+    void look(const Vector2f &dst);
 
     inline const Beam &beam() const { return m_beam; }
     inline bool isDashing() const { return m_dashTime > m_dashCooldown; }
@@ -41,6 +42,7 @@ public:
     bool m_beamDisabled = false;
     bool m_consumedConsumable = false;
     bool m_hasDashed = false;
+    bool m_controlDisabled = false;
 
 private:
     Vector2f m_pos = V2F_ZERO;

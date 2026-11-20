@@ -359,6 +359,14 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
         }
     };
 
+    const auto tileSprite = [&](const Vector2i &v) -> const Sprite & {
+        const auto &tile = getTile(v);
+        if (tile.m_type == TileType::WorldPortal) {
+            return tile.m_completed ? spriteSet.tile(TileType::Wall) : spriteSet.tile(TileType::Barrier);
+        }
+        return spriteSet.tile(tile.m_type);
+    };
+
     // draw tiles
     for (int x = m_min.x; x <= m_max.x; x++) {
         for (int y = m_min.y; y <= m_max.y; y++) {
@@ -367,7 +375,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 auto a = cam.worldToScreen(v.f());
                 auto b = cam.worldToScreen((v + V2I_ONE).f());
 
-                const auto &sprite = spriteSet.tile(getTileType(v));
+                const auto &sprite = tileSprite(v);
                 const Color4f color = getColor(v);
 
                 Render::pushColor(C4F_WHITE.brighten(getTile(v).m_multiplier));
@@ -395,7 +403,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                     s_vertexHalfs[center] = it.half;
 
                     auto main = V2i(x + it.mainX, y + it.mainY);
-                    const auto &sprite = spriteSet.tile(getTileType(main));
+                    const auto &sprite = tileSprite(main);
                     const auto color = getColor(main);
 
                     auto a = cam.worldToScreen(center.f());
@@ -432,7 +440,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 auto aSS = cam.worldToScreen(a);
                 auto bSS = cam.worldToScreen(b);
 
-                const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x + 1, y)));
+                const auto &sprite = tileSprite(p ? V2i(x, y) : V2i(x + 1, y));
                 const auto color = getColor(p ? V2i(x, y) : V2i(x + 1, y));
 
                 Render::pushColor(C4F_WHITE.brighten(getTile(p ? V2i(x, y) : V2i(x + 1, y)).m_multiplier));
@@ -451,7 +459,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
                 auto aSS = cam.worldToScreen(a);
                 auto bSS = cam.worldToScreen(b);
 
-                const auto &sprite = spriteSet.tile(p ? getTileType(V2i(x, y)) : getTileType(V2i(x, y + 1)));
+                const auto &sprite = tileSprite(p ? V2i(x, y) : V2i(x, y + 1));
                 const auto color = getColor(p ? V2i(x, y) : V2i(x, y + 1));
 
                 Render::pushColor(C4F_WHITE.brighten(getTile(p ? V2i(x, y) : V2i(x, y + 1)).m_multiplier));
@@ -691,7 +699,7 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
             auto idx = tile.m_name.find(',');
             if (idx != std::string::npos) {
                 auto a = cam.worldToScreen(v.f() + V2f(0.5f, 0.5f));
-                if (UI::textButton(a, 40, tile.m_name.substr(0, idx).c_str(), Render::TextAlignH::Center, Render::TextAlignV::Center, tile.m_completed ? GOLD2 : C4B_WHITE)) {
+                if (UI::textButton(a, 30, tile.m_name.substr(0, idx).c_str(), Render::TextAlignH::Center, Render::TextAlignV::Center, tile.m_completed ? GOLD2 : C4B_WHITE)) {
                     if (m_onWorldPortalClick) {
                         m_onWorldPortalClick(tile.m_name.substr(idx+1));
                     }

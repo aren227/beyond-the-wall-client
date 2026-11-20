@@ -13,10 +13,13 @@
 namespace aren {
 
 WorldMapScene::WorldMapScene() : Scene(TYPE) {
-    m_world = World::load("world_map");
+    m_world = World::load("worldmap2");
     ASSERT(m_world);
 
-    m_world->player()->m_visible = false;
+    // m_world->player()->m_visible = false;
+    m_world->player()->m_controlDisabled = true;
+    m_world->player()->teleport(m_world->player()->pos() + V2f(0, 0.5f));
+    m_world->player()->look(m_world->player()->pos() + V2f(1, 1));
 
     m_world->m_onWorldPortalClick = [](std::string name) {
         Game::addScene<TransitionScene>(false);

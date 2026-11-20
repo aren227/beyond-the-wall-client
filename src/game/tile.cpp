@@ -52,6 +52,9 @@ BeamColor Tile::beamColor() const {
     if (m_type == TileType::End) {
         return BeamColor::Black;
     }
+    if (m_type == TileType::WorldPortal) {
+        return m_completed ? BeamColor::Yellow : BeamColor::Black;
+    }
     return m_color;
 }
 

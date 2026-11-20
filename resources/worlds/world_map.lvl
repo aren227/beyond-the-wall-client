@@ -3,11 +3,11 @@ name ;
 comment ;
 balance
 beam_bounces 2
-beam_disabled 1
+beam_disabled 0
 exit
 tiles 71
 pos -6 -6
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -79,7 +79,7 @@ mult 1
 name ;
 exit
 pos -6 6
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -355,7 +355,7 @@ mult 1
 name ;
 exit
 pos 6 -6
-type 1
+type 11
 color 7
 mult 1
 name ;
@@ -427,7 +427,7 @@ mult 1
 name ;
 exit
 pos 6 6
-type 1
+type 11
 color 7
 mult 1
 name ;
