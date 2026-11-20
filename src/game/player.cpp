@@ -114,7 +114,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
             }
 
             if (minT < INFINITY) {
-                segment.end = segment.start + segment.dir * std::max(minT - 0.01f, 0.0f);
+                segment.end = segment.start + segment.dir * std::max(minT - 0.001f, 0.0f);
 
                 m_beam.segments.push_back(segment);
 
