@@ -187,16 +187,16 @@ mult 1
 name ;
 exit
 pos 1 -10
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;21,sandcastle
 exit
 pos 1 -8
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;20,005_sand
 exit
 pos 1 -2
 type 8
@@ -217,16 +217,16 @@ mult 1
 name ;
 exit
 pos 2 -12
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;22,treasure_hunt
 exit
 pos 2 -6
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;19,red_puzzle
 exit
 pos 2 -4
 type 8
@@ -247,22 +247,22 @@ mult 1
 name ;
 exit
 pos 3 -10
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;23,oneshot
 exit
 pos 3 -8
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;18,pillars
 exit
 pos 3 -2
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;03,core
 exit
 pos 3 1
 type 1
@@ -277,22 +277,22 @@ mult 1
 name ;
 exit
 pos 4 -12
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;24,hourglass
 exit
 pos 4 -6
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;17,rgbw
 exit
 pos 4 -4
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;04,tower_defense
 exit
 pos 4 1
 type 1
@@ -307,22 +307,22 @@ mult 1
 name ;
 exit
 pos 5 -10
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;25,two_bounces
 exit
 pos 5 -8
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;16,far_away2
 exit
 pos 5 -2
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;05,pseudo_reflection
 exit
 pos 5 1
 type 1
@@ -337,22 +337,22 @@ mult 1
 name ;
 exit
 pos 6 -12
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;26,hidden_color
 exit
 pos 6 -6
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;15,christmas
 exit
 pos 6 -4
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;06,first_reflection
 exit
 pos 6 1
 type 1
@@ -367,22 +367,22 @@ mult 1
 name ;
 exit
 pos 7 -10
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;27,green_encounter
 exit
 pos 7 -8
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;14,otherside
 exit
 pos 7 -2
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;07,asymmetric
 exit
 pos 7 1
 type 1
@@ -397,22 +397,22 @@ mult 1
 name ;
 exit
 pos 8 -12
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;28,cymk
 exit
 pos 8 -6
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;13,red_encounter
 exit
 pos 8 -4
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;08,black
 exit
 pos 8 1
 type 1
@@ -427,22 +427,22 @@ mult 1
 name ;
 exit
 pos 9 -10
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;29,turret
 exit
 pos 9 -8
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;12,red
 exit
 pos 9 -2
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;09,sectors
 exit
 pos 9 1
 type 1
@@ -457,22 +457,22 @@ mult 1
 name ;
 exit
 pos 10 -12
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;30,shooting_range
 exit
 pos 10 -6
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;11,dashing
 exit
 pos 10 -4
-type 1
+type 8
 color 7
 mult 1
-name ;
+name ;10,narrow_slit
 exit
 pos 10 1
 type 1
@@ -487,10 +487,10 @@ mult 1
 name ;
 exit
 pos 11 -10
-type 2
+type 8
 color 7
 mult 1
-name ;
+name ;31,guess_what
 exit
 pos 11 -8
 type 1
