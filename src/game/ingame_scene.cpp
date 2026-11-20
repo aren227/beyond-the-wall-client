@@ -42,9 +42,10 @@ void IngameScene::update(float dt) {
         if (prevEndFlag == false && currEndFlag) {
             Game::addScene<TransitionScene>(false);
             bool win = m_world->hasPlayerWon();
+            bool perfectlyWin = m_world->hasPlayerWon() && m_world->player()->m_health >= m_world->player()->m_maxHealth;
             std::string currentWorldName = m_world->m_filename;
             Game::getScene<TransitionScene>()->setIsWhite(win);
-            Game::getScene<TransitionScene>()->setOnEnd([win, currentWorldName]() {
+            Game::getScene<TransitionScene>()->setOnEnd([win, perfectlyWin, currentWorldName]() {
                 auto initCopiedWorld = std::move(Game::getScene<IngameScene>()->m_worldInitCoied);
                 Game::removeScene<IngameScene>();
 
@@ -56,6 +57,14 @@ void IngameScene::update(float dt) {
                             names.push_back(currentWorldName);
                         }
                         Storage::setList(COMPLETED_WORLD_KEYS, names);
+
+                        if (perfectlyWin) {
+                            auto names = Storage::getList(PERFECTLY_COMPLETED_WORLD_KEYS);
+                            if (std::find(names.begin(), names.end(), currentWorldName) == names.end()) {
+                                names.push_back(currentWorldName);
+                            }
+                            Storage::setList(PERFECTLY_COMPLETED_WORLD_KEYS, names);
+                        }
 
                         Game::addScene<WorldMapScene>();
                         Game::getScene<WorldMapScene>()->gotoNextImmediately(currentWorldName);

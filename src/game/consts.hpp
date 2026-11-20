@@ -27,6 +27,7 @@ static const std::string SPRITE_BASE = _evalBaseResourcePath() + "sprites";
 static const std::string WORLD_BASE  = _evalBaseResourcePath() + "worlds";
 
 static constexpr const char *COMPLETED_WORLD_KEYS = "game_completed_world_keys";
+static constexpr const char *PERFECTLY_COMPLETED_WORLD_KEYS = "game_perfectly_completed_world_keys";
 
 static constexpr Color4b BLACK_BG = Color4b(21, 23, 25, 255);
 
