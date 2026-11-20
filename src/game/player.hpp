@@ -9,10 +9,10 @@ class World;
 
 class Player {
 public:
-    Player();
+    Player(World *world);
     virtual ~Player();
 
-    void update(const Camera &cam, World *world, float dt);
+    void update(const Camera &cam, float dt);
     void render(const Camera &cam);
 
     inline const Vector2f &pos() const { return m_pos; }
@@ -45,6 +45,8 @@ public:
     bool m_controlDisabled = false;
 
 private:
+    World *m_world = nullptr;
+
     Vector2f m_pos = V2F_ZERO;
     Vector2f m_velocity = V2F_ZERO;
 

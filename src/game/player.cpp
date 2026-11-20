@@ -9,11 +9,11 @@
 
 namespace aren {
 
-Player::Player() {}
+Player::Player(World *world) : m_world(world) {}
 
 Player::~Player() {}
 
-void Player::update(const Camera &cam, World *world, float dt) {
+void Player::update(const Camera &cam, float dt) {
     if (m_controlDisabled == false) {
         Vector2f input = V2F_ZERO;
 
@@ -36,7 +36,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
         if (m_dashTime > m_dashCooldown) {
             velocityNext = m_dashDir * m_dashSpeed;
 
-            world->particles()->emit(m_pos, 2, {
+            m_world->particles()->emit(m_pos, 2, {
                 .color = {255, 255, 255, 20},
                 .size = 0.4f,
             });
@@ -49,7 +49,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
         m_velocity = velocityNext;
 
         auto delta = m_velocity * dt;
-        delta = world->moveRect(Rect(m_pos - V2F_ONE * m_collExtents, 2 * m_collExtents * V2F_ONE), delta, ObjectLayer::Player);
+        delta = m_world->moveRect(Rect(m_pos - V2F_ONE * m_collExtents, 2 * m_collExtents * V2F_ONE), delta, ObjectLayer::Player);
         m_pos += delta;
 
         auto camPos = cam.screenToWorld(Input::mousePosition());
@@ -76,11 +76,11 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 float t;
                 Vector2i h, n;
 
-                if (world->raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, h, n)) {
+                if (m_world->raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, h, n)) {
                     minT = t;
                     hit = h;
                     normal = n.f();
-                    beamProp = world->getTile(h).beamProp();
+                    beamProp = m_world->getTile(h).beamProp();
                 } else {
                     ASSERT(false);
                 }
@@ -96,7 +96,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
                     };
                 }
             }
-            for (const auto &monster : world->monsters()) {
+            for (const auto &monster : m_world->monsters()) {
                 float t = Vector2f::lineCircle(segment.start, segment.dir, monster->pos(), monster->m_hitRadius);
                 if (t >= 0 && t < minT) {
                     if (monster->m_chained) {
@@ -126,11 +126,15 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 segment.prop = segment.prop.merge(beamProp);
 
                 if (Vector2i *pos = std::get_if<Vector2i>(&hit)) {
-                    if (world->contains(*pos)) {
-                        world->at(*pos).takeDamage(dt, damage);
+                    if (m_world->contains(*pos)) {
+                        m_world->at(*pos).takeDamage(dt, damage);
                         auto particleColor = getColorForBeam(prevColor);
+                        // XXX(aren): gold exception
+                        if (m_world->m_isWorldMap && prevColor == BeamColor::Yellow) {
+                            particleColor = GOLD2.f();
+                        }
                         particleColor.a = 0.2f;
-                        world->particles()->emit(segment.end, 2, {
+                        m_world->particles()->emit(segment.end, 2, {
                             .color = particleColor.byte(),
                             .normal = normal,
                             .angle = 90.0f,
@@ -141,7 +145,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
                         (*monster)->takeDamage(damage);
                         auto particleColor = getColorForBeam(prevColor);
                         particleColor.a = 0.5f;
-                        world->particles()->emit(segment.end, 5, {
+                        m_world->particles()->emit(segment.end, 5, {
                             .color = particleColor.byte(),
                         });
                     }
@@ -160,7 +164,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
         chainedMonsters.erase(std::unique(chainedMonsters.begin(), chainedMonsters.end()), chainedMonsters.end());
 
         size_t spawnedChainedCount = 0;
-        for (const auto &it : world->monsters()) {
+        for (const auto &it : m_world->monsters()) {
             if (it.get()->m_chained) spawnedChainedCount++;
         }
 
@@ -170,7 +174,7 @@ void Player::update(const Camera &cam, World *world, float dt) {
                 it->takeDamage(damage);
                 auto particleColor = getColorForBeam(BeamColor::White);
                 particleColor.a = 0.5f;
-                world->particles()->emit(it->pos(), 5, {
+                m_world->particles()->emit(it->pos(), 5, {
                     .color = particleColor.byte(),
                 });
             }
@@ -224,8 +228,15 @@ void Player::render(const Camera &cam) {
         if (it.prop.color == BeamColor::Black) {
             break;
         }
+
+        // XXX(aren): gold exception
+        auto color = getColorForBeam(it.prop.color);
+        if (m_world->m_isWorldMap && it.prop.color == BeamColor::Yellow) {
+            color = GOLD2.f();
+        }
+
         Render::pushColor(m_beamBaseColor);
-        DrawLineEx(it.start, it.end, BEAM_THICKNESS, getColorForBeam(it.prop.color));
+        DrawLineEx(it.start, it.end, BEAM_THICKNESS, color);
         Render::popColor();
     }
 }

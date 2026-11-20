@@ -33,7 +33,10 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
         });
     };
 
+    m_world->m_isWorldMap = true;
+
     auto compNames = Storage::getList(COMPLETED_WORLD_KEYS);
+    // auto perfectlyCompNames = Storage::getList(PERFECTLY_COMPLETED_WORLD_KEYS);
 
     std::map<int, std::string> sorted;
     for (auto &[k, tile] : m_world->tiles()) {
@@ -45,7 +48,10 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
                 auto filename = tile.m_name.substr(idx+1);
                 sorted[num] = filename;
 
-                tile.m_completed = (std::find(compNames.begin(), compNames.end(), filename) != compNames.end());
+                bool hasCompleted = std::find(compNames.begin(), compNames.end(), filename) != compNames.end();
+                // bool hasPerfectlyCompleted = std::find(perfectlyCompNames.begin(), perfectlyCompNames.end(), filename) != perfectlyCompNames.end();
+
+                tile.m_completed = hasCompleted;
             }
         }
     }
