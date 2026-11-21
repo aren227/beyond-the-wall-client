@@ -360,7 +360,7 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
     const auto tileSprite = [&](const Vector2i &v) -> const Sprite & {
         const auto &tile = getTile(v);
         if (tile.m_type == TileType::WorldPortal) {
-            return tile.m_completed ? spriteSet.tile(TileType::Wall) : spriteSet.tile(TileType::Barrier);
+            return tile.m_completed ? spriteSet.worldPortalActive : spriteSet.worldPortalInactive;
         }
         return spriteSet.tile(tile.m_type);
     };

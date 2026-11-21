@@ -28,7 +28,7 @@ private:
     std::unique_ptr<World> m_world;
     SpriteSet m_spriteSet;
 
-    const float m_hudHeight = 16;
+    const float m_hudHeight = 0;
     float m_hudWidth = 0;
 
     std::vector<std::string> m_worldNames;

@@ -22,6 +22,8 @@ public:
     Sprite dither;
     Sprite ditherOpaque;
     Sprite ditherBlack;
+    Sprite worldPortalActive;
+    Sprite worldPortalInactive;
 };
 
 } // namespace aren

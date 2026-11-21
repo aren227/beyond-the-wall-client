@@ -87,7 +87,7 @@ void WorldMapScene::render() {
         float sw = GetScreenWidth();
         float sh = GetScreenHeight() - m_hudHeight;
 
-        const float PADDING_WS = 1.0f;
+        const float PADDING_WS = 0.25f;
 
         float xZoom = sw / (max.x - min.x + PADDING_WS * 2);
         float yZoom = sh / (max.y - min.y + PADDING_WS * 2);
