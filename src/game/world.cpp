@@ -182,11 +182,9 @@ void World::update(Camera &cam, float dt) {
             s_toRemove.push_back(k);
         }
 
-        if (v.m_type == TileType::End) {
-            if (v.progress() >= 1) {
-                m_endFlag = true;
-                m_playerWin = true;
-            }
+        if (checkWorldCanBeDone() && m_endFlag == false) {
+            m_endFlag = true;
+            m_playerWin = true;
         }
     }
 
@@ -288,7 +286,7 @@ void World::update(Camera &cam, float dt) {
         return it->done();
     });
 
-    if (m_player->m_health <= 0) {
+    if (m_player->m_health <= 0 && m_endFlag == false) {
         m_endFlag = true;
     }
 }
