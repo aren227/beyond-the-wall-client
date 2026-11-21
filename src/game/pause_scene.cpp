@@ -2,6 +2,8 @@
 #include "game.hpp"
 #include "world_map_scene.hpp"
 #include "ingame_scene.hpp"
+#include "world.hpp"
+#include "transition_scene.hpp"
 #include "../render.hpp"
 #include "../ui.hpp"
 
@@ -11,10 +13,31 @@ static void resumeGame() {
     Game::removeScene<PauseScene>();
 }
 
+static void retryGame() {
+    Game::addScene<TransitionScene>(false);
+    auto name = Game::getScene<IngameScene>()->worldName();
+    auto scene = Game::getScene<TransitionScene>();
+    scene->setOnEnd([name]() {
+        Game::removeScene<PauseScene>();
+        Game::removeScene<IngameScene>();
+
+        auto loaded = World::load(name);
+        ASSERT(loaded);
+        Game::addScene<IngameScene>(std::move(loaded));
+        Game::addScene<TransitionScene>(true);
+    });
+}
+
 static void exitGame() {
-    Game::removeScene<PauseScene>();
-    Game::removeScene<IngameScene>();
-    Game::addScene<WorldMapScene>();
+    Game::addScene<TransitionScene>(false);
+    auto scene = Game::getScene<TransitionScene>();
+    scene->setOnEnd([]() {
+        Game::removeScene<PauseScene>();
+        Game::removeScene<IngameScene>();
+
+        Game::addScene<WorldMapScene>();
+        Game::addScene<TransitionScene>(true);
+    });
 }
 
 PauseScene::PauseScene() : Scene(TYPE) {}
@@ -42,6 +65,12 @@ void PauseScene::renderUI() {
 
     if (UI::textButton(c, 40, "Resume", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
         resumeGame();
+        return;
+    }
+    c.y += 60;
+
+    if (UI::textButton(c, 40, "Retry", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        retryGame();
         return;
     }
     c.y += 60;

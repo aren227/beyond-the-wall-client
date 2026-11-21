@@ -21,6 +21,8 @@ public:
 
     virtual bool isBackgroundOpaque() override { return true; }
 
+    const std::string &worldName();
+
 private:
     Camera m_cam;
     std::unique_ptr<World> m_world;

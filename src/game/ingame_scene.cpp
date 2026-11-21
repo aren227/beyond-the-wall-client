@@ -156,4 +156,8 @@ void IngameScene::renderUI() {
     DrawRectangleRec(healthRect, WHITE);
 }
 
+const std::string &IngameScene::worldName() {
+    return m_world->m_filename;
+}
+
 } // namespace aren
