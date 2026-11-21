@@ -890,7 +890,7 @@ name ;
 exit
 waves 1
 zones 1 ;a
-monster_name ;dumb_stop
+monster_name ;dumb_stop_g
 condition_type 0
 condition_value ;
 exit
