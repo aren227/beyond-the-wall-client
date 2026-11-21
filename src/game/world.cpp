@@ -781,7 +781,7 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     m_player->render(cam);
 
     for (const auto &it : m_bullets) {
-        it->render();
+        it->render(thickness * 3);
     }
 
     m_particles->render();

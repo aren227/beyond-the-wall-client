@@ -9,7 +9,7 @@ public:
     Bullet(const Vector2f &pos, const Vector2f &vel);
 
     void update(const World *world, float dt);
-    void render();
+    void render(float outline);
 
     inline bool done() const { return m_destroy; }
 

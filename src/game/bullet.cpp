@@ -53,7 +53,8 @@ void Bullet::update(const World *world, float dt) {
     m_pos += m_velocity * dt;
 }
 
-void Bullet::render() {
+void Bullet::render(float outline) {
+    DrawCircleV(m_pos, m_radius + outline, BLACK);
     Render::pushColor(m_color);
     DrawCircleV(m_pos, m_radius, WHITE);
     Render::popColor();
