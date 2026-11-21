@@ -94,7 +94,7 @@ void WorldMapScene::render() {
 
         m_cam.m_zoom = std::min(xZoom, yZoom);
         m_cam.m_target = (min + max).f() / 2.0f;
-        m_cam.m_offset = V2f(sw, sh - m_hudHeight) * 0.5f;
+        m_cam.m_offset = V2f(sw, sh) * 0.5f;
 
         m_hudWidth = m_cam.m_zoom * (max.x - min.x + 1);
     }

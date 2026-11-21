@@ -29,7 +29,7 @@ private:
     std::unique_ptr<World> m_worldInitCoied;
     SpriteSet m_spriteSet;
 
-    const float m_hudHeight = 16;
+    const float m_hudHeight = 30;
     float m_hudWidth = 0;
 };
 
