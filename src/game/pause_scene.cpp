@@ -46,7 +46,7 @@ PauseScene::~PauseScene() {}
 
 void PauseScene::update(float dt) {
     (void)dt;
-    if (Input::keyPressed(KEY_ESCAPE)) {
+    if (Input::keyPressed(KEY_ESCAPE) && Game::getScene<TransitionScene>() == nullptr) {
         resumeGame();
     }
 }

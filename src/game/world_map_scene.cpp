@@ -68,7 +68,7 @@ WorldMapScene::~WorldMapScene() {}
 void WorldMapScene::update(float dt) {
     m_world->update(m_cam, dt);
 
-    if (Input::keyPressed(KEY_ESCAPE)) {
+    if (Input::keyPressed(KEY_ESCAPE) && Game::getScene<TransitionScene>() == nullptr) {
         Game::removeScene<WorldMapScene>();
         Game::addScene<TitleScene>();
     }

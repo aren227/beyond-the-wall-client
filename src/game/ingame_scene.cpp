@@ -79,7 +79,7 @@ void IngameScene::update(float dt) {
     if (Input::keyPressed(KEY_ESCAPE)) {
         if (isEditorActive()) {
             Game::removeScene<IngameScene>();
-        } else if (Game::getScene<PauseScene>() == nullptr) {
+        } else if (Game::getScene<PauseScene>() == nullptr && Game::getScene<TransitionScene>() == nullptr) {
             Game::addScene<PauseScene>();
         }
     }
