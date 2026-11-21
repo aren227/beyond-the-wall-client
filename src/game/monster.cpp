@@ -309,9 +309,11 @@ void Monster::render(const Camera &cam) {
 
     float rot = std::atan2(m_dir.y, m_dir.x) * RAD2DEG;
 
-    const float playerRadius = 0.22f;
-    DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, color);
-    DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
+    if (m_bulletSpreadCount > 0) {
+        const float playerRadius = 0.22f;
+        DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, color);
+        DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
+    }
 
     // if (m_melee.has_value()) {
     //     auto melee = m_melee.value();
