@@ -17,24 +17,24 @@ enum class BeamColor : int {
 static constexpr Color4f getColorForBeam(BeamColor color) {
     switch (color) {
         case BeamColor::Black:
-            return Color4f(0, 0, 0, 1);
+            return Color4b(0, 0, 0, 255).f();
         case BeamColor::Red:
             return Color4b(242, 73, 73, 255).f();
         case BeamColor::Green:
             return Color4b(73, 242, 73, 255).f();
         case BeamColor::Yellow:
-            return Color4f(1, 1, 0, 1);
+            return Color4b(242, 242, 73, 255).f();
         case BeamColor::Blue:
             return Color4b(73, 73, 242, 255).f();
         case BeamColor::Magenta:
-            return Color4f(1, 0, 1, 1);
+            return Color4b(242, 73, 242, 255).f();
         case BeamColor::Cyan:
-            return Color4f(0, 1, 1, 1);
+            return Color4b(73, 242, 242, 255).f();
         case BeamColor::White:
-            return Color4f(1, 1, 1, 1);
+            return Color4b(255, 255, 255, 255).f();
         default:
             ASSERT(false);
-            return Color4f(1, 1, 1, 1);
+            return Color4b(255, 255, 255, 255).f();
     }
 }
 
