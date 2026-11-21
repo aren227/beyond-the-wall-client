@@ -49,6 +49,8 @@ public:
     Monster(World *world, const std::string &typeName, const Vector2f &pos);
     virtual ~Monster();
 
+    static const MonsterDefinition &findDef(const std::string &name);
+
     void update(const PathQuery *query, float dt);
     void render(const Camera &cam);
     void moveDelta(Vector2f delta);

@@ -100,6 +100,15 @@ static void registerDefs() {
     }
 }
 
+const MonsterDefinition &Monster::findDef(const std::string &name) {
+    if (s_defs.contains(name)) {
+        return s_defs[name];
+    }
+
+    static MonsterDefinition s_dumb;
+    return s_dumb;
+}
+
 Monster::Monster(World *world, const std::string &typeName, const Vector2f &pos) {
     if (s_defs.empty()) {
         registerDefs();

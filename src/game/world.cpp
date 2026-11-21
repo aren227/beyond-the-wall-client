@@ -153,6 +153,7 @@ void World::activateWave(const MonsterWave &wave) {
                 m_monsterSpawnAnims.push_back({
                     .pos = pos.f() + V2f(0.5f, 0.5f),
                     .name = wave.monsterName,
+                    .color = getColorForBeam(Monster::findDef(wave.monsterName).color),
                 });
             }
         }
@@ -213,8 +214,10 @@ void World::update(Camera &cam, float dt) {
 
             it = m_monsterSpawnAnims.erase(it);
         } else {
+            auto color = it->color.byte();
+            color.a = 32;
             m_particles->emit(it->pos, 4, {
-                .color = {255, 255, 255, 32},
+                .color = color,
                 .size = 0.3f,
             });
 

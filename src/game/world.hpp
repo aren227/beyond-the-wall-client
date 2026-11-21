@@ -94,6 +94,7 @@ private:
         std::string name;
 
         float timeLeft = 3;
+        Color4f color = C4F_WHITE;
     };
     std::vector<MonsterSpawnAnimation> m_monsterSpawnAnims;
 };
