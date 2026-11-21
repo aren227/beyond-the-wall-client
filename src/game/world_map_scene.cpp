@@ -39,6 +39,7 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
     // auto perfectlyCompNames = Storage::getList(PERFECTLY_COMPLETED_WORLD_KEYS);
 
     std::map<int, std::string> sorted;
+    int maxCompleted = 0;
     for (auto &[k, tile] : m_world->tiles()) {
         // TODO(aren): Basically copied from world.cpp
         if (tile.m_type == TileType::WorldPortal) {
@@ -52,6 +53,20 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
                 // bool hasPerfectlyCompleted = std::find(perfectlyCompNames.begin(), perfectlyCompNames.end(), filename) != perfectlyCompNames.end();
 
                 tile.m_completed = hasCompleted;
+
+                if (hasCompleted) {
+                    maxCompleted = std::max(maxCompleted, num);
+                }
+            }
+        }
+    }
+
+    for (auto &[k, tile] : m_world->tiles()) {
+        if (tile.m_type == TileType::WorldPortal) {
+            auto idx = tile.m_name.find(',');
+            if (idx != std::string::npos) {
+                int num = std::stoi(tile.m_name.substr(0, idx));
+                tile.m_disabled = num > maxCompleted + 1;
             }
         }
     }

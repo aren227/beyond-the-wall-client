@@ -39,6 +39,7 @@ public:
     float m_progress = 0;
     float m_life = 0;
     bool m_completed = false;
+    bool m_disabled = false;
 
 public:
     explicit Tile() = default;

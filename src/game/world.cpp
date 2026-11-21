@@ -699,15 +699,17 @@ void World::renderDebugAsUI(const Camera &cam, const SpriteSet &spriteSet) {
 void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     for (const auto &[v, tile] : m_tiles) {
         if (tile.m_type == TileType::WorldPortal) {
-            auto idx = tile.m_name.find(',');
-            if (idx != std::string::npos) {
-                auto a = cam.worldToScreen(v.f() + V2f(0.5f, 0.5f));
-                if (UI::textButton(a, 30, tile.m_name.substr(0, idx).c_str(), Render::TextAlignH::Center, Render::TextAlignV::Center, tile.m_completed ? GOLD2 : C4B_WHITE)) {
-                    if (m_onWorldPortalClick) {
-                        m_onWorldPortalClick(tile.m_name.substr(idx+1));
-                    }
+            if (tile.m_disabled == false) {
+                auto idx = tile.m_name.find(',');
+                if (idx != std::string::npos) {
+                    auto a = cam.worldToScreen(v.f() + V2f(0.5f, 0.5f));
+                    if (UI::textButton(a, 30, tile.m_name.substr(0, idx).c_str(), Render::TextAlignH::Center, Render::TextAlignV::Center, tile.m_completed ? GOLD2 : C4B_WHITE)) {
+                        if (m_onWorldPortalClick) {
+                            m_onWorldPortalClick(tile.m_name.substr(idx+1));
+                        }
 
-                    break;
+                        break;
+                    }
                 }
             }
         } else if (tile.m_type == TileType::Consumable) {
