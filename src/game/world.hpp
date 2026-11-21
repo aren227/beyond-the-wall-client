@@ -80,6 +80,7 @@ private:
     bool m_endFlag = false;
     bool m_playerWin = false;
     float m_prevPlayerHealth = 0;
+    float m_winDelayTimer = 0; // NOTE(aren): Instant transition is bad
     std::unique_ptr<Player> m_player;
     std::unordered_map<Vector2i, Tile> m_tiles;
     std::vector<std::shared_ptr<Monster>> m_monsters;

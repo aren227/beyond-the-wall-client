@@ -181,11 +181,16 @@ void World::update(Camera &cam, float dt) {
         if (v.m_health <= 0) {
             s_toRemove.push_back(k);
         }
+    }
 
-        if (checkWorldCanBeDone() && m_endFlag == false) {
+    if (checkWorldCanBeDone() && m_endFlag == false) {
+        m_winDelayTimer += dt;
+        if (m_winDelayTimer > 1.0f) {
             m_endFlag = true;
             m_playerWin = true;
         }
+    } else {
+        m_winDelayTimer = 0;
     }
 
     for (const auto &k : s_toRemove) {
