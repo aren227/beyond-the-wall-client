@@ -3,6 +3,7 @@ name ;Sand
 comment ;
 balance
 beam_bounces 1
+beam_disabled 0
 exit
 tiles 116
 pos -1 -1
@@ -612,10 +613,10 @@ mult 1
 name ;
 exit
 pos 15 3
-type 7
+type 5
 color 7
 mult 1
-name ;
+name ;a
 exit
 pos 15 7
 type 1
@@ -701,4 +702,9 @@ color 7
 mult 1
 name ;
 exit
-waves 0
+waves 1
+zones 1 ;a
+monster_name ;dumb_stop
+condition_type 0
+condition_value ;
+exit

@@ -5,7 +5,7 @@ balance
 beam_bounces 1
 beam_disabled 0
 exit
-tiles 230
+tiles 229
 pos -1 5
 type 2
 color 7
@@ -1208,12 +1208,6 @@ name ;
 exit
 pos 25 5
 type 2
-color 7
-mult 1
-name ;
-exit
-pos 25 14
-type 7
 color 7
 mult 1
 name ;

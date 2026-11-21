@@ -1,5 +1,5 @@
 version 1
-name ;A\_Puzzle
+name ;Starry\_Night
 comment ;
 balance
 beam_bounces 1
@@ -182,7 +182,7 @@ name ;a
 exit
 pos 2 -8
 type 1
-color 1
+color 4
 mult 1
 name ;
 exit
@@ -212,7 +212,7 @@ name ;a
 exit
 pos 3 -12
 type 1
-color 1
+color 4
 mult 1
 name ;
 exit
@@ -326,7 +326,7 @@ name ;a
 exit
 pos 8 -5
 type 1
-color 1
+color 4
 mult 1
 name ;
 exit
@@ -343,7 +343,7 @@ mult 1
 name ;
 exit
 pos 8 4
-type 7
+type 2
 color 7
 mult 1
 name ;
@@ -356,7 +356,7 @@ name ;
 exit
 pos 9 -13
 type 1
-color 1
+color 4
 mult 1
 name ;
 exit
@@ -368,7 +368,7 @@ name ;a
 exit
 pos 9 -9
 type 1
-color 1
+color 4
 mult 1
 name ;
 exit
@@ -458,7 +458,7 @@ name ;a
 exit
 pos 13 -7
 type 1
-color 1
+color 4
 mult 1
 name ;
 exit
@@ -662,7 +662,7 @@ name ;
 exit
 waves 1
 zones 1 ;a
-monster_name ;dumb_stop_r
+monster_name ;dumb_stop_b
 condition_type 0
 condition_value ;
 exit
