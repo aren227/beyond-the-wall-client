@@ -154,6 +154,13 @@ void IngameScene::renderUI() {
     DrawRectangleRec(healthRect, DARKGRAY);
     healthRect.w *= player->m_health / player->m_maxHealth;
     DrawRectangleRec(healthRect, WHITE);
+
+    if (m_world->player()->m_beamDisabled == false) {
+        DrawLineEx(Input::mousePosition() + V2f(-3, 0), Input::mousePosition() + V2f(-10, 0), 1, WHITE);
+        DrawLineEx(Input::mousePosition() + V2f(3, 0), Input::mousePosition() + V2f(10, 0), 1, WHITE);
+        DrawLineEx(Input::mousePosition() + V2f(0, -3), Input::mousePosition() + V2f(0, -10), 1, WHITE);
+        DrawLineEx(Input::mousePosition() + V2f(0, 3), Input::mousePosition() + V2f(0, 10), 1, WHITE);
+    }
 }
 
 const std::string &IngameScene::worldName() {
