@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "title_scene.hpp"
+#include "game_audio.hpp"
 #include "../ui.hpp"
 #include <chrono>
 #include <ctime>
@@ -22,6 +23,8 @@ Game &Game::instance() {
 }
 
 void Game::init() {
+    GameAudio::init();
+
     Game::addScene<TitleScene>();
 }
 
@@ -45,6 +48,8 @@ void Game::update(float dt) {
     }
 
     s_tempScenes.clear();
+
+    GameAudio::update();
 }
 
 void Game::render() {

@@ -4,6 +4,7 @@
 #include "ingame_scene.hpp"
 #include "world.hpp"
 #include "transition_scene.hpp"
+#include "game_audio.hpp"
 #include "../render.hpp"
 #include "../ui.hpp"
 
@@ -64,18 +65,21 @@ void PauseScene::renderUI() {
     c.y += 60;
 
     if (UI::textButton(c, 40, "Resume", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
         resumeGame();
         return;
     }
     c.y += 60;
 
     if (UI::textButton(c, 40, "Retry", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
         retryGame();
         return;
     }
     c.y += 60;
 
     if (UI::textButton(c, 40, "Exit", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
         exitGame();
         return;
     }

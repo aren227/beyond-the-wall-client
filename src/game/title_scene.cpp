@@ -4,6 +4,7 @@
 #include "../render.hpp"
 #include "settings_scene.hpp"
 #include "world_map_scene.hpp"
+#include "game_audio.hpp"
 
 #if DEBUG
 #include "editor_scene.hpp"
@@ -52,6 +53,7 @@ void TitleScene::renderUI() {
     c.y += 60;
 
     if (UI::textButton(c, 40, "Start", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
         startGame();
         return;
     }
@@ -59,6 +61,7 @@ void TitleScene::renderUI() {
 
 #if DEBUG
     if (UI::textButton(c, 40, "Editor", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
         startEditor();
         return;
     }
@@ -66,6 +69,7 @@ void TitleScene::renderUI() {
 #endif
 
     if (UI::textButton(c, 40, "Settings", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
         startSettings();
         return;
     }
@@ -73,6 +77,7 @@ void TitleScene::renderUI() {
 
 #if !defined(PLATFORM_WEB)
     if (UI::textButton(c, 40, "Exit", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
         Game::requestExit();
     }
     c.y += 60;

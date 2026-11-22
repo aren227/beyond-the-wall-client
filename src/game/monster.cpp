@@ -4,6 +4,7 @@
 #include "consts.hpp"
 #include "player.hpp"
 #include "bullet.hpp"
+#include "game_audio.hpp"
 #include "../camera.hpp"
 #include "../render.hpp"
 
@@ -247,6 +248,8 @@ void Monster::update(const PathQuery *query, float dt) {
 
                 m_world->addBullet(std::make_unique<Bullet>(m_pos, targetDir.rotated(rad) * m_bulletSpeed));
             }
+
+            GameAudio::play(Sfx::Shoot);
         }
     }
 
@@ -279,6 +282,8 @@ void Monster::update(const PathQuery *query, float dt) {
                 .fromPos = m_pos,
                 .targetPos = playerPos,
             };
+
+            GameAudio::play(Sfx::Melee);
         }
     }
 

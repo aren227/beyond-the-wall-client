@@ -1,6 +1,7 @@
 #include "settings_scene.hpp"
 #include "title_scene.hpp"
 #include "game.hpp"
+#include "game_audio.hpp"
 #include "../settings.hpp"
 #include "../render.hpp"
 #include "../ui.hpp"
@@ -12,6 +13,7 @@ SettingsScene::SettingsScene() : Scene(TYPE) { }
 void SettingsScene::update(float dt) {
     (void)dt;
     if (Input::keyPressed(KEY_ESCAPE)) {
+        GameAudio::play(Sfx::Beep);
         Game::removeScene<SettingsScene>();
         Game::addScene<TitleScene>();
     }
@@ -54,6 +56,7 @@ void SettingsScene::renderUI() {
     c.y += 60;
 
     if (UI::textButton(c, 40, "Back", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
         Game::removeScene<SettingsScene>();
         Game::addScene<TitleScene>();
     }

@@ -1,6 +1,7 @@
 #include "tile.hpp"
 #include "world.hpp"
 #include "player.hpp"
+#include "game_audio.hpp"
 #include "raymath.h"
 
 namespace aren {
@@ -9,7 +10,7 @@ static constexpr float MAX_PROGRESS = 5;
 static constexpr float PROGRESS_DOWN_SPEED = 5;
 static constexpr float PROGRESS_UP_SPEED = 1;
 
-void Tile::update(const World *world, const Vector2i &pos, float dt) {
+void Tile::update(const World *world, Camera &cam, const Vector2i &pos, float dt) {
     if (m_type == TileType::End) {
         if (m_damaged && world->checkWorldCanBeDone()) {
             m_progress = std::min(m_progress + PROGRESS_UP_SPEED * dt, MAX_PROGRESS);
@@ -28,6 +29,9 @@ void Tile::update(const World *world, const Vector2i &pos, float dt) {
             } else if (m_name == "add_bounces") {
                 world->player()->m_bounces++;
             }
+
+            cam.shake(5.0f, 0.15f);
+            GameAudio::play(Sfx::PowerUp);
         }
     }
 

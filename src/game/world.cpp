@@ -7,6 +7,7 @@
 #include "consts.hpp"
 #include "bullet.hpp"
 #include "noise.hpp"
+#include "game_audio.hpp"
 #include "../particles.hpp"
 #include "../render.hpp"
 #include "../ui.hpp"
@@ -178,7 +179,7 @@ void World::update(Camera &cam, float dt) {
 
     static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
     for (auto &[k, v] : m_tiles) {
-        v.update(this, k, dt);
+        v.update(this, cam, k, dt);
         if (v.m_health <= 0) {
             s_toRemove.push_back(k);
         }
@@ -240,6 +241,7 @@ void World::update(Camera &cam, float dt) {
             });
             it = m_monsters.erase(it);
             cam.shake(5.0f, 0.15f);
+            GameAudio::play(Sfx::Explosion);
         } else {
             ++it;
         }

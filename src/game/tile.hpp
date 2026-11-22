@@ -2,6 +2,7 @@
 
 #include "beam.hpp"
 #include "object_layer.hpp"
+#include "../camera.hpp"
 
 namespace aren {
 
@@ -45,7 +46,7 @@ public:
     explicit Tile() = default;
     Tile(TileType type) : m_type(type) {}
 
-    void update(const World *world, const Vector2i &pos, float dt);
+    void update(const World *world, Camera &cam, const Vector2i &pos, float dt);
 
     BeamProp beamProp() const;
 

@@ -21,6 +21,9 @@ public:
 
     static void setMusicVolume(float volume);
     static void setSfxVolume(float volume);
+
+    static float getMusicVolume();
+    static float getSfxVolume();
 };
 
 } // namespace aren

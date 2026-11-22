@@ -25,6 +25,7 @@ static const auto _evalBaseResourcePath = []() {
 static const std::string IMAGE_BASE  = _evalBaseResourcePath() + "images";
 static const std::string SPRITE_BASE = _evalBaseResourcePath() + "sprites";
 static const std::string WORLD_BASE  = _evalBaseResourcePath() + "worlds";
+static const std::string SOUND_BASE  = _evalBaseResourcePath() + "sounds";
 
 static constexpr const char *COMPLETED_WORLD_KEYS = "game_completed_world_keys";
 static constexpr const char *PERFECTLY_COMPLETED_WORLD_KEYS = "game_perfectly_completed_world_keys";

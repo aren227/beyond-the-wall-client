@@ -6,6 +6,7 @@
 #include "ingame_scene.hpp"
 #include "title_scene.hpp"
 #include "player.hpp"
+#include "game_audio.hpp"
 #include <map>
 #include "../storage.hpp"
 #include "consts.hpp"
@@ -22,6 +23,7 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
     m_world->player()->look(m_world->player()->pos() + V2f(1, 1));
 
     m_world->m_onWorldPortalClick = [](std::string name) {
+        GameAudio::play(Sfx::Beep);
         Game::addScene<TransitionScene>(false);
         auto scene = Game::getScene<TransitionScene>();
         scene->setOnEnd([name]() {
@@ -84,6 +86,7 @@ void WorldMapScene::update(float dt) {
     m_world->update(m_cam, dt);
 
     if (Input::keyPressed(KEY_ESCAPE) && Game::getScene<TransitionScene>() == nullptr) {
+        GameAudio::play(Sfx::Beep);
         Game::removeScene<WorldMapScene>();
         Game::addScene<TitleScene>();
     }

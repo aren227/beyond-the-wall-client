@@ -3,6 +3,7 @@
 #include "path_query.hpp"
 #include "consts.hpp"
 #include "monster.hpp"
+#include "game_audio.hpp"
 #include "../camera.hpp"
 #include "../render.hpp"
 #include "../particles.hpp"
@@ -11,7 +12,9 @@ namespace aren {
 
 Player::Player(World *world) : m_world(world) {}
 
-Player::~Player() {}
+Player::~Player() {
+    GameAudio::laser(0.0f);
+}
 
 void Player::update(const Camera &cam, float dt) {
     if (m_controlDisabled == false) {
@@ -31,6 +34,8 @@ void Player::update(const Camera &cam, float dt) {
             m_dashTime = m_dashDuration + m_dashCooldown;
             m_dashDir = input.normalized();
             m_hasDashed = true;
+
+            GameAudio::play(Sfx::Dash);
         }
 
         if (m_dashTime > m_dashCooldown) {
@@ -55,6 +60,8 @@ void Player::update(const Camera &cam, float dt) {
         auto camPos = cam.screenToWorld(Input::mousePosition());
         m_dir = (camPos - m_pos).normalized();
     }
+
+    bool somethingHit = false;
 
     // beam raycast
     if (isDashing() == false && m_beamDisabled == false) {
@@ -139,6 +146,8 @@ void Player::update(const Camera &cam, float dt) {
                             .normal = normal,
                             .angle = 90.0f,
                         });
+
+                        // somethingHit = true;
                     }
                 } else if (Monster **monster = std::get_if<Monster *>(&hit)) {
                     if ((*monster)->m_color == prevColor) {
@@ -148,6 +157,8 @@ void Player::update(const Camera &cam, float dt) {
                         m_world->particles()->emit(segment.end, 5, {
                             .color = particleColor.byte(),
                         });
+
+                        somethingHit = true;
                     }
                 }
             } else {
@@ -177,11 +188,40 @@ void Player::update(const Camera &cam, float dt) {
                 m_world->particles()->emit(it->pos(), 5, {
                     .color = particleColor.byte(),
                 });
+
+                somethingHit = true;
             }
         }
 
     } else {
         m_beam.segments.clear();
+    }
+
+    // NOTE(aren): Laser volume controller
+    {
+        float minDist = 1e9f;
+        for (const auto &it : m_beam.segments) {
+            float dist = (m_pos - it.end).length();
+            minDist = std::min(minDist, dist);
+        }
+
+        float maxVolume = 0.3f;
+        float maxVolumeDist = 1.0f;
+        float fadeDist = 10.0f;
+
+        float t = std::clamp((minDist - fadeDist) / (maxVolumeDist - fadeDist), 0.0f, 1.0f);
+        float volume = maxVolume * t;
+        if (somethingHit) {
+            volume = std::max(volume, 0.8f);
+        }
+
+        if (m_laserVolume < volume) {
+            m_laserVolume = std::min(m_laserVolume + dt * 10.0f, volume);
+        } else {
+            m_laserVolume = std::max(m_laserVolume - dt * 10.0f, volume);
+        }
+
+        GameAudio::laser(m_laserVolume);
     }
 }
 
@@ -252,6 +292,8 @@ void Player::look(const Vector2f &dst) {
 
 void Player::takeDamage(float damage) {
     if (isDashing() == false && m_immortalTime == 0) {
+        GameAudio::play(Sfx::Hit);
+
         m_health = std::max(m_health - damage, 0.0f);
         m_immortalTime = m_hitImmortalDuration;
     }

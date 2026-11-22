@@ -69,6 +69,8 @@ private:
     const Color4f m_beamBaseColor = C4F_WHITE.brighten(3);
 
     float m_baseAttackDamage = 100;
+
+    float m_laserVolume = 0.0f;
 };
 
 } // namespace aren

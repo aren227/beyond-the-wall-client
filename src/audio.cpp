@@ -67,6 +67,14 @@ void Audio::setSfxVolume(float volume) {
     s_sfxVolume = volume;
 }
 
+float Audio::getMusicVolume() {
+    return s_musicVolume;
+}
+
+float Audio::getSfxVolume() {
+    return s_sfxVolume;
+}
+
 void Audio::deinit() {
     if (s_musicLoaded) {
         UnloadMusicStream(s_music);
