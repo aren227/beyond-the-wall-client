@@ -12,6 +12,7 @@ enum class SceneType {
     TransitionScene,
     WorldMap,
     Pause,
+    Credits,
 };
 
 class Scene {

@@ -4,6 +4,7 @@
 #include "../render.hpp"
 #include "settings_scene.hpp"
 #include "world_map_scene.hpp"
+#include "credits_scene.hpp"
 #include "game_audio.hpp"
 
 #if DEBUG
@@ -27,6 +28,11 @@ static void startEditor() {
 static void startSettings() {
     Game::removeScene<TitleScene>();
     Game::addScene<SettingsScene>();
+}
+
+static void startCredits() {
+    Game::removeScene<TitleScene>();
+    Game::addScene<CreditsScene>();
 }
 
 TitleScene::TitleScene() : Scene(TYPE) {}
@@ -71,6 +77,13 @@ void TitleScene::renderUI() {
     if (UI::textButton(c, 40, "Settings", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
         GameAudio::play(Sfx::Beep);
         startSettings();
+        return;
+    }
+    c.y += 60;
+
+    if (UI::textButton(c, 40, "Credits", Render::TextAlignH::Center, Render::TextAlignV::Center)) {
+        GameAudio::play(Sfx::Beep);
+        startCredits();
         return;
     }
     c.y += 60;
