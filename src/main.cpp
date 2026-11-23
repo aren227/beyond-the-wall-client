@@ -1,6 +1,6 @@
-#include "particles.hpp"
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
 #endif
 
 #include "audio.hpp"
@@ -37,6 +37,12 @@ void UpdateDrawFrame() {
 
 } // namespace aren
 
+#if defined(PLATFORM_WEB)
+static EM_BOOL consumeSpace(int, const EmscriptenKeyboardEvent* e, void*) {
+    return std::strcmp(e->code, "Space") == 0;
+}
+#endif
+
 int main() {
     using namespace aren;
 
@@ -53,6 +59,10 @@ int main() {
 
 #if !defined(PLATFORM_WEB)
     ChangeDirectory(GetApplicationDirectory());
+#endif
+
+#if defined(PLATFORM_WEB)
+    emscripten_set_keypress_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, EM_TRUE, consumeSpace);
 #endif
 
     Render::init();
