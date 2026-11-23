@@ -196,6 +196,8 @@ void Render::beginGameDraw() {
     BeginShaderMode(s_gammaToLinearShader);
 
     SetShaderValue(s_gammaToLinearShader, s_gammaToLinearShaderDiffuseHDRLoc, &s_hdrColorStack.back(), SHADER_UNIFORM_VEC4);
+
+    BeginBlendMode(BLEND_ALPHA);
 }
 
 void Render::endGameDraw() {
@@ -205,6 +207,8 @@ void Render::endGameDraw() {
     // int sh = GetScreenHeight();
     // float r = std::sqrt(float(sw * sw + sh * sh)) * 0.5f;
     // DrawCircleGradient(sw / 2, sh / 2, r, {0, 0, 0, 0}, {0, 0, 0, s_vignette});
+
+    EndBlendMode();
 
     EndShaderMode();
 

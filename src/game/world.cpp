@@ -786,7 +786,9 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
         it->render(thickness * 3);
     }
 
+    BeginBlendMode(BLEND_ADDITIVE);
     m_particles->render();
+    EndBlendMode();
 
     Render::end2DCam();
 
