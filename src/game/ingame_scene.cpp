@@ -21,6 +21,10 @@ IngameScene::IngameScene(std::unique_ptr<World> world) : Scene(TYPE) {
     m_worldInitCoied = std::make_unique<World>(m_world.get());
 
     m_spriteSet.load();
+
+    if (m_world->m_name == SUPER_CONSTELLATION) {
+        m_extraHudHeight = 30;
+    }
 }
 
 IngameScene::~IngameScene() {}
@@ -40,12 +44,18 @@ void IngameScene::update(float dt) {
         bool currEndFlag = m_world->hasEnded();
 
         if (prevEndFlag == false && currEndFlag) {
+            // TODO(aren)
+            if (Game::getScene<TransitionScene>() != nullptr) {
+                Game::removeScene<TransitionScene>();
+            }
+
             Game::addScene<TransitionScene>(false);
             bool win = m_world->hasPlayerWon();
             bool perfectlyWin = m_world->hasPlayerWon() && m_world->player()->m_health >= m_world->player()->m_maxHealth;
             std::string currentWorldName = m_world->m_filename;
+            bool shouldRetry = m_world->m_autoRetryMode;
             Game::getScene<TransitionScene>()->setIsWhite(win);
-            Game::getScene<TransitionScene>()->setOnEnd([win, perfectlyWin, currentWorldName]() {
+            Game::getScene<TransitionScene>()->setOnEnd([win, perfectlyWin, currentWorldName, shouldRetry]() {
                 auto initCopiedWorld = std::move(Game::getScene<IngameScene>()->m_worldInitCoied);
                 Game::removeScene<IngameScene>();
 
@@ -67,7 +77,11 @@ void IngameScene::update(float dt) {
                         }
 
                         Game::addScene<WorldMapScene>();
-                        Game::getScene<WorldMapScene>()->gotoNextImmediately(currentWorldName);
+                        if (shouldRetry) {
+                            Game::getScene<WorldMapScene>()->gotoSelfImmediately(currentWorldName);
+                        } else {
+                            Game::getScene<WorldMapScene>()->gotoNextImmediately(currentWorldName);
+                        }
                     } else {
                         Game::addScene<IngameScene>(std::move(initCopiedWorld));
                     }
@@ -98,7 +112,7 @@ void IngameScene::render() {
         max += V2I_ONE;
 
         float sw = GetScreenWidth();
-        float sh = GetScreenHeight() - m_hudHeight;
+        float sh = GetScreenHeight() - m_hudHeight - m_extraHudHeight;
 
         const float PADDING_WS = 0.25f;
 
@@ -107,7 +121,7 @@ void IngameScene::render() {
 
         m_cam.m_zoom = std::min(xZoom, yZoom);
         m_cam.m_target = (min + max).f() / 2.0f;
-        m_cam.m_offset = V2f(sw, sh) * 0.5f;
+        m_cam.m_offset = V2f(sw, sh) * 0.5f + V2f(0, m_extraHudHeight);
 
         m_hudWidth = m_cam.m_zoom * (max.x - min.x + 1);
     }
@@ -138,7 +152,11 @@ void IngameScene::renderUI() {
         Render::TextAlignV::Top
     );
 
-    const float healthWidth = 200;
+    float healthWidth = 200;
+    if (m_world->m_name == SUPER_CONSTELLATION) {
+        healthWidth = 500;
+    }
+
     const auto player = m_world->player();
 
     Render::drawText(
@@ -160,6 +178,60 @@ void IngameScene::renderUI() {
         DrawLineEx(Input::mousePosition() + V2f(3, 0), Input::mousePosition() + V2f(10, 0), 1, WHITE);
         DrawLineEx(Input::mousePosition() + V2f(0, -3), Input::mousePosition() + V2f(0, -10), 1, WHITE);
         DrawLineEx(Input::mousePosition() + V2f(0, 3), Input::mousePosition() + V2f(0, 10), 1, WHITE);
+    }
+
+    if (m_world->m_name == SUPER_CONSTELLATION) {
+        auto currentColor = C4F_WHITE.byte();
+        auto bestColor = Color4b(GOLD); // gold2 is weird in here
+
+        if (m_world->m_scScore > m_world->m_scBestScore) {
+            std::swap(currentColor, bestColor);
+        }
+
+        Render::drawText(
+            V2f(sx + xMargin, 0),
+            40,
+            currentColor,
+            "CURRENT",
+            Render::TextAlignH::Left,
+            Render::TextAlignV::Top
+        );
+        Render::drawText(
+            V2f(sx + xMargin + 150, 0),
+            40,
+            currentColor,
+            TextFormat("%02d", m_world->m_scScore),
+            Render::TextAlignH::Left,
+            Render::TextAlignV::Top
+        );
+
+        if (m_world->m_autoRetryMode) {
+            Render::drawText(
+                V2f(sx + m_hudWidth * 0.5f, 0),
+                40,
+                WHITE,
+                "AUTO RETRY MODE",
+                Render::TextAlignH::Center,
+                Render::TextAlignV::Top
+            );
+        }
+
+        Render::drawText(
+            V2f(sx + m_hudWidth - xMargin - 60, 0),
+            40,
+            bestColor,
+            "BEST",
+            Render::TextAlignH::Right,
+            Render::TextAlignV::Top
+        );
+        Render::drawText(
+            V2f(sx + m_hudWidth - xMargin, 0),
+            40,
+            bestColor,
+            TextFormat("%02d", m_world->m_scBestScore),
+            Render::TextAlignH::Right,
+            Render::TextAlignV::Top
+        );
     }
 }
 

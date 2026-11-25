@@ -12,7 +12,7 @@ public:
     Player(World *world);
     virtual ~Player();
 
-    void update(const Camera &cam, float dt);
+    void update(Camera &cam, float dt);
     void render(const Camera &cam);
 
     inline const Vector2f &pos() const { return m_pos; }
@@ -24,6 +24,7 @@ public:
     inline bool isDashing() const { return m_dashTime > m_dashCooldown; }
 
     void takeDamage(float damage);
+    void setHealth(float health);
 
 public:
     bool m_visible = true;
@@ -38,6 +39,7 @@ public:
 
     float m_maxHealth = 100;
     float m_health = m_maxHealth;
+    float m_prevHealth = m_maxHealth;
 
     bool m_beamDisabled = false;
     bool m_consumedConsumable = false;

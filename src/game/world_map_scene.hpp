@@ -22,6 +22,7 @@ public:
     virtual bool isBackgroundOpaque() override { return true; }
 
     void gotoNextImmediately(const std::string &currentWorldName);
+    void gotoSelfImmediately(const std::string &currentWorldName);
 
 private:
     Camera m_cam;

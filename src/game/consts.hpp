@@ -34,4 +34,9 @@ static constexpr Color4b BLACK_BG = Color4b(0, 0, 0, 255);
 
 static constexpr Color4b GOLD2 = Color4b(255, 186, 59, 255);
 
+static constexpr float REFLECT_MARGIN = 0.001f;
+
+static const std::string SUPER_CONSTELLATION = "Super Constellation";
+static constexpr const char *SUPER_CONSTELLATION_BEST = "scBestScore";
+
 } // namespace aren

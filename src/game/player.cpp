@@ -16,7 +16,7 @@ Player::~Player() {
     GameAudio::laser(0.0f);
 }
 
-void Player::update(const Camera &cam, float dt) {
+void Player::update(Camera &cam, float dt) {
     if (m_controlDisabled == false) {
         Vector2f input = V2F_ZERO;
 
@@ -121,7 +121,7 @@ void Player::update(const Camera &cam, float dt) {
             }
 
             if (minT < INFINITY) {
-                segment.end = segment.start + segment.dir * std::max(minT - 0.001f, 0.0f);
+                segment.end = segment.start + segment.dir * std::max(minT - REFLECT_MARGIN, 0.0f);
 
                 m_beam.segments.push_back(segment);
 
@@ -223,6 +223,11 @@ void Player::update(const Camera &cam, float dt) {
 
         GameAudio::laser(m_laserVolume);
     }
+
+    if (m_prevHealth > m_health) {
+        cam.shake(5.0f, 0.15f);
+    }
+    m_prevHealth = m_health;
 }
 
 void Player::render(const Camera &cam) {
@@ -297,6 +302,11 @@ void Player::takeDamage(float damage) {
         m_health = std::max(m_health - damage, 0.0f);
         m_immortalTime = m_hitImmortalDuration;
     }
+}
+
+void Player::setHealth(float health) {
+    m_health = std::clamp(health, 0.0f, m_maxHealth);
+    m_prevHealth = m_health;
 }
 
 } // namespace aren

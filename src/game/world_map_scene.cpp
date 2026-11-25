@@ -29,6 +29,11 @@ WorldMapScene::WorldMapScene() : Scene(TYPE) {
         scene->setOnEnd([name]() {
             auto loaded = World::load(name);
             ASSERT(loaded);
+
+            if (loaded->m_name == SUPER_CONSTELLATION) {
+                loaded->m_autoRetryMode = true;
+            }
+
             Game::removeScene<WorldMapScene>();
             Game::addScene<IngameScene>(std::move(loaded));
             Game::addScene<TransitionScene>(true);
@@ -155,6 +160,20 @@ void WorldMapScene::gotoNextImmediately(const std::string &currentWorldName) {
 
     auto loaded = World::load(next);
     ASSERT(loaded);
+    Game::removeScene<WorldMapScene>();
+    Game::addScene<IngameScene>(std::move(loaded));
+
+    Game::addScene<TransitionScene>(true);
+    auto scene = Game::getScene<TransitionScene>();
+    scene->setIsWhite(true);
+}
+
+void WorldMapScene::gotoSelfImmediately(const std::string &currentWorldName) {
+    auto loaded = World::load(currentWorldName);
+    ASSERT(loaded);
+
+    loaded->m_autoRetryMode = true;
+
     Game::removeScene<WorldMapScene>();
     Game::addScene<IngameScene>(std::move(loaded));
 

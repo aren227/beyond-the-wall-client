@@ -30,6 +30,7 @@ private:
     SpriteSet m_spriteSet;
 
     const float m_hudHeight = 30;
+    float m_extraHudHeight = 0;
     float m_hudWidth = 0;
 };
 

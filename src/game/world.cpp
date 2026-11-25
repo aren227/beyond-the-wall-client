@@ -7,11 +7,13 @@
 #include "consts.hpp"
 #include "bullet.hpp"
 #include "noise.hpp"
+#include "game.hpp"
 #include "game_audio.hpp"
 #include "../particles.hpp"
 #include "../render.hpp"
 #include "../ui.hpp"
 #include "../random.hpp"
+#include "../storage.hpp"
 #include "raymath.h"
 #include <random>
 #include <fstream>
@@ -86,13 +88,14 @@ World::World() {
     }
 
     m_player = std::make_unique<Player>(this);
-    m_prevPlayerHealth = m_player->m_health;
 
     m_pathQuery = std::make_unique<PathQuery>();
 
     m_particles = std::make_unique<Particles>();
 
     m_noise = std::make_unique<Noise>();
+
+    m_scBestScore = Storage::getInt(SUPER_CONSTELLATION_BEST, 0);
 }
 
 World::World(const World *world) : World() {
@@ -165,17 +168,140 @@ bool World::checkWorldCanBeDone() const {
     return m_monsterWaves.empty() && m_monsters.empty() && m_monsterSpawnAnims.empty();
 }
 
+// for debug
+static Beam s_scBeam;
+
+void World::generateMonstersForSC() {
+    float sx, sy;
+    Vector2f sdir;
+
+    Beam &beam = s_scBeam;
+
+    const auto checkBeamGood = [&](const Beam &beam) {
+        for (const auto &it : beam.segments) {
+            float dist = (it.start - it.end).length();
+            if (dist <= 4) {
+                return false;
+            }
+        }
+        for (int i = 1; i < beam.segments.size(); i++) {
+            auto dir1 = beam.segments[i-1].dir;
+            auto dir2 = beam.segments[i].dir;
+            if (dir1.dot(-dir2) >= std::cos(15 * DEG2RAD)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    constexpr int MAX_TRY_COUNT = 16;
+    for (int k = 0; k < MAX_TRY_COUNT; k++) {
+        sx = Random::rangeFloat(m_min.x + 3.0f, m_max.x - 3.0f);
+        sy = Random::rangeFloat(m_min.y + 3.0f, m_max.y - 3.0f);
+        sdir = Random::onUnitCircle();
+
+        beam = {};
+
+        BeamSegment segment;
+        segment.start = V2f(sx, sy);
+        segment.dir = sdir;
+
+        beam.segments.clear();
+
+        for (int i = 0; i <= m_player->m_bounces; i++) {
+            float t;
+            Vector2i hit, normal;
+            if (raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, hit, normal)) {
+                segment.end = segment.start + segment.dir * std::max(t - REFLECT_MARGIN, 0.0f);
+
+                beam.segments.push_back(segment);
+
+                segment.start = segment.end;
+                segment.dir = segment.dir.reflected(normal.f());
+                segment.prop = segment.prop.merge(getTile(hit).beamProp());
+            }
+        }
+
+        if (checkBeamGood(beam)) {
+            break;
+        }
+    }
+
+    int spawnCount = (int)std::round(std::lerp(10.0f, 3.0f, std::clamp(m_scScore / 15.0f, 0.0f, 1.0f)));
+    std::vector<int> indicies;
+    std::vector<int> spawnCounts;
+    spawnCounts.resize(beam.segments.size());
+
+    // NOTE(aren): Uniformly fill the counts
+    for (int i = 0; i < spawnCount; i++) {
+        if (indicies.empty()) {
+            for (int i = 0; i < beam.segments.size(); i++) {
+                indicies.push_back(i);
+            }
+            Random::shuffle(indicies);
+        }
+
+        int idx = indicies.back();
+        indicies.pop_back();
+        spawnCounts[idx]++;
+    }
+
+    float maxDistSum = 0;
+    std::vector<Vector2f> points;
+
+    constexpr int ITER_COUNT = 8;
+    for (int k = 0; k < ITER_COUNT; k++) {
+
+        std::vector<Vector2f> current;
+        current.reserve(spawnCount);
+
+        // sample points
+        for (int i = 0; i < beam.segments.size(); i++) {
+            const auto &segment = beam.segments[i];
+            float dist = (segment.start - segment.end).length();
+            constexpr float margin = 1;
+            float lo = margin / dist;
+            float hi = 1 - lo;
+
+            for (int j = 0; j < spawnCounts[i]; j++) {
+                float t = Random::rangeFloat(lo, hi);
+                auto p = Vector2f::lerp(segment.start, segment.end, t);
+
+                current.push_back(p);
+            }
+        }
+
+        ASSERT(current.size() == spawnCount);
+
+        float distSum = 0;
+        for (int j = 0; j < spawnCount; j++) {
+            for (int k = j+1; k < spawnCount; k++) {
+                distSum += (current[j] - current[k]).length();
+            }
+        }
+
+        if (maxDistSum < distSum) {
+            maxDistSum = distSum;
+            points = current;
+        }
+    }
+
+    for (const auto &p : points) {
+        m_monsterSpawnAnims.push_back({
+            .pos = p,
+            .name = "dumb_sc",
+            .timeLeft = 1.0f,
+            .color = C4F_WHITE,
+        });
+    }
+}
+
 void World::update(Camera &cam, float dt) {
     m_time += dt;
 
     updateBounds();
 
     m_player->update(cam, dt);
-
-    if (m_prevPlayerHealth > m_player->m_health) {
-        cam.shake(5.0f, 0.15f);
-    }
-    m_prevPlayerHealth = m_player->m_health;
 
     static std::vector<Vector2i> s_toRemove; s_toRemove.clear();
     for (auto &[k, v] : m_tiles) {
@@ -205,6 +331,17 @@ void World::update(Camera &cam, float dt) {
             it = m_monsterWaves.erase(it);
         } else {
             break;
+        }
+    }
+
+    if (m_name == SUPER_CONSTELLATION) {
+        if (m_monsters.size() == 0 && m_monsterSpawnAnims.size() == 0) {
+            m_scScore++;
+            m_player->setHealth(m_player->m_maxHealth);
+            generateMonstersForSC();
+        } else if (m_monsters.size() > 0) {
+            float time = std::lerp(20.0f, 7.0f, std::clamp(m_scScore / 20.0f, 0.0f, 1.0f));
+            m_player->setHealth(m_player->m_health - 1 / time * m_player->m_maxHealth * dt);
         }
     }
 
@@ -298,7 +435,22 @@ void World::update(Camera &cam, float dt) {
 
     if (m_player->m_health <= 0 && m_endFlag == false) {
         m_endFlag = true;
+
+        // NOTE(aren): Player always win in SC
+        if (m_name == SUPER_CONSTELLATION) {
+            m_playerWin = true;
+        }
+
+        Storage::setInt(SUPER_CONSTELLATION_BEST, std::max(m_scScore, m_scBestScore));
     }
+
+#if DEBUG
+    // NOTE(aren): debug build cheat
+    if (Input::keyDown(KEY_P)) {
+        m_endFlag = true;
+        m_playerWin = true;
+    }
+#endif
 }
 
 void World::updateBounds() {
@@ -789,6 +941,10 @@ void World::renderMisc(const Camera &cam, const SpriteSet &spriteSet) {
     BeginBlendMode(BLEND_ADDITIVE);
     m_particles->render();
     EndBlendMode();
+
+    // for (const auto &it : s_scBeam.segments) {
+    //     DrawLineEx(it.start, it.end, 0.1f, RED);
+    // }
 
     Render::end2DCam();
 

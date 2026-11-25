@@ -55,6 +55,15 @@ static void registerDefs() {
         .meleeCooldown = 0.5f,
         .chained = true,
     };
+    tmp["dumb_sc"] = {
+        .maxHealth = 10.0f,
+        .speed = 0.0f,
+        .bulletSpeed = 8.0f,
+        .bulletFireCooldown = 0.5f,
+        .bulletSpreadCount = 0,
+        .meleeCooldown = 0.5f,
+        .chained = true,
+    };
     tmp["dumb_fast"] = {
         .maxHealth = 100.0f,
         .speed = 6.0f,

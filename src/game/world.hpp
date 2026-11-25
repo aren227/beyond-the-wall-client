@@ -64,6 +64,7 @@ private:
     Color4f getColor(const Vector2i &pos) const;
     bool checkWaveCondition(const MonsterWave &wave);
     void activateWave(const MonsterWave &wvae);
+    void generateMonstersForSC();
 
 public:
     // XXX(aren): lazy
@@ -74,12 +75,15 @@ public:
     std::vector<MonsterWave> m_monsterWaves;
     std::function<void(std::string)> m_onWorldPortalClick;
     bool m_isWorldMap = false;
+    bool m_autoRetryMode = false;
+
+    int m_scScore = -1;
+    int m_scBestScore = 0;
 
 private:
     float m_time = 0;
     bool m_endFlag = false;
     bool m_playerWin = false;
-    float m_prevPlayerHealth = 0;
     float m_winDelayTimer = 0; // NOTE(aren): Instant transition is bad
     std::unique_ptr<Player> m_player;
     std::unordered_map<Vector2i, Tile> m_tiles;

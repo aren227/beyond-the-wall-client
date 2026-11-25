@@ -2,10 +2,10 @@ version 1
 name ;
 comment ;
 balance
-beam_bounces 40
+beam_bounces 41
 beam_disabled 0
 exit
-tiles 108
+tiles 109
 pos -4 -14
 type 1
 color 7
@@ -509,6 +509,12 @@ type 1
 color 7
 mult 1
 name ;
+exit
+pos 12 -12
+type 8
+color 7
+mult 1
+name ;32,super_constellation
 exit
 pos 12 -1
 type 1

@@ -138,7 +138,7 @@ void EditorScene::update(float dt) {
             float t;
             Vector2i hit, normal;
             if (m_world->raycast(segment.start, segment.dir, -1, ObjectLayer::Light, t, hit, normal)) {
-                segment.end = segment.start + segment.dir * std::max(t - 0.01f, 0.0f);
+                segment.end = segment.start + segment.dir * std::max(t - REFLECT_MARGIN, 0.0f);
 
                 debug.beam.segments.push_back(segment);
 
