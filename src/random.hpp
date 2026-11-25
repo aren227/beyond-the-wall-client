@@ -28,6 +28,14 @@ public:
         }
         return v[rangeInt(0, static_cast<int>(v.size()))];
     }
+
+    template <typename T>
+    static void shuffle(std::vector<T> &v) {
+        for (size_t i = 0; i < v.size(); i++) {
+            int j = Random::rangeInt(i, static_cast<int>(v.size()));
+            std::swap(v[i], v[j]);
+        }
+    }
 };
 
 } // namespace aren
