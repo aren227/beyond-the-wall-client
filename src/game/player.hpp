@@ -73,6 +73,15 @@ private:
     float m_baseAttackDamage = 100;
 
     float m_laserVolume = 0.0f;
+
+    float m_afterimageDelay = 0.0f;
+    struct PoseSnapshot {
+        float maxTimeLeft = 0.5f;
+        float timeLeft = maxTimeLeft;
+        Vector2f pos;
+        Vector2f dir;
+    };
+    std::vector<PoseSnapshot> m_afterimages;
 };
 
 } // namespace aren

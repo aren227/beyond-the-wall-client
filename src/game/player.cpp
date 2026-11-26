@@ -36,6 +36,8 @@ void Player::update(Camera &cam, float dt) {
             m_hasDashed = true;
 
             GameAudio::play(Sfx::Dash);
+
+            m_afterimageDelay = 0;
         }
 
         if (m_dashTime > m_dashCooldown) {
@@ -224,6 +226,28 @@ void Player::update(Camera &cam, float dt) {
         GameAudio::laser(m_laserVolume);
     }
 
+    if (isDashing()) {
+        if (m_afterimageDelay <= 0.0f) {
+            m_afterimageDelay += 0.033f;
+
+            m_afterimages.push_back({
+                .pos = m_pos,
+                .dir = m_dir,
+            });
+        }
+
+        m_afterimageDelay -= dt;
+    }
+
+    for (auto it = m_afterimages.begin(); it != m_afterimages.end();) {
+        it->timeLeft -= dt;
+        if (it->timeLeft <= 0) {
+            it = m_afterimages.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
     if (m_prevHealth > m_health) {
         cam.shake(5.0f, 0.15f);
     }
@@ -235,39 +259,49 @@ void Player::render(const Camera &cam) {
         return;
     }
 
+    const float worldToScreenScale = cam.worldToScreen(V2f(1, 0)).x - cam.worldToScreen(V2f(0, 0)).x;
+
+    float thickness = PIXEL_SCALER / worldToScreenScale;
+
+    const auto drawRect = [&](const Vector2f &center, const Vector2f &half, float opacity) {
+        // TODO(aren): render exactly with lines
+        DrawRectangleV(center - half, half * 2, Color4f(1, 1, 1, opacity));
+        DrawRectangleV(center - half + V2F_ONE * thickness, half * 2 - V2F_ONE * thickness * 2, BLACK);
+    };
+
+    const auto drawAt = [&](const Vector2f &pos, const Vector2f &dir, float opacity) {
+        // NOTE(aren): player moving speed is too fast for animation...
+        auto footPoses = {
+            V2f(-0.25f, -0.25f),
+            V2f(-0.25f, 0.25f),
+            V2f(0.25f, -0.25f),
+            V2f(0.25f, 0.25f),
+        };
+        const float footRadius = 0.1f;
+        for (const auto &it : footPoses) {
+            drawRect(pos + it, V2f(1.1f, 1.0f) * footRadius, opacity);
+        }
+
+        drawRect(pos, V2F_ONE * 0.25f, opacity);
+
+        float rot = std::atan2(dir.y, dir.x) * RAD2DEG;
+
+        const float playerRadius = 0.22f;
+        DrawCircleSector(pos, playerRadius, rot, 360+rot, 6, Color4f(1, 1, 1, opacity));
+        DrawCircleSector(pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
+    };
+
+    // NOTE(aren): Draw before return statement so afterimage doesn't blink..
+    for (const auto &it : m_afterimages) {
+        drawAt(it.pos, it.dir, 0.2f * it.timeLeft / it.maxTimeLeft);
+    }
+
     // NOTE(aren): changing opacity is too weak..
     if ((m_immortalTime > 0) && (int(m_immortalTime * 24) % 2 == 0)) {
         return;
     }
 
-    const float worldToScreenScale = cam.worldToScreen(V2f(1, 0)).x - cam.worldToScreen(V2f(0, 0)).x;
-
-    float thickness = PIXEL_SCALER / worldToScreenScale;
-
-    const auto drawRect = [&](const Vector2f &center, const Vector2f &half) {
-        DrawRectangleV(center - half, half * 2, WHITE);
-        DrawRectangleV(center - half + V2F_ONE * thickness, half * 2 - V2F_ONE * thickness * 2, BLACK);
-    };
-
-    // NOTE(aren): player moving speed is too fast for animation...
-    auto footPoses = {
-        V2f(-0.25f, -0.25f),
-        V2f(-0.25f, 0.25f),
-        V2f(0.25f, -0.25f),
-        V2f(0.25f, 0.25f),
-    };
-    const float footRadius = 0.1f;
-    for (const auto &it : footPoses) {
-        drawRect(m_pos + it, V2f(1.1f, 1.0f) * footRadius);
-    }
-
-    drawRect(m_pos, V2F_ONE * 0.25f);
-
-    float rot = std::atan2(m_dir.y, m_dir.x) * RAD2DEG;
-
-    const float playerRadius = 0.22f;
-    DrawCircleSector(m_pos, playerRadius, rot, 360+rot, 6, WHITE);
-    DrawCircleSector(m_pos, playerRadius - thickness, rot, 360+rot, 6, BLACK);
+    drawAt(m_pos, m_dir, 1.0f);
 
     for (const auto &it : m_beam.segments) {
         if (it.prop.color == BeamColor::Black) {
