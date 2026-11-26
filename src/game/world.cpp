@@ -709,7 +709,8 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
                         float xx = x + fx;
                         float yy = y + fy;
 
-                        // float noise = m_noise->sample(V2f(xx, yy) * 10, 3);
+                        // float noise = m_noise->sample(V2f(xx, yy) * 15, 2);
+                        // dist = std::clamp(dist + (noise - 0.7f), 0.0f, 1.0f);
 
                         auto v0 = V2f(xx, yy) - V2F_ONE * (1 / (SUBDIV * 2.0f));
                         auto v1 = V2f(xx, yy) + V2F_ONE * (1 / (SUBDIV * 2.0f));
@@ -770,9 +771,9 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
 
                             std::array<float, 3> rgbV = { light.r, light.g, light.b };
                             std::array<Color4f, 3> rgbC = {
-                                Color4f(0.21f, 0.0f, 0.0f, 1),
-                                Color4f(0.0f, 0.22f, 0.0f, 1),
-                                Color4f(0.0f, 0.0f, 0.22f, 1)
+                                Color4f(0.25f, 0.0f, 0.0f, 1),
+                                Color4f(0.0f, 0.25f, 0.0f, 1),
+                                Color4f(0.0f, 0.0f, 0.25f, 1)
                             };
 
                             for (int i = 0; i < 3; i++) {
