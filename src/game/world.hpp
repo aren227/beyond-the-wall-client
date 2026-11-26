@@ -45,6 +45,8 @@ public:
     const Tile &getTile(const Vector2i &pos) const;
 
     bool raycast(const Vector2f &start, const Vector2f &dir, float maxDist, ObjectLayer layer, float &t, Vector2i &hit, Vector2i &normal) const;
+    bool raycast(const Vector2f &start, const Vector2f &dir, float maxDist, ObjectLayer layer);
+    bool raycastToEnd(const Vector2f &start, const Vector2f &end, ObjectLayer layer);
 
     void save(const std::string &name);
     static std::unique_ptr<World> load(const std::string &name);

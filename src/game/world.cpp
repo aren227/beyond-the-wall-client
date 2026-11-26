@@ -744,8 +744,8 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
                         if (m_player->m_visible) { // player
                             float playerDist = (vf - m_player->pos()).length();
                             constexpr float PLAYER_LIGHT_DIST = 4;
-                            if (playerDist < PLAYER_LIGHT_DIST) {
-                                light = light + C4F_WHITE * (1 - playerDist / PLAYER_LIGHT_DIST);
+                            if (playerDist < PLAYER_LIGHT_DIST && raycastToEnd(m_player->pos(), vf, ObjectLayer::Light) == false) {
+                                light = light + Color4f(GOLD2) * (1 - playerDist / PLAYER_LIGHT_DIST);
                             }
                         }
                         for (const auto &it : m_player->beam().segments) {
@@ -755,7 +755,7 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
 
                             float beamDist = Vector2f::segmentDist(it.start, it.end, vf);
                             const float BEAM_LIGHT_DIST = 2;
-                            if (beamDist < BEAM_LIGHT_DIST) {
+                            if (beamDist < BEAM_LIGHT_DIST && raycastToEnd(Vector2f::segmentNearest(it.start, it.end, vf), vf, ObjectLayer::Light) == false) {
                                 light = light + getPureColorForBeam(it.prop.color) * (1 - beamDist / BEAM_LIGHT_DIST);
                             }
                         }
@@ -770,14 +770,14 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
 
                             std::array<float, 3> rgbV = { light.r, light.g, light.b };
                             std::array<Color4f, 3> rgbC = {
-                                Color4f(0.2f, 0.0f, 0.0f, 1),
-                                Color4f(0.0f, 0.2f, 0.0f, 1),
-                                Color4f(0.0f, 0.0f, 0.2f, 1)
+                                Color4f(0.21f, 0.0f, 0.0f, 1),
+                                Color4f(0.0f, 0.22f, 0.0f, 1),
+                                Color4f(0.0f, 0.0f, 0.22f, 1)
                             };
 
                             for (int i = 0; i < 3; i++) {
                                 const auto &sprite = spriteSet.ditherOpaque;
-                                const int tag = std::ceil(std::clamp(rgbV[i], 0.0f, 1.0f) * 6);
+                                const int tag = std::ceil(std::clamp(rgbV[i], 0.0f, 1.0f) * 10);
                                 sprite.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), tag, 0, PIXEL_SCALER, rgbC[i]);
                             }
                         }
@@ -1122,6 +1122,15 @@ bool World::raycast(const Vector2f &start, const Vector2f &dir, float maxDist, O
     }
 
     return false;
+}
+
+bool World::raycast(const Vector2f &start, const Vector2f &dir, float maxDist, ObjectLayer layer) {
+    float t; Vector2i hit, normal;
+    return raycast(start, dir, maxDist, layer, t, hit, normal);
+}
+
+bool World::raycastToEnd(const Vector2f &start, const Vector2f &end, ObjectLayer layer) {
+    return raycast(start, (end - start).normalized(), (end - start).length(), layer);
 }
 
 static constexpr int LVL_VERSION = 1;

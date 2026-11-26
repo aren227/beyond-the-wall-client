@@ -101,6 +101,15 @@ struct Vector2f {
         return perp.length();
     }
 
+    static inline Vector2f segmentNearest(const Vector2f &from, const Vector2f &to, const Vector2f &point) {
+        auto fromToPoint = point - from;
+        auto delta = to - from;
+        float d = fromToPoint.dot(delta) / delta.dot(delta);
+        if (d <= 0) return from;
+        if (d >= 1) return to;
+        return from + d * delta;
+    }
+
     static inline float lineCircle(const Vector2f &from, const Vector2f &dir, const Vector2f &center, float radius) {
         float d = (center - from).dot(dir);
         auto proj = dir * d;
