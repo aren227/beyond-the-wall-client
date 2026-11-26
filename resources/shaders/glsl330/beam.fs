@@ -60,7 +60,7 @@ vec4 sampleColor(vec2 uv) {
 
     if (n+d < 0.3) discard;
 
-    float n2 = perlin_noise(uv * vec2(0.1, 8.0) + vec2(-misc.z, 0) * 20.0);
+    float n2 = perlin_noise(uv * vec2(0.1, 4.0) + vec2(-misc.z, 0) * 20.0);
     if (n2 < 0.2) discard;
 
     return vec4(1.0);
