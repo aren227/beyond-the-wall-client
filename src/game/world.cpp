@@ -755,7 +755,7 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
                             }
 
                             float beamDist = Vector2f::segmentDist(it.start, it.end, vf);
-                            const float BEAM_LIGHT_DIST = 2;
+                            const float BEAM_LIGHT_DIST = 1.5f;
                             if (beamDist < BEAM_LIGHT_DIST && raycastToEnd(Vector2f::segmentNearest(it.start, it.end, vf), vf, ObjectLayer::Light) == false) {
                                 light = light + getPureColorForBeam(it.prop.color) * (1 - beamDist / BEAM_LIGHT_DIST);
                             }
