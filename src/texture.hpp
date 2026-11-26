@@ -9,6 +9,8 @@ public:
     explicit Texture(::Image image, int filter = TEXTURE_FILTER_POINT);
     ~Texture();
 
+    static const Texture &white();
+
     Texture(const Texture &) = delete;
     Texture &operator=(const Texture &) = delete;
 

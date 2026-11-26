@@ -303,6 +303,8 @@ void Player::render(const Camera &cam) {
 
     drawAt(m_pos, m_dir, 1.0f);
 
+    float accumulatedLength = 0;
+
     for (const auto &it : m_beam.segments) {
         if (it.prop.color == BeamColor::Black) {
             break;
@@ -314,9 +316,26 @@ void Player::render(const Camera &cam) {
             color = GOLD2.f();
         }
 
-        Render::pushColor(m_beamBaseColor);
-        DrawLineEx(it.start, it.end, BEAM_THICKNESS, color);
-        Render::popColor();
+        Render::beginBeam();
+        // XXX(aren): pushColor doesn't work for beam shader.
+        // Render::pushColor(m_beamBaseColor);
+
+        // NOTE(aren): same as DrawLineEx(it.start, it.end, BEAM_THICKNESS, color);
+        auto delta = it.end - it.start;
+        float length = delta.length();
+        float angle = std::atan2(delta.y, delta.x) * RAD2DEG;
+        const auto &white = Texture::white();
+        DrawTexturePro(
+            Texture2D(white),
+            Rect(white.width() * accumulatedLength, 0, white.width() * length, white.height()),
+            Rect(it.start, V2f(length, BEAM_THICKNESS)),
+            V2f(0, BEAM_THICKNESS * 0.5f),
+            angle,
+            color);
+        // Render::popColor();
+        Render::endBeam();
+
+        accumulatedLength += length;
     }
 }
 

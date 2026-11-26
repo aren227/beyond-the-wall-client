@@ -46,6 +46,9 @@ public:
     static void beginUIDraw();
     static void endUIDraw();
 
+    static void beginBeam();
+    static void endBeam();
+
     static void drawTriangleGradient(Vector2f a, Color4b ca, Vector2f b, Color4b cb, Vector2f c, Color4b cc);
 };
 

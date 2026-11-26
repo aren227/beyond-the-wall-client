@@ -30,4 +30,13 @@ Texture &Texture::operator=(Texture &&other) noexcept {
     return *this;
 }
 
+const Texture &Texture::white() {
+    static Texture *s_white;
+    if (s_white == nullptr) {
+        Image image = GenImageColor(16, 16, WHITE);
+        s_white = new Texture(image);
+    }
+    return *s_white;
+}
+
 } // namespace aren

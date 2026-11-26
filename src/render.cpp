@@ -38,6 +38,9 @@ static int s_gammaToLinearShaderDiffuseHDRLoc;
 
 static ::Shader s_tonemappingShader;
 
+static ::Shader s_beamShader;
+static int s_beamShaderMiscLoc;
+
 ::Font Render::getFontBySize(const std::string &name, float size) {
     const FontFamily *family = nullptr;
     if (s_fonts.contains(name) == false) {
@@ -140,6 +143,9 @@ void Render::init() {
     s_gammaToLinearShaderDiffuseHDRLoc = GetShaderLocation(s_gammaToLinearShader, "colDiffuseHDR");
 
     s_tonemappingShader = LoadShader(NULL, TextFormat("resources/shaders/glsl%i/tonemapping.fs", GLSL_VERSION));
+
+    s_beamShader = LoadShader(NULL, TextFormat("resources/shaders/glsl%i/beam.fs", GLSL_VERSION));
+    s_beamShaderMiscLoc = GetShaderLocation(s_beamShader, "misc");
 }
 
 void Render::deinit() {
@@ -297,6 +303,18 @@ void Render::beginUIDraw() {
 
 void Render::endUIDraw() {
     EndDrawing();
+}
+
+void Render::beginBeam() {
+    float misc[4] = { float(GetScreenWidth()), float(GetScreenHeight()), float(GetTime()), 0.0f };
+
+    BeginShaderMode(s_beamShader);
+    SetShaderValue(s_beamShader, s_beamShaderMiscLoc, &misc, SHADER_UNIFORM_VEC4);
+}
+
+void Render::endBeam() {
+    EndShaderMode();
+    BeginShaderMode(s_gammaToLinearShader);
 }
 
 void Render::drawTriangleGradient(Vector2f a, Color4b ca, Vector2f b, Color4b cb, Vector2f c, Color4b cc) {
