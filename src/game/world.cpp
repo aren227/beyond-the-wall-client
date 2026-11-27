@@ -499,6 +499,40 @@ Color4f World::getColor(const Vector2i &pos) const {
     return color;
 }
 
+void World::renderTilesBg(const Camera &cam, const SpriteSet &spriteSet) {
+    // NOTE(aren): random noise texture
+    for (int x = m_min.x; x <= m_max.x; x++) {
+        for (int y = m_min.y; y <= m_max.y; y++) {
+            auto v = V2i(x, y);
+            if (getTile(v).isTransparent()) {
+                const int SUBDIV = 2;
+                for (int a = 0; a < SUBDIV; a++) {
+                    for (int b = 0; b < SUBDIV; b++) {
+                        float xx = x + (1 / (SUBDIV * 2.0f)) * (a * 2 + 1);
+                        float yy = y + (1 / (SUBDIV * 2.0f)) * (b * 2 + 1);
+
+                        float noise1 = m_noise->sample(V2f(xx, yy) * 10, 3);
+                        float noise2 = m_noise->sample(V2f(xx + 100, yy + 100) * 10, 3);
+
+                        auto v0 = V2f(xx, yy) - V2F_ONE * (1 / (SUBDIV * 2.0f));
+                        auto v1 = V2f(xx, yy) + V2F_ONE * (1 / (SUBDIV * 2.0f));
+
+                        auto aa = cam.worldToScreen(v0);
+                        auto bb = cam.worldToScreen(v1);
+
+                        if (noise1 > 0.6f) {
+                            spriteSet.bgBrick.render(Rect(aa.x, aa.y, bb.x-aa.x, bb.y-aa.y), 0, 0, PIXEL_SCALER, WHITE);
+                        }
+                        if (noise2 > 0.6f) {
+                            spriteSet.bgPlant.render(Rect(aa.x, aa.y, bb.x-aa.x, bb.y-aa.y), 0, 0, PIXEL_SCALER, WHITE);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category) {
     const auto getCategory = [&](const Vector2i &pos) -> int {
         switch (getTileType(pos)) {
@@ -631,34 +665,6 @@ void World::renderTiles(const Camera &cam, const SpriteSet &spriteSet, int categ
 }
 
 void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
-    // NOTE(aren): random noise texture
-    for (int x = m_min.x; x <= m_max.x; x++) {
-        for (int y = m_min.y; y <= m_max.y; y++) {
-            auto v = V2i(x, y);
-            if (getTile(v).isTransparent()) {
-                const int SUBDIV = 2;
-                for (int a = 0; a < SUBDIV; a++) {
-                    for (int b = 0; b < SUBDIV; b++) {
-                        float xx = x + (1 / (SUBDIV * 2.0f)) * (a * 2 + 1);
-                        float yy = y + (1 / (SUBDIV * 2.0f)) * (b * 2 + 1);
-
-                        float noise = m_noise->sample(V2f(xx, yy) * 10, 3);
-
-                        auto v0 = V2f(xx, yy) - V2F_ONE * (1 / (SUBDIV * 2.0f));
-                        auto v1 = V2f(xx, yy) + V2F_ONE * (1 / (SUBDIV * 2.0f));
-
-                        auto aa = cam.worldToScreen(v0);
-                        auto bb = cam.worldToScreen(v1);
-
-                        if (noise > 0.6f) {
-                            spriteSet.bgBrick.render(Rect(aa.x, aa.y, bb.x-aa.x, bb.y-aa.y), 0, 0, PIXEL_SCALER, C4F_WHITE * 0.3f);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     // NOTE(aren): Overlay after render all stuffs
     BeginBlendMode(BLEND_MULTIPLIED);
     for (int x = m_min.x; x <= m_max.x; x++) {
@@ -791,21 +797,22 @@ void World::renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet) {
 }
 
 void World::renderDecos(const Camera &cam, const SpriteSet &spriteSet) {
-    std::minstd_rand gen(m_min.x * m_min.y * m_max.x * m_max.y);
+    std::minstd_rand gen(227);
+    std::uniform_real_distribution<float> rd(0.0f, 1.0f);
 
     for (int x = m_min.x; x <= m_max.x; x++) {
         for (int y = m_min.y; y <= m_max.y; y++) {
             if (getTile(V2i(x, y)).isSolid() == false) {
-                std::uniform_real_distribution<float> rd(0.0f, 1.0f);
                 float v = rd(gen);
-                if (v < 0.05f) {
-                    auto offset = V2f(rd(gen) * 0.4f - 0.2f, rd(gen) * 0.4f - 0.2f);
+                if (v < 0.1f) {
+                    auto offset = V2f(rd(gen) * 0.5f - 0.25f, rd(gen) * 0.5f - 0.25f);
                     auto vf = V2i(x, y).f() + offset;
                     auto a = cam.worldToScreen(vf);
                     auto b = cam.worldToScreen(vf + V2F_ONE);
 
-                    std::uniform_int_distribution<int> rdi(0, 4);
-                    spriteSet.deco.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 0, PIXEL_SCALER, WHITE);
+                    const auto &deco = spriteSet.deco;
+                    std::uniform_int_distribution<int> rdi(0, deco.m_layers.size() - 1);
+                    deco.render(Rect(a.x, a.y, b.x-a.x, b.y-a.y), rdi(gen), 0, PIXEL_SCALER, WHITE);
                 }
             }
         }

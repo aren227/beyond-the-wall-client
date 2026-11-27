@@ -31,6 +31,7 @@ public:
     void erase(const Vector2i &pos) { m_tiles.erase(pos); }
     Tile &at(const Vector2i &pos) { return m_tiles[pos]; }
 
+    void renderTilesBg(const Camera &cam, const SpriteSet &spriteSet);
     void renderTiles(const Camera &cam, const SpriteSet &spriteSet, int category);
     void renderTilesMisc(const Camera &cam, const SpriteSet &spriteSet);
     void renderDecos(const Camera &cam, const SpriteSet &spriteSet);

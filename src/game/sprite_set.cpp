@@ -31,6 +31,9 @@ void SpriteSet::load() {
     if (Sprite::load("bg_brick", bgBrick) == false) {
         ASSERT(false);
     }
+    if (Sprite::load("bg_plant", bgPlant) == false) {
+        ASSERT(false);
+    }
     if (Sprite::load("world_portal_active", worldPortalActive) == false) {
         ASSERT(false);
     }

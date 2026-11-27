@@ -19,6 +19,7 @@ public:
     Sprite deco;
     Sprite star;
     Sprite bgBrick;
+    Sprite bgPlant;
     Sprite dither;
     Sprite ditherOpaque;
     Sprite ditherBlack;

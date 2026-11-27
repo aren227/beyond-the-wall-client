@@ -193,14 +193,14 @@ void EditorScene::render() {
 
     Render::end2DCam();
 
+    m_world->renderTilesBg(m_cam, m_spriteSet);
+    m_world->renderDecos(m_cam, m_spriteSet);;
     // TODO(aren): hardcoded
     // TODO(aren): We need a world space sprite render method!!
     for (int i = 0; i < 4; i++) {
         m_world->renderTiles(m_cam, m_spriteSet, i);
     }
     m_world->renderTilesMisc(m_cam, m_spriteSet);
-
-    m_world->renderDecos(m_cam, m_spriteSet);;
 
     m_world->renderMisc(m_cam, m_spriteSet);
 
